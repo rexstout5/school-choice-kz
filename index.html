@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>School Choice KZ | Recommendation Quiz</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">School Choice KZ</p>
+          <h1 id="page-title">Find the right school for your child</h1>
+          <p class="hero-copy">
+            Answer six quick questions and get ranked school matches from our local
+            database based on age fit, district, tuition, language, after-school care,
+            and advanced STEM options.
+          </p>
+        </div>
+        <div class="hero-card" aria-label="Quiz summary">
+          <span class="hero-card__number">6</span>
+          <span class="hero-card__label">questions</span>
+        </div>
+      </section>
+
+      <section class="quiz-panel" aria-labelledby="quiz-title">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Recommendation quiz</p>
+            <h2 id="quiz-title">Tell us your priorities</h2>
+          </div>
+          <button id="resetButton" class="ghost-button" type="button">Reset</button>
+        </div>
+
+        <form id="quizForm" class="quiz-form">
+          <label class="field">
+            <span>Child age</span>
+            <input id="age" name="age" type="number" min="2" max="18" value="7" required />
+          </label>
+
+          <label class="field">
+            <span>District</span>
+            <select id="district" name="district" required></select>
+          </label>
+
+          <label class="field">
+            <span>Monthly budget (KZT)</span>
+            <select id="budget" name="budget" required>
+              <option value="120000">Up to 120,000 ₸</option>
+              <option value="200000">Up to 200,000 ₸</option>
+              <option value="350000">Up to 350,000 ₸</option>
+              <option value="500000">Up to 500,000 ₸</option>
+              <option value="750000">750,000 ₸+</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Preferred language</span>
+            <select id="language" name="language" required>
+              <option value="Kazakh">Kazakh</option>
+              <option value="Russian">Russian</option>
+              <option value="English">English</option>
+              <option value="Multilingual">Multilingual</option>
+            </select>
+          </label>
+
+          <fieldset class="choice-group">
+            <legend>Need after-school program?</legend>
+            <label><input type="radio" name="afterSchool" value="yes" checked /> Yes</label>
+            <label><input type="radio" name="afterSchool" value="no" /> No</label>
+          </fieldset>
+
+          <fieldset class="choice-group">
+            <legend>Need advanced STEM education?</legend>
+            <label><input type="radio" name="stem" value="yes" checked /> Yes</label>
+            <label><input type="radio" name="stem" value="no" /> No</label>
+          </fieldset>
+
+          <button class="primary-button" type="submit">Show school matches</button>
+        </form>
+      </section>
+
+      <section class="results-panel" aria-live="polite" aria-labelledby="results-title">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Ranked recommendations</p>
+            <h2 id="results-title">Best matches</h2>
+          </div>
+          <span id="matchCount" class="match-count">0 matches</span>
+        </div>
+        <div id="results" class="results-empty">
+          Complete the quiz to see personalized recommendations.
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
