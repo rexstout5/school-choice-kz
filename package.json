@@ -1,0 +1,10 @@
+{
+  "name": "school-choice-kz",
+  "version": "1.0.0",
+  "description": "Structured Kazakhstan school explorer with Astana sample data.",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 5173",
+    "test": "node scripts/validate-schools.mjs"
+  }
+}
