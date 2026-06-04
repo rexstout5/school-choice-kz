@@ -1,10 +1,18 @@
 {
   "name": "school-choice-kz",
   "version": "1.0.0",
-  "description": "Structured Kazakhstan school explorer with Astana sample data.",
+  "description": "Next.js school selection website with structured Kazakhstan school data.",
   "type": "module",
   "scripts": {
-    "start": "python3 -m http.server 5173",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "test": "node scripts/validate-schools.mjs"
-  }
+  },
+  "dependencies": {
+    "next": "15.3.3",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "devDependencies": {}
 }
