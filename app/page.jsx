@@ -25,6 +25,8 @@ const priceOptions = [
 ];
 
 const formatPrice = (price) => (price === 0 ? 'Free public school' : `${moneyFormatter.format(price)} / month`);
+const formatBoolean = (value) => (value ? 'Yes' : 'No');
+const formatRating = (rating) => (rating > 0 ? `${rating.toFixed(1)} / 5` : 'Not yet rated');
 const formatPhoneLink = (phone) => phone.replace(/[^+\d]/g, '');
 
 function FilterControl({ id, label, value, options, onChange }) {
@@ -79,7 +81,12 @@ function SchoolCard({ school }) {
           ['School type', school.school_type],
           ['Language', school.language],
           ['Verification', school.verification_status],
-          ['Monthly price', formatPrice(school.monthly_price)],
+          ['Tuition fee', formatPrice(school.tuition_fee)],
+          ['After-school program', formatBoolean(school.after_school_program)],
+          ['School bus', formatBoolean(school.school_bus)],
+          ['Class size', school.class_size],
+          ['Admission requirements', school.admission_requirements],
+          ['Rating', formatRating(school.rating)],
           ['Address', school.address]
         ].map(([term, detail]) => (
           <div key={term}>

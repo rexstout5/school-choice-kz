@@ -11,6 +11,11 @@ const requiredFields = [
   'language',
   'instruction_languages',
   'monthly_price',
+  'tuition_fee',
+  'after_school_program',
+  'school_bus',
+  'class_size',
+  'admission_requirements',
   'rating',
   'address',
   'website',
@@ -49,6 +54,30 @@ schools.forEach((school, index) => {
 
   if (!['verified', 'unverified'].includes(school.verification_status)) {
     errors.push(`${school.id} has invalid verification status ${school.verification_status}`);
+  }
+
+  if (school.monthly_price !== school.tuition_fee) {
+    errors.push(`${school.id} monthly_price must match tuition_fee`);
+  }
+
+  if (typeof school.after_school_program !== 'boolean') {
+    errors.push(`${school.id} after_school_program must be a boolean`);
+  }
+
+  if (typeof school.school_bus !== 'boolean') {
+    errors.push(`${school.id} school_bus must be a boolean`);
+  }
+
+  if (typeof school.class_size !== 'string' || school.class_size.length === 0) {
+    errors.push(`${school.id} must include a class_size description`);
+  }
+
+  if (typeof school.admission_requirements !== 'string' || school.admission_requirements.length === 0) {
+    errors.push(`${school.id} must include admission_requirements`);
+  }
+
+  if (typeof school.rating !== 'number' || school.rating < 0 || school.rating > 5) {
+    errors.push(`${school.id} rating must be a number from 0 to 5`);
   }
 
   if (!Array.isArray(school.instruction_languages) || school.instruction_languages.length === 0) {
