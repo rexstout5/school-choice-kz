@@ -75,9 +75,11 @@ function SchoolCard({ school }) {
 
       <dl className="school-card__facts">
         {[
+          ['Official name', school.official_name],
+          ['School type', school.school_type],
           ['Language', school.language],
+          ['Verification', school.verification_status],
           ['Monthly price', formatPrice(school.monthly_price)],
-          ['Rating', `${school.rating.toFixed(1)} / 5`],
           ['Address', school.address]
         ].map(([term, detail]) => (
           <div key={term}>
@@ -110,7 +112,8 @@ export default function Home() {
     () =>
       schools.filter((school) => {
         const matchesType = filters.type === 'all' || school.type === filters.type;
-        const matchesLanguage = filters.language === 'all' || school.language === filters.language;
+        const matchesLanguage =
+          filters.language === 'all' || school.instruction_languages.includes(filters.language);
         const matchesDistrict = filters.district === 'all' || school.district === filters.district;
         const matchesPrice = filters.maxPrice === 'all' || school.monthly_price <= Number(filters.maxPrice);
 
@@ -135,7 +138,7 @@ export default function Home() {
           <p className="hero__kicker">School Choice Kazakhstan</p>
           <h1>Explore structured Astana school options</h1>
           <p>
-            Compare public and private schools by district, instruction language, monthly price, rating, and signature
+            Compare Astana schools by district, instruction language, school type, verification status, and signature
             programs using a reusable Kazakhstan school data model.
           </p>
         </div>
