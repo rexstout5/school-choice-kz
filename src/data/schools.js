@@ -32,7 +32,13 @@ const createAstanaPublicSchool = ({
   school_type,
   description,
   programs,
-  verification_status = 'verified'
+  verification_status = 'verified',
+  tuition_fee = 0,
+  after_school_program = false,
+  school_bus = false,
+  class_size = 'Varies by grade and available capacity',
+  admission_requirements = 'Standard public school enrollment documents and local catchment eligibility',
+  rating = 0
 }) => ({
   id,
   name,
@@ -44,8 +50,13 @@ const createAstanaPublicSchool = ({
   school_type,
   language,
   instruction_languages,
-  monthly_price: 0,
-  rating: 0,
+  monthly_price: tuition_fee,
+  tuition_fee,
+  after_school_program,
+  school_bus,
+  class_size,
+  admission_requirements,
+  rating,
   address,
   website: schoolWebsite(number),
   phone: formatPhone(phone),
@@ -65,7 +76,7 @@ const createAstanaPublicSchool = ({
   metadata: {
     school_number: number,
     ownership: 'public',
-    expandable_fields: ['admissions', 'catchment_area', 'coordinates', 'fees', 'reviews']
+    expandable_fields: ['admissions', 'catchment_area', 'coordinates', 'fees', 'reviews', 'transportation']
   },
   sources: [ASTANA_PUBLIC_SCHOOL_SOURCE, WEBSITE_SOURCE]
 });
