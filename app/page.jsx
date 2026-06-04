@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { schoolDistricts, schoolLanguages, schools, schoolTypes } from '../src/data/schools.js';
 
 const moneyFormatter = new Intl.NumberFormat('en-US', {
@@ -16,6 +16,15 @@ const initialFilters = {
   maxPrice: 'all'
 };
 
+const initialFeedback = {
+  childAge: '',
+  district: '',
+  importantInformation: '',
+  missingInformation: ''
+};
+
+const feedbackStorageKey = 'school-choice-kz-feedback';
+
 const priceOptions = [
   ['all', 'All'],
   ['0', 'Free public schools'],
@@ -28,6 +37,16 @@ const formatPrice = (price) => (price === 0 ? 'Free public school' : `${moneyFor
 const formatBoolean = (value) => (value ? 'Yes' : 'No');
 const formatRating = (rating) => (rating > 0 ? `${rating.toFixed(1)} / 5` : 'Not yet rated');
 const formatPhoneLink = (phone) => phone.replace(/[^+\d]/g, '');
+
+const getStoredFeedback = () => {
+  try {
+    const storedFeedback = window.localStorage.getItem(feedbackStorageKey);
+    const parsedFeedback = storedFeedback ? JSON.parse(storedFeedback) : [];
+    return Array.isArray(parsedFeedback) ? parsedFeedback : [];
+  } catch {
+    return [];
+  }
+};
 
 function FilterControl({ id, label, value, options, onChange }) {
   return (
@@ -112,6 +131,134 @@ function SchoolCard({ school }) {
   );
 }
 
+function FeedbackForm() {
+  const [feedback, setFeedback] = useState(initialFeedback);
+  const [responseCount, setResponseCount] = useState(0);
+  const [statusMessage, setStatusMessage] = useState('');
+
+  useEffect(() => {
+    setResponseCount(getStoredFeedback().length);
+  }, []);
+
+  const updateFeedback = (name, value) => {
+    setFeedback((currentFeedback) => ({
+      ...currentFeedback,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const trimmedFeedback = {
+      childAge: feedback.childAge.trim(),
+      district: feedback.district,
+      importantInformation: feedback.importantInformation.trim(),
+      missingInformation: feedback.missingInformation.trim()
+    };
+
+    const nextResponses = [
+      ...getStoredFeedback(),
+      {
+        ...trimmedFeedback,
+        submittedAt: new Date().toISOString()
+      }
+    ];
+
+    try {
+      window.localStorage.setItem(feedbackStorageKey, JSON.stringify(nextResponses));
+      setResponseCount(nextResponses.length);
+      setFeedback(initialFeedback);
+      setStatusMessage('Thank you — your feedback has been saved in this browser.');
+    } catch {
+      setStatusMessage('Sorry, this browser could not save feedback locally.');
+    }
+  };
+
+  return (
+    <section className="feedback" aria-labelledby="feedback-title">
+      <div className="feedback__intro">
+        <p className="feedback__kicker">Help improve this website</p>
+        <h2 id="feedback-title">Tell us what families need next</h2>
+        <p>
+          Your answers are stored locally in this browser for now, so the team can test the feedback flow before adding a
+          database.
+        </p>
+        <p className="feedback__count">{responseCount} locally saved responses</p>
+      </div>
+
+      <form className="feedback-form" onSubmit={handleSubmit}>
+        <label htmlFor="child-age">
+          <span>Child age</span>
+          <input
+            id="child-age"
+            name="childAge"
+            type="number"
+            min="0"
+            max="18"
+            inputMode="numeric"
+            value={feedback.childAge}
+            onChange={(event) => updateFeedback('childAge', event.target.value)}
+            placeholder="Example: 7"
+            required
+          />
+        </label>
+
+        <label htmlFor="feedback-district">
+          <span>District</span>
+          <select
+            id="feedback-district"
+            name="district"
+            value={feedback.district}
+            onChange={(event) => updateFeedback('district', event.target.value)}
+            required
+          >
+            <option value="">Select a district</option>
+            {schoolDistricts.map((district) => (
+              <option key={district} value={district}>
+                {district}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label htmlFor="important-information">
+          <span>What information about schools is most important to you?</span>
+          <textarea
+            id="important-information"
+            name="importantInformation"
+            value={feedback.importantInformation}
+            onChange={(event) => updateFeedback('importantInformation', event.target.value)}
+            placeholder="Example: admissions, teacher experience, transport, fees..."
+            rows="4"
+            required
+          />
+        </label>
+
+        <label htmlFor="missing-information">
+          <span>What is missing on this website?</span>
+          <textarea
+            id="missing-information"
+            name="missingInformation"
+            value={feedback.missingInformation}
+            onChange={(event) => updateFeedback('missingInformation', event.target.value)}
+            placeholder="Tell us what would make school choice easier."
+            rows="4"
+            required
+          />
+        </label>
+
+        <div className="feedback-form__footer">
+          <button type="submit">Save feedback locally</button>
+          <p role="status" aria-live="polite">
+            {statusMessage}
+          </p>
+        </div>
+      </form>
+    </section>
+  );
+}
+
 export default function Home() {
   const [filters, setFilters] = useState(initialFilters);
 
@@ -192,6 +339,8 @@ export default function Home() {
           <SchoolCard key={school.id} school={school} />
         ))}
       </section>
+
+      <FeedbackForm />
     </main>
   );
 }

@@ -284,3 +284,129 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+.feedback {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 24px;
+  margin-top: 36px;
+  padding: 32px;
+  border: 1px solid #dce6f2;
+  border-radius: 32px;
+  background: #ffffff;
+  box-shadow: 0 18px 44px rgba(29, 47, 73, 0.08);
+}
+
+.feedback__intro {
+  padding: 24px;
+  border-radius: 24px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #12365d, #0a7c8f);
+}
+
+.feedback__kicker {
+  margin: 0 0 8px;
+  color: #a9e9f2;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.feedback__intro h2 {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  line-height: 1;
+}
+
+.feedback__intro p:not(.feedback__kicker) {
+  color: #d9f7fb;
+}
+
+.feedback__count {
+  display: inline-flex;
+  margin: 16px 0 0;
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.15);
+  font-weight: 800;
+}
+
+.feedback-form {
+  display: grid;
+  gap: 16px;
+}
+
+.feedback-form label {
+  display: grid;
+  gap: 8px;
+}
+
+.feedback-form span {
+  color: #56657b;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid #dce6f2;
+  border-radius: 16px;
+  padding: 12px 14px;
+  color: #172033;
+  background: #f8fbff;
+  font: inherit;
+  font-weight: 700;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.feedback-form select {
+  border: 1px solid #dce6f2;
+  border-radius: 16px;
+  padding: 12px 14px;
+  background: #f8fbff;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  outline: 3px solid rgba(10, 124, 143, 0.28);
+  outline-offset: 2px;
+}
+
+.feedback-form__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.feedback-form__footer p {
+  margin: 0;
+  color: #0a5f50;
+  font-weight: 800;
+}
+
+@media (max-width: 900px) {
+  .feedback {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .feedback {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .feedback__intro {
+    padding: 20px;
+  }
+}
