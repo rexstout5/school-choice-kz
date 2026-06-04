@@ -3,17 +3,25 @@ import { schools } from '../src/data/schools.js';
 const requiredFields = [
   'id',
   'name',
+  'official_name',
   'city',
   'district',
   'type',
+  'school_type',
   'language',
+  'instruction_languages',
   'monthly_price',
   'rating',
   'address',
   'website',
   'phone',
   'description',
-  'programs'
+  'programs',
+  'verification_status',
+  'contact',
+  'academics',
+  'metadata',
+  'sources'
 ];
 
 const errors = [];
@@ -39,8 +47,32 @@ schools.forEach((school, index) => {
     errors.push(`${school.id} has invalid type ${school.type}`);
   }
 
-  if (!['Kazakh', 'Russian', 'English'].includes(school.language)) {
-    errors.push(`${school.id} has invalid language ${school.language}`);
+  if (!['verified', 'unverified'].includes(school.verification_status)) {
+    errors.push(`${school.id} has invalid verification status ${school.verification_status}`);
+  }
+
+  if (!Array.isArray(school.instruction_languages) || school.instruction_languages.length === 0) {
+    errors.push(`${school.id} must include at least one instruction language`);
+  }
+
+  const invalidLanguages = school.instruction_languages.filter(
+    (language) => !['Kazakh', 'Russian', 'English'].includes(language)
+  );
+
+  if (invalidLanguages.length > 0) {
+    errors.push(`${school.id} has invalid instruction languages ${invalidLanguages.join(', ')}`);
+  }
+
+  if (school.language !== school.instruction_languages.join(', ')) {
+    errors.push(`${school.id} language display does not match instruction_languages`);
+  }
+
+  if (!school.contact || school.contact.address !== school.address || school.contact.phone !== school.phone) {
+    errors.push(`${school.id} contact details must mirror top-level address and phone`);
+  }
+
+  if (!Array.isArray(school.sources) || school.sources.length === 0) {
+    errors.push(`${school.id} must include at least one source`);
   }
 
   if (!Array.isArray(school.programs) || school.programs.length === 0) {
