@@ -3,12 +3,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { schoolDistricts, schoolLanguages, schools, schoolTypes } from '../src/data/schools.js';
 
-const moneyFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'KZT',
-  maximumFractionDigits: 0
-});
-
 const initialFilters = {
   type: 'all',
   language: 'all',
@@ -24,19 +18,275 @@ const initialFeedback = {
 };
 
 const feedbackStorageKey = 'school-choice-kz-feedback';
+const languageStorageKey = 'school-choice-kz-language';
+const defaultLanguage = 'ru';
 
-const priceOptions = [
-  ['all', 'All'],
-  ['0', 'Free public schools'],
-  ['400000', 'Up to 400,000 KZT'],
-  ['700000', 'Up to 700,000 KZT'],
-  ['1000000', 'Up to 1,000,000 KZT']
+const languageOptions = [
+  { code: 'ru', label: 'RU' },
+  { code: 'kz', label: 'KZ' },
+  { code: 'en', label: 'EN' }
 ];
 
-const formatPrice = (price) => (price === 0 ? 'Free public school' : `${moneyFormatter.format(price)} / month`);
-const formatBoolean = (value) => (value ? 'Yes' : 'No');
-const formatRating = (rating) => (rating > 0 ? `${rating.toFixed(1)} / 5` : 'Not yet rated');
-const formatPhoneLink = (phone) => phone.replace(/[^+\d]/g, '');
+const translations = {
+  ru: {
+    pageTitle: 'School Choice Kazakhstan',
+    languageSwitcherLabel: 'Выберите язык интерфейса',
+    heroKicker: 'School Choice Kazakhstan',
+    heroTitle: 'Изучите школы Астаны в удобном формате',
+    heroDescription:
+      'Сравнивайте школы Астаны по району, языку обучения, типу школы, статусу проверки и ключевым программам на основе единой модели данных.',
+    astanaSchools: 'школ Астаны',
+    filtersAria: 'Фильтры школ',
+    all: 'Все',
+    type: 'Тип',
+    language: 'Язык',
+    district: 'Район',
+    maxMonthlyPrice: 'Максимальная цена в месяц',
+    priceOptions: {
+      all: 'Все',
+      '0': 'Бесплатные государственные школы',
+      '400000': 'До 400 000 KZT',
+      '700000': 'До 700 000 KZT',
+      '1000000': 'До 1 000 000 KZT'
+    },
+    typeOptions: {
+      public: 'Государственная',
+      private: 'Частная'
+    },
+    languageOptions: {
+      Kazakh: 'Казахский',
+      Russian: 'Русский',
+      English: 'Английский'
+    },
+    schoolsMatch: (count) => `${count} ${pluralizeRu(count, ['школа подходит', 'школы подходят', 'школ подходят'])} под фильтры`,
+    resetFilters: 'Сбросить фильтры',
+    filteredSchoolsAria: 'Отфильтрованные школы',
+    noResultsTitle: 'Школы не найдены',
+    noResultsDescription: 'Попробуйте изменить район, язык обучения, тип школы или ограничение по цене.',
+    schoolCard: {
+      officialName: 'Официальное название',
+      schoolType: 'Тип школы',
+      language: 'Язык',
+      verification: 'Проверка',
+      tuitionFee: 'Стоимость обучения',
+      afterSchoolProgram: 'Продленка',
+      schoolBus: 'Школьный автобус',
+      classSize: 'Размер класса',
+      admissionRequirements: 'Требования к поступлению',
+      rating: 'Рейтинг',
+      address: 'Адрес',
+      programsAria: (name) => `Программы школы ${name}`,
+      website: 'Сайт'
+    },
+    verificationStatuses: {
+      verified: 'Проверено',
+      unverified: 'Не проверено'
+    },
+    yes: 'Да',
+    no: 'Нет',
+    notYetRated: 'Пока нет оценки',
+    freePublicSchool: 'Бесплатная государственная школа',
+    perMonth: 'в месяц',
+    feedback: {
+      kicker: 'Помогите улучшить сайт',
+      title: 'Расскажите, что нужно семьям дальше',
+      description:
+        'Ваши ответы пока сохраняются локально в этом браузере, чтобы команда могла протестировать форму обратной связи перед добавлением базы данных.',
+      savedResponses: (count) => `${count} ${pluralizeRu(count, ['локально сохраненный ответ', 'локально сохраненных ответа', 'локально сохраненных ответов'])}`,
+      childAge: 'Возраст ребенка',
+      childAgePlaceholder: 'Например: 7',
+      district: 'Район',
+      selectDistrict: 'Выберите район',
+      importantInformation: 'Какая информация о школах для вас наиболее важна?',
+      importantInformationPlaceholder: 'Например: поступление, опыт учителей, транспорт, оплата...',
+      missingInformation: 'Чего не хватает на этом сайте?',
+      missingInformationPlaceholder: 'Расскажите, что упростит выбор школы.',
+      submit: 'Сохранить отзыв локально',
+      success: 'Спасибо — ваш отзыв сохранен в этом браузере.',
+      error: 'К сожалению, браузер не смог сохранить отзыв локально.'
+    },
+    footer: 'Проект помогает семьям сравнивать школы Астаны. Данные можно расширять новыми городами, отзывами и деталями поступления.'
+  },
+  kz: {
+    pageTitle: 'School Choice Kazakhstan',
+    languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
+    heroKicker: 'School Choice Kazakhstan',
+    heroTitle: 'Астана мектептерін ыңғайлы форматта зерттеңіз',
+    heroDescription:
+      'Астана мектептерін аудан, оқыту тілі, мектеп түрі, тексеру мәртебесі және негізгі бағдарламалар бойынша бірыңғай деректер моделі арқылы салыстырыңыз.',
+    astanaSchools: 'Астана мектебі',
+    filtersAria: 'Мектеп сүзгілері',
+    all: 'Барлығы',
+    type: 'Түрі',
+    language: 'Тілі',
+    district: 'Аудан',
+    maxMonthlyPrice: 'Айлық ең жоғары баға',
+    priceOptions: {
+      all: 'Барлығы',
+      '0': 'Тегін мемлекеттік мектептер',
+      '400000': '400 000 KZT дейін',
+      '700000': '700 000 KZT дейін',
+      '1000000': '1 000 000 KZT дейін'
+    },
+    typeOptions: {
+      public: 'Мемлекеттік',
+      private: 'Жеке'
+    },
+    languageOptions: {
+      Kazakh: 'Қазақ тілі',
+      Russian: 'Орыс тілі',
+      English: 'Ағылшын тілі'
+    },
+    schoolsMatch: (count) => `${count} мектеп сүзгілерге сәйкес келеді`,
+    resetFilters: 'Сүзгілерді тазалау',
+    filteredSchoolsAria: 'Сүзілген мектептер',
+    noResultsTitle: 'Мектептер табылмады',
+    noResultsDescription: 'Ауданды, оқыту тілін, мектеп түрін немесе баға шектеуін өзгертіп көріңіз.',
+    schoolCard: {
+      officialName: 'Ресми атауы',
+      schoolType: 'Мектеп түрі',
+      language: 'Тілі',
+      verification: 'Тексеру',
+      tuitionFee: 'Оқу ақысы',
+      afterSchoolProgram: 'Сабақтан кейінгі бағдарлама',
+      schoolBus: 'Мектеп автобусы',
+      classSize: 'Сынып көлемі',
+      admissionRequirements: 'Қабылдау талаптары',
+      rating: 'Рейтинг',
+      address: 'Мекенжай',
+      programsAria: (name) => `${name} бағдарламалары`,
+      website: 'Сайт'
+    },
+    verificationStatuses: {
+      verified: 'Тексерілген',
+      unverified: 'Тексерілмеген'
+    },
+    yes: 'Иә',
+    no: 'Жоқ',
+    notYetRated: 'Әзірге баға жоқ',
+    freePublicSchool: 'Тегін мемлекеттік мектеп',
+    perMonth: 'айына',
+    feedback: {
+      kicker: 'Сайтты жақсартуға көмектесіңіз',
+      title: 'Отбасыларға тағы не қажет екенін айтыңыз',
+      description:
+        'Жауаптарыңыз әзірше осы браузерде жергілікті сақталады, осылайша команда дерекқор қоспас бұрын кері байланыс формасын тексере алады.',
+      savedResponses: (count) => `${count} жергілікті сақталған жауап`,
+      childAge: 'Баланың жасы',
+      childAgePlaceholder: 'Мысалы: 7',
+      district: 'Аудан',
+      selectDistrict: 'Ауданды таңдаңыз',
+      importantInformation: 'Мектептер туралы қандай ақпарат сіз үшін ең маңызды?',
+      importantInformationPlaceholder: 'Мысалы: қабылдау, мұғалімдер тәжірибесі, көлік, төлемдер...',
+      missingInformation: 'Бұл сайтта не жетіспейді?',
+      missingInformationPlaceholder: 'Мектеп таңдауды не жеңілдететінін айтыңыз.',
+      submit: 'Пікірді жергілікті сақтау',
+      success: 'Рақмет — пікіріңіз осы браузерде сақталды.',
+      error: 'Кешіріңіз, браузер пікірді жергілікті сақтай алмады.'
+    },
+    footer: 'Бұл жоба отбасыларға Астана мектептерін салыстыруға көмектеседі. Деректерді жаңа қалалармен, пікірлермен және қабылдау мәліметтерімен кеңейтуге болады.'
+  },
+  en: {
+    pageTitle: 'School Choice Kazakhstan',
+    languageSwitcherLabel: 'Choose interface language',
+    heroKicker: 'School Choice Kazakhstan',
+    heroTitle: 'Explore structured Astana school options',
+    heroDescription:
+      'Compare Astana schools by district, instruction language, school type, verification status, and signature programs using a reusable Kazakhstan school data model.',
+    astanaSchools: 'Astana schools',
+    filtersAria: 'School filters',
+    all: 'All',
+    type: 'Type',
+    language: 'Language',
+    district: 'District',
+    maxMonthlyPrice: 'Max monthly price',
+    priceOptions: {
+      all: 'All',
+      '0': 'Free public schools',
+      '400000': 'Up to 400,000 KZT',
+      '700000': 'Up to 700,000 KZT',
+      '1000000': 'Up to 1,000,000 KZT'
+    },
+    typeOptions: {
+      public: 'Public',
+      private: 'Private'
+    },
+    languageOptions: {
+      Kazakh: 'Kazakh',
+      Russian: 'Russian',
+      English: 'English'
+    },
+    schoolsMatch: (count) => `${count} ${count === 1 ? 'school matches' : 'schools match'} your filters`,
+    resetFilters: 'Reset filters',
+    filteredSchoolsAria: 'Filtered schools',
+    noResultsTitle: 'No schools found',
+    noResultsDescription: 'Try changing the district, instruction language, school type, or price limit.',
+    schoolCard: {
+      officialName: 'Official name',
+      schoolType: 'School type',
+      language: 'Language',
+      verification: 'Verification',
+      tuitionFee: 'Tuition fee',
+      afterSchoolProgram: 'After-school program',
+      schoolBus: 'School bus',
+      classSize: 'Class size',
+      admissionRequirements: 'Admission requirements',
+      rating: 'Rating',
+      address: 'Address',
+      programsAria: (name) => `${name} programs`,
+      website: 'Website'
+    },
+    verificationStatuses: {
+      verified: 'Verified',
+      unverified: 'Unverified'
+    },
+    yes: 'Yes',
+    no: 'No',
+    notYetRated: 'Not yet rated',
+    freePublicSchool: 'Free public school',
+    perMonth: 'month',
+    feedback: {
+      kicker: 'Help improve this website',
+      title: 'Tell us what families need next',
+      description:
+        'Your answers are stored locally in this browser for now, so the team can test the feedback flow before adding a database.',
+      savedResponses: (count) => `${count} locally saved ${count === 1 ? 'response' : 'responses'}`,
+      childAge: 'Child age',
+      childAgePlaceholder: 'Example: 7',
+      district: 'District',
+      selectDistrict: 'Select a district',
+      importantInformation: 'What information about schools is most important to you?',
+      importantInformationPlaceholder: 'Example: admissions, teacher experience, transport, fees...',
+      missingInformation: 'What is missing on this website?',
+      missingInformationPlaceholder: 'Tell us what would make school choice easier.',
+      submit: 'Save feedback locally',
+      success: 'Thank you — your feedback has been saved in this browser.',
+      error: 'Sorry, this browser could not save feedback locally.'
+    },
+    footer: 'This project helps families compare Astana schools. The data can expand with new cities, reviews, and admissions details.'
+  }
+};
+
+const priceOptionValues = ['all', '0', '400000', '700000', '1000000'];
+
+function pluralizeRu(count, forms) {
+  const absoluteCount = Math.abs(count) % 100;
+  const lastDigit = absoluteCount % 10;
+
+  if (absoluteCount > 10 && absoluteCount < 20) {
+    return forms[2];
+  }
+
+  if (lastDigit > 1 && lastDigit < 5) {
+    return forms[1];
+  }
+
+  if (lastDigit === 1) {
+    return forms[0];
+  }
+
+  return forms[2];
+}
 
 const getStoredFeedback = () => {
   try {
@@ -48,15 +298,36 @@ const getStoredFeedback = () => {
   }
 };
 
-function FilterControl({ id, label, value, options, onChange }) {
+const getTranslatedOption = (translationMap, option) => translationMap[option] ?? option;
+const formatPhoneLink = (phone) => phone.replace(/[^+\d]/g, '');
+
+function LanguageSwitcher({ currentLanguage, onLanguageChange, t }) {
+  return (
+    <div className="language-switcher" aria-label={t.languageSwitcherLabel}>
+      {languageOptions.map(({ code, label }) => (
+        <button
+          key={code}
+          type="button"
+          className={currentLanguage === code ? 'language-switcher__button language-switcher__button--active' : 'language-switcher__button'}
+          aria-pressed={currentLanguage === code}
+          onClick={() => onLanguageChange(code)}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function FilterControl({ id, label, value, options, allLabel, optionLabels = {}, onChange }) {
   return (
     <label className="filter-control" htmlFor={id}>
       <span>{label}</span>
       <select id={id} value={value} onChange={(event) => onChange(event.target.value)}>
-        <option value="all">All</option>
+        <option value="all">{allLabel}</option>
         {options.map((option) => (
           <option key={option} value={option}>
-            {option}
+            {getTranslatedOption(optionLabels, option)}
           </option>
         ))}
       </select>
@@ -64,14 +335,14 @@ function FilterControl({ id, label, value, options, onChange }) {
   );
 }
 
-function PriceFilter({ value, onChange }) {
+function PriceFilter({ value, onChange, t }) {
   return (
     <label className="filter-control" htmlFor="price">
-      <span>Max monthly price</span>
+      <span>{t.maxMonthlyPrice}</span>
       <select id="price" value={value} onChange={(event) => onChange(event.target.value)}>
-        {priceOptions.map(([optionValue, label]) => (
+        {priceOptionValues.map((optionValue) => (
           <option key={optionValue} value={optionValue}>
-            {label}
+            {t.priceOptions[optionValue]}
           </option>
         ))}
       </select>
@@ -79,7 +350,11 @@ function PriceFilter({ value, onChange }) {
   );
 }
 
-function SchoolCard({ school }) {
+function SchoolCard({ school, moneyFormatter, t }) {
+  const formatPrice = (price) => (price === 0 ? t.freePublicSchool : `${moneyFormatter.format(price)} / ${t.perMonth}`);
+  const formatBoolean = (value) => (value ? t.yes : t.no);
+  const formatRating = (rating) => (rating > 0 ? `${rating.toFixed(1)} / 5` : t.notYetRated);
+
   return (
     <article className="school-card">
       <div className="school-card__header">
@@ -89,24 +364,24 @@ function SchoolCard({ school }) {
           </p>
           <h2>{school.name}</h2>
         </div>
-        <span className={`badge badge--${school.type}`}>{school.type}</span>
+        <span className={`badge badge--${school.type}`}>{getTranslatedOption(t.typeOptions, school.type)}</span>
       </div>
 
       <p className="school-card__description">{school.description}</p>
 
       <dl className="school-card__facts">
         {[
-          ['Official name', school.official_name],
-          ['School type', school.school_type],
-          ['Language', school.language],
-          ['Verification', school.verification_status],
-          ['Tuition fee', formatPrice(school.tuition_fee)],
-          ['After-school program', formatBoolean(school.after_school_program)],
-          ['School bus', formatBoolean(school.school_bus)],
-          ['Class size', school.class_size],
-          ['Admission requirements', school.admission_requirements],
-          ['Rating', formatRating(school.rating)],
-          ['Address', school.address]
+          [t.schoolCard.officialName, school.official_name],
+          [t.schoolCard.schoolType, school.school_type],
+          [t.schoolCard.language, school.language],
+          [t.schoolCard.verification, getTranslatedOption(t.verificationStatuses, school.verification_status)],
+          [t.schoolCard.tuitionFee, formatPrice(school.tuition_fee)],
+          [t.schoolCard.afterSchoolProgram, formatBoolean(school.after_school_program)],
+          [t.schoolCard.schoolBus, formatBoolean(school.school_bus)],
+          [t.schoolCard.classSize, school.class_size],
+          [t.schoolCard.admissionRequirements, school.admission_requirements],
+          [t.schoolCard.rating, formatRating(school.rating)],
+          [t.schoolCard.address, school.address]
         ].map(([term, detail]) => (
           <div key={term}>
             <dt>{term}</dt>
@@ -115,7 +390,7 @@ function SchoolCard({ school }) {
         ))}
       </dl>
 
-      <div className="program-list" aria-label={`${school.name} programs`}>
+      <div className="program-list" aria-label={t.schoolCard.programsAria(school.name)}>
         {school.programs.map((program) => (
           <span key={program}>{program}</span>
         ))}
@@ -123,7 +398,7 @@ function SchoolCard({ school }) {
 
       <div className="school-card__contact">
         <a href={school.website} target="_blank" rel="noreferrer">
-          Website
+          {t.schoolCard.website}
         </a>
         <a href={`tel:${formatPhoneLink(school.phone)}`}>{school.phone}</a>
       </div>
@@ -131,7 +406,7 @@ function SchoolCard({ school }) {
   );
 }
 
-function FeedbackForm() {
+function FeedbackForm({ t }) {
   const [feedback, setFeedback] = useState(initialFeedback);
   const [responseCount, setResponseCount] = useState(0);
   const [statusMessage, setStatusMessage] = useState('');
@@ -169,27 +444,24 @@ function FeedbackForm() {
       window.localStorage.setItem(feedbackStorageKey, JSON.stringify(nextResponses));
       setResponseCount(nextResponses.length);
       setFeedback(initialFeedback);
-      setStatusMessage('Thank you — your feedback has been saved in this browser.');
+      setStatusMessage(t.feedback.success);
     } catch {
-      setStatusMessage('Sorry, this browser could not save feedback locally.');
+      setStatusMessage(t.feedback.error);
     }
   };
 
   return (
     <section className="feedback" aria-labelledby="feedback-title">
       <div className="feedback__intro">
-        <p className="feedback__kicker">Help improve this website</p>
-        <h2 id="feedback-title">Tell us what families need next</h2>
-        <p>
-          Your answers are stored locally in this browser for now, so the team can test the feedback flow before adding a
-          database.
-        </p>
-        <p className="feedback__count">{responseCount} locally saved responses</p>
+        <p className="feedback__kicker">{t.feedback.kicker}</p>
+        <h2 id="feedback-title">{t.feedback.title}</h2>
+        <p>{t.feedback.description}</p>
+        <p className="feedback__count">{t.feedback.savedResponses(responseCount)}</p>
       </div>
 
       <form className="feedback-form" onSubmit={handleSubmit}>
         <label htmlFor="child-age">
-          <span>Child age</span>
+          <span>{t.feedback.childAge}</span>
           <input
             id="child-age"
             name="childAge"
@@ -199,13 +471,13 @@ function FeedbackForm() {
             inputMode="numeric"
             value={feedback.childAge}
             onChange={(event) => updateFeedback('childAge', event.target.value)}
-            placeholder="Example: 7"
+            placeholder={t.feedback.childAgePlaceholder}
             required
           />
         </label>
 
         <label htmlFor="feedback-district">
-          <span>District</span>
+          <span>{t.feedback.district}</span>
           <select
             id="feedback-district"
             name="district"
@@ -213,7 +485,7 @@ function FeedbackForm() {
             onChange={(event) => updateFeedback('district', event.target.value)}
             required
           >
-            <option value="">Select a district</option>
+            <option value="">{t.feedback.selectDistrict}</option>
             {schoolDistricts.map((district) => (
               <option key={district} value={district}>
                 {district}
@@ -223,33 +495,33 @@ function FeedbackForm() {
         </label>
 
         <label htmlFor="important-information">
-          <span>What information about schools is most important to you?</span>
+          <span>{t.feedback.importantInformation}</span>
           <textarea
             id="important-information"
             name="importantInformation"
             value={feedback.importantInformation}
             onChange={(event) => updateFeedback('importantInformation', event.target.value)}
-            placeholder="Example: admissions, teacher experience, transport, fees..."
+            placeholder={t.feedback.importantInformationPlaceholder}
             rows="4"
             required
           />
         </label>
 
         <label htmlFor="missing-information">
-          <span>What is missing on this website?</span>
+          <span>{t.feedback.missingInformation}</span>
           <textarea
             id="missing-information"
             name="missingInformation"
             value={feedback.missingInformation}
             onChange={(event) => updateFeedback('missingInformation', event.target.value)}
-            placeholder="Tell us what would make school choice easier."
+            placeholder={t.feedback.missingInformationPlaceholder}
             rows="4"
             required
           />
         </label>
 
         <div className="feedback-form__footer">
-          <button type="submit">Save feedback locally</button>
+          <button type="submit">{t.feedback.submit}</button>
           <p role="status" aria-live="polite">
             {statusMessage}
           </p>
@@ -261,6 +533,30 @@ function FeedbackForm() {
 
 export default function Home() {
   const [filters, setFilters] = useState(initialFilters);
+  const [currentLanguage, setCurrentLanguage] = useState(defaultLanguage);
+
+  useEffect(() => {
+    try {
+      const storedLanguage = window.localStorage.getItem(languageStorageKey);
+      if (storedLanguage && translations[storedLanguage]) {
+        setCurrentLanguage(storedLanguage);
+      }
+    } catch {
+      setCurrentLanguage(defaultLanguage);
+    }
+  }, []);
+
+  const t = translations[currentLanguage];
+
+  const moneyFormatter = useMemo(
+    () =>
+      new Intl.NumberFormat(currentLanguage === 'en' ? 'en-US' : currentLanguage === 'kz' ? 'kk-KZ' : 'ru-RU', {
+        style: 'currency',
+        currency: 'KZT',
+        maximumFractionDigits: 0
+      }),
+    [currentLanguage]
+  );
 
   const filteredSchools = useMemo(
     () =>
@@ -283,64 +579,97 @@ export default function Home() {
     }));
   };
 
+  const updateLanguage = (language) => {
+    setCurrentLanguage(language);
+
+    try {
+      window.localStorage.setItem(languageStorageKey, language);
+    } catch {
+      // Language still changes for the current session if localStorage is unavailable.
+    }
+  };
+
   const resetFilters = () => setFilters(initialFilters);
 
   return (
     <main>
-      <section className="hero">
+      <header className="site-header">
+        <a className="site-header__brand" href="#top" aria-label={t.pageTitle}>
+          {t.pageTitle}
+        </a>
+        <LanguageSwitcher currentLanguage={currentLanguage} onLanguageChange={updateLanguage} t={t} />
+      </header>
+
+      <section className="hero" id="top">
         <div>
-          <p className="hero__kicker">School Choice Kazakhstan</p>
-          <h1>Explore structured Astana school options</h1>
-          <p>
-            Compare Astana schools by district, instruction language, school type, verification status, and signature
-            programs using a reusable Kazakhstan school data model.
-          </p>
+          <p className="hero__kicker">{t.heroKicker}</p>
+          <h1>{t.heroTitle}</h1>
+          <p>{t.heroDescription}</p>
         </div>
         <div className="hero__stat">
           <strong>{schools.length}</strong>
-          <span>Astana schools</span>
+          <span>{t.astanaSchools}</span>
         </div>
       </section>
 
-      <section className="filters" aria-label="School filters">
+      <section className="filters" aria-label={t.filtersAria}>
         <FilterControl
           id="type"
-          label="Type"
+          label={t.type}
           value={filters.type}
           options={schoolTypes}
+          allLabel={t.all}
+          optionLabels={t.typeOptions}
           onChange={(value) => updateFilter('type', value)}
         />
         <FilterControl
           id="language"
-          label="Language"
+          label={t.language}
           value={filters.language}
           options={schoolLanguages}
+          allLabel={t.all}
+          optionLabels={t.languageOptions}
           onChange={(value) => updateFilter('language', value)}
         />
         <FilterControl
           id="district"
-          label="District"
+          label={t.district}
           value={filters.district}
           options={schoolDistricts}
+          allLabel={t.all}
           onChange={(value) => updateFilter('district', value)}
         />
-        <PriceFilter value={filters.maxPrice} onChange={(value) => updateFilter('maxPrice', value)} />
+        <PriceFilter value={filters.maxPrice} onChange={(value) => updateFilter('maxPrice', value)} t={t} />
       </section>
 
       <section className="results-heading" aria-live="polite">
-        <h2>{filteredSchools.length} schools match your filters</h2>
+        <h2>{t.schoolsMatch(filteredSchools.length)}</h2>
         <button type="button" onClick={resetFilters}>
-          Reset filters
+          {t.resetFilters}
         </button>
       </section>
 
-      <section className="school-grid" aria-label="Filtered schools">
-        {filteredSchools.map((school) => (
-          <SchoolCard key={school.id} school={school} />
-        ))}
-      </section>
+      {filteredSchools.length > 0 ? (
+        <section className="school-grid" aria-label={t.filteredSchoolsAria}>
+          {filteredSchools.map((school) => (
+            <SchoolCard key={school.id} school={school} moneyFormatter={moneyFormatter} t={t} />
+          ))}
+        </section>
+      ) : (
+        <section className="empty-state" aria-live="polite">
+          <h2>{t.noResultsTitle}</h2>
+          <p>{t.noResultsDescription}</p>
+          <button type="button" onClick={resetFilters}>
+            {t.resetFilters}
+          </button>
+        </section>
+      )}
 
-      <FeedbackForm />
+      <FeedbackForm t={t} />
+
+      <footer className="site-footer">
+        <p>{t.footer}</p>
+      </footer>
     </main>
   );
 }
