@@ -203,18 +203,23 @@ export default async function SchoolDetailPage({ params, searchParams }) {
   const localizedDescription = getLocalizedSchoolValue(school.description, language);
   const localizedPrograms = getLocalizedSchoolValue(school.programs, language);
   const localizedAdmissionRequirements = getLocalizedSchoolValue(school.admission_requirements, language);
+  const localizedSchoolType = getLocalizedSchoolValue(school.school_type, language);
+  const localizedLanguages = getLocalizedSchoolValue(school.languages, language);
+  const localizedClassSize = getLocalizedSchoolValue(school.class_size, language);
+  const localizedAddress = getLocalizedSchoolValue(school.address, language);
+  const localizedOfficialName = language === 'en' ? school.official_name : school.official_name_local;
   const details = [
-    [t.fields.officialName, school.official_name],
+    [t.fields.officialName, localizedOfficialName],
     [t.fields.localName, school.official_name_local],
-    [t.fields.schoolType, school.school_type],
-    [t.fields.language, school.language],
+    [t.fields.schoolType, localizedSchoolType],
+    [t.fields.language, localizedLanguages],
     [t.fields.tuitionFee, formatPrice(school.tuition_fee, moneyFormatter, t)],
     [t.fields.priceStatus, getTranslatedOption(t.priceStatuses, school.price_status)],
     [t.fields.dataStatus, getTranslatedOption(t.dataStatuses, school.data_status)],
     [t.fields.afterSchoolProgram, getTranslatedOption(t.statusValues, school.after_school_program)],
     [t.fields.schoolBus, getTranslatedOption(t.statusValues, school.school_bus)],
     [t.fields.admissionTest, getTranslatedOption(t.statusValues, school.admission_test)],
-    [t.fields.classSize, school.class_size],
+    [t.fields.classSize, localizedClassSize],
     [t.fields.admissionRequirements, localizedAdmissionRequirements],
     [t.fields.rating, formatRating(school.rating, t)]
   ];
@@ -262,7 +267,7 @@ export default async function SchoolDetailPage({ params, searchParams }) {
           <dl className="school-card__facts school-detail__facts">
             <div>
               <dt>{t.fields.address}</dt>
-              <dd>{school.address}</dd>
+              <dd>{localizedAddress}</dd>
             </div>
             <div>
               <dt>{t.fields.phone}</dt>

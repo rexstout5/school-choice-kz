@@ -9,6 +9,7 @@ const requiredFields = [
   'type',
   'school_type',
   'language',
+  'languages',
   'instruction_languages',
   'monthly_price',
   'tuition_fee',
@@ -35,7 +36,7 @@ const requiredFields = [
 
 const errors = [];
 const ids = new Set();
-const localizedObjectFields = ['name', 'description', 'admission_requirements'];
+const localizedObjectFields = ['name', 'school_type', 'languages', 'description', 'address', 'admission_requirements', 'class_size'];
 const languages = ['ru', 'kk', 'en'];
 
 const isLocalizedObject = (value) =>
@@ -93,9 +94,6 @@ schools.forEach((school, index) => {
     }
   });
 
-  if (typeof school.class_size !== 'string' || school.class_size.length === 0) {
-    errors.push(`${school.id} must include a class_size description`);
-  }
 
   localizedObjectFields.forEach((field) => {
     if (!isLocalizedObject(school[field])) {
@@ -131,6 +129,10 @@ schools.forEach((school, index) => {
 
   if (school.language !== school.instruction_languages.join(', ')) {
     errors.push(`${school.id} language display does not match instruction_languages`);
+  }
+
+  if (getLocalizedSchoolValue(school.languages, 'en') !== school.language) {
+    errors.push(`${school.id} English languages display does not match instruction_languages`);
   }
 
   if (!school.contact || school.contact.address !== school.address || school.contact.phone !== school.phone) {

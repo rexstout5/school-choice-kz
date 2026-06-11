@@ -428,6 +428,11 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
   const localizedDescription = getLocalizedSchoolValue(school.description, currentLanguage);
   const localizedPrograms = getLocalizedSchoolValue(school.programs, currentLanguage);
   const localizedAdmissionRequirements = getLocalizedSchoolValue(school.admission_requirements, currentLanguage);
+  const localizedSchoolType = getLocalizedSchoolValue(school.school_type, currentLanguage);
+  const localizedLanguages = getLocalizedSchoolValue(school.languages, currentLanguage);
+  const localizedClassSize = getLocalizedSchoolValue(school.class_size, currentLanguage);
+  const localizedAddress = getLocalizedSchoolValue(school.address, currentLanguage);
+  const localizedOfficialName = currentLanguage === 'en' ? school.official_name : school.official_name_local;
   const formatPrice = (price) => (price === 0 ? t.freePublicSchool : `${moneyFormatter.format(price)} / ${t.perMonth}`);
   const formatStatusValue = (value) => getTranslatedOption(t.statusValues, value);
   const formatRating = (rating) => (rating > 0 ? `${rating.toFixed(1)} / 5` : t.notYetRated);
@@ -448,9 +453,9 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
 
       <dl className="school-card__facts">
         {[
-          [t.schoolCard.officialName, school.official_name],
-          [t.schoolCard.schoolType, school.school_type],
-          [t.schoolCard.language, school.language],
+          [t.schoolCard.officialName, localizedOfficialName],
+          [t.schoolCard.schoolType, localizedSchoolType],
+          [t.schoolCard.language, localizedLanguages],
           [t.schoolCard.verification, getTranslatedOption(t.verificationStatuses, school.verification_status)],
           [t.schoolCard.tuitionFee, formatPrice(school.tuition_fee)],
           [t.schoolCard.priceStatus, getTranslatedOption(t.priceStatuses, school.price_status)],
@@ -458,10 +463,10 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
           [t.schoolCard.afterSchoolProgram, formatStatusValue(school.after_school_program)],
           [t.schoolCard.schoolBus, formatStatusValue(school.school_bus)],
           [t.schoolCard.admissionTest, formatStatusValue(school.admission_test)],
-          [t.schoolCard.classSize, school.class_size],
+          [t.schoolCard.classSize, localizedClassSize],
           [t.schoolCard.admissionRequirements, localizedAdmissionRequirements],
           [t.schoolCard.rating, formatRating(school.rating)],
-          [t.schoolCard.address, school.address]
+          [t.schoolCard.address, localizedAddress]
         ].map(([term, detail]) => (
           <div key={term}>
             <dt>{term}</dt>
