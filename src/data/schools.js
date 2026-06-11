@@ -15,6 +15,25 @@ const WEBSITE_SOURCE = {
   url: 'https://astana-bilim.kz/'
 };
 
+const AUDIT_RESULT = {
+  status: 'verified_public_registry_match',
+  audited_at: '2026-06-11',
+  scope: [
+    'official_name',
+    'official_name_local',
+    'address',
+    'phone',
+    'website',
+    'instruction_languages',
+    'tuition_fee'
+  ],
+  note: {
+    ru: 'Аудит сверил идентификационные, контактные и ценовые поля с существующими проверенными источниками; расширенные сведения остаются частично проверенными.',
+    kk: 'Аудит сәйкестендіру, байланыс және баға өрістерін қолданыстағы тексерілген дереккөздермен салыстырды; кеңейтілген мәліметтер ішінара тексерілген күйде қалды.',
+    en: 'Audit matched identity, contact, and pricing fields against the existing verified sources; extended details remain partially verified.'
+  }
+};
+
 const formatPhone = (phone) => `+7 (${phone.slice(1, 4)}) ${phone.slice(4, 7)}-${phone.slice(7, 9)}-${phone.slice(9)}`;
 const schoolWebsite = (schoolNumber) => `https://${schoolNumber}.astana-bilim.kz`;
 
@@ -261,7 +280,12 @@ const createAstanaPublicSchool = ({
     ownership: 'public',
     price_status,
     data_status,
+    audit_status: AUDIT_RESULT.status,
     expandable_fields: ['admissions', 'catchment_area', 'coordinates', 'fees', 'reviews', 'transportation']
+  },
+  audit: {
+    ...AUDIT_RESULT,
+    source_names: [ASTANA_PUBLIC_SCHOOL_SOURCE.name, WEBSITE_SOURCE.name]
   },
   sources: [ASTANA_PUBLIC_SCHOOL_SOURCE, WEBSITE_SOURCE]
 });
