@@ -1,7 +1,15 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { getLocalizedSchoolValue, schoolDistricts, schoolLanguages, schools, schoolTypes } from '../src/data/schools.js';
+import {
+  getLocalizedCityLabel,
+  getLocalizedDistrictLabel,
+  getLocalizedSchoolValue,
+  schoolDistricts,
+  schoolLanguages,
+  schools,
+  schoolTypes
+} from '../src/data/schools.js';
 
 const initialFilters = {
   type: 'all',
@@ -372,6 +380,8 @@ const getStoredFeedback = () => {
 };
 
 const getTranslatedOption = (translationMap, option) => translationMap[option] ?? option;
+const getDistrictOptionLabels = (language) =>
+  Object.fromEntries(schoolDistricts.map((district) => [district, getLocalizedDistrictLabel(district, language)]));
 const formatPhoneLink = (phone) => phone.replace(/[^+\d]/g, '');
 
 function LanguageSwitcher({ currentLanguage, onLanguageChange, t }) {
@@ -433,6 +443,8 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
   const localizedClassSize = getLocalizedSchoolValue(school.class_size, currentLanguage);
   const localizedAddress = getLocalizedSchoolValue(school.address, currentLanguage);
   const localizedOfficialName = currentLanguage === 'en' ? school.official_name : school.official_name_local;
+  const localizedCity = getLocalizedCityLabel(school.city, currentLanguage);
+  const localizedDistrict = getLocalizedDistrictLabel(school.district, currentLanguage);
   const formatPrice = (price) => (price === 0 ? t.freePublicSchool : `${moneyFormatter.format(price)} / ${t.perMonth}`);
   const formatStatusValue = (value) => getTranslatedOption(t.statusValues, value);
   const formatRating = (rating) => (rating > 0 ? `${rating.toFixed(1)} / 5` : t.notYetRated);
@@ -442,7 +454,7 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
       <div className="school-card__header">
         <div>
           <p className="school-card__eyebrow">
-            {school.city} • {school.district}
+            {localizedCity} • {localizedDistrict}
           </p>
           <h2>{localizedName}</h2>
         </div>
@@ -527,7 +539,7 @@ function Pagination({ currentPage, totalPages, onPageChange, t }) {
   );
 }
 
-function FeedbackForm({ t }) {
+function FeedbackForm({ t, currentLanguage }) {
   const [feedback, setFeedback] = useState(initialFeedback);
   const [responseCount, setResponseCount] = useState(0);
   const [statusMessage, setStatusMessage] = useState('');
@@ -609,7 +621,7 @@ function FeedbackForm({ t }) {
             <option value="">{t.feedback.selectDistrict}</option>
             {schoolDistricts.map((district) => (
               <option key={district} value={district}>
-                {district}
+                {getLocalizedDistrictLabel(district, currentLanguage)}
               </option>
             ))}
           </select>
@@ -672,6 +684,7 @@ export default function Home() {
   }, []);
 
   const t = translations[currentLanguage];
+  const districtOptionLabels = useMemo(() => getDistrictOptionLabels(currentLanguage), [currentLanguage]);
 
   const moneyFormatter = useMemo(
     () =>
@@ -773,6 +786,7 @@ export default function Home() {
           value={filters.district}
           options={schoolDistricts}
           allLabel={t.all}
+          optionLabels={districtOptionLabels}
           onChange={(value) => updateFilter('district', value)}
         />
         <PriceFilter value={filters.maxPrice} onChange={(value) => updateFilter('maxPrice', value)} t={t} />
@@ -804,7 +818,7 @@ export default function Home() {
         </section>
       )}
 
-      <FeedbackForm t={t} />
+      <FeedbackForm t={t} currentLanguage={currentLanguage} />
 
       <footer className="site-footer">
         <p>{t.footer}</p>

@@ -179,17 +179,38 @@ const localizeClassSize = (classSize) => ({
   en: classSize
 });
 
-const districtTranslations = {
-  Almaty: { ru: 'Алматинском', kk: 'Алматы' },
-  Baikonyr: { ru: 'Байконырском', kk: 'Байқоңыр' },
-  Saryarka: { ru: 'Сарыаркинском', kk: 'Сарыарқа' },
-  Yesil: { ru: 'Есильском', kk: 'Есіл' }
+export const districtLabels = {
+  saryarka: { ru: 'Сарыарка', kk: 'Сарыарқа', en: 'Saryarka' },
+  yesil: { ru: 'Есиль', kk: 'Есіл', en: 'Yesil' },
+  almaty: { ru: 'Алматы', kk: 'Алматы', en: 'Almaty' },
+  baikonyr: { ru: 'Байконур', kk: 'Байқоңыр', en: 'Baikonyr' },
+  nura: { ru: 'Нура', kk: 'Нұра', en: 'Nura' }
+};
+
+export const cityLabels = {
+  Astana: { ru: 'Астана', kk: 'Астана', en: 'Astana' }
+};
+
+const normalizeLanguageCode = (language) => (language === 'kz' ? 'kk' : language);
+
+export const getLocalizedDistrictLabel = (district, language) => {
+  const normalizedLanguage = normalizeLanguageCode(language);
+  return districtLabels[district]?.[normalizedLanguage] ?? districtLabels[district]?.en ?? district;
+};
+
+export const getLocalizedCityLabel = (city, language) => {
+  const normalizedLanguage = normalizeLanguageCode(language);
+  return cityLabels[city]?.[normalizedLanguage] ?? cityLabels[city]?.en ?? city;
 };
 
 const districtLabel = (district, language) => {
-  const translatedDistrict = districtTranslations[district]?.[language] ?? district;
-  const suffix = language === 'ru' ? 'районе' : 'ауданында';
-  return `${translatedDistrict} ${suffix}`;
+  const translatedDistrict = getLocalizedDistrictLabel(district, language);
+
+  if (language === 'ru') {
+    return `районе ${translatedDistrict}`;
+  }
+
+  return `${translatedDistrict} ауданында`;
 };
 
 const localizeName = (name) => {
@@ -274,7 +295,7 @@ export const getLocalizedSchoolValue = (value, language) => {
     return value;
   }
 
-  const normalizedLanguage = language === 'kz' ? 'kk' : language;
+  const normalizedLanguage = normalizeLanguageCode(language);
   const languagesToTry = [normalizedLanguage, ...fallbackLanguageOrder].filter(Boolean);
 
   for (const languageCode of languagesToTry) {
@@ -388,7 +409,7 @@ export const schools = [
     name: 'School-Lyceum No. 60',
     official_name: 'PMEME "School-Lyceum No. 60"',
     official_name_local: '«№ 60 мектеп-лицей» ШЖҚ КММ',
-    district: 'Saryarka',
+    district: 'saryarka',
     address: 'Stepan Kubrin St, 21/1, Astana',
     phone: '87172501821',
     language: 'Kazakh, Russian',
@@ -403,7 +424,7 @@ export const schools = [
     name: 'School-Lyceum No. 61 named after Kanysh Satpayev',
     official_name: 'PMEME "School-Lyceum No. 61 named after Kanysh Satpaev"',
     official_name_local: '«Қаныш Сәтбаев атындағы № 61 мектеп-лицей» ШЖҚ МКК',
-    district: 'Saryarka',
+    district: 'saryarka',
     address: 'Constitution St, 33, Astana',
     phone: '87172501586',
     language: 'Kazakh',
@@ -418,7 +439,7 @@ export const schools = [
     name: 'School-Lyceum No. 62',
     official_name: 'PMEME "School-Lyceum No. 62"',
     official_name_local: '"№ 62 мектеп-лицей" ШЖҚ МКК',
-    district: 'Saryarka',
+    district: 'saryarka',
     address: 'Maskeu St, 41, Astana',
     phone: '87172501525',
     language: 'Kazakh, Russian',
@@ -433,7 +454,7 @@ export const schools = [
     name: 'School-Gymnasium No. 63',
     official_name: 'PMEME "School-gymnasium No. 63"',
     official_name_local: '"№ 63 мектеп-гимназия" ШЖҚ МКК',
-    district: 'Almaty',
+    district: 'almaty',
     address: 'Lepsi St, 38, South-East residential area, Astana',
     phone: '87172422109',
     language: 'Kazakh, Russian',
@@ -448,7 +469,7 @@ export const schools = [
     name: 'School-Lyceum No. 64',
     official_name: 'PMEME "School-Lyceum No. 64"',
     official_name_local: '"№ 64 мектеп-лицей" ШЖҚ МКК',
-    district: 'Almaty',
+    district: 'almaty',
     address: 'Gabit Musrepov St, 15, Astana',
     phone: '87172501735',
     language: 'Kazakh',
@@ -463,7 +484,7 @@ export const schools = [
     name: 'School-Gymnasium No. 65',
     official_name: 'MPI "School-gymnasium No. 65"',
     official_name_local: '«№ 65 мектеп-гимназия» КММ',
-    district: 'Saryarka',
+    district: 'saryarka',
     address: 'Shaymerden Kosshygululy St, 18/1, Astana',
     phone: '87172728703',
     language: 'Kazakh, Russian',
@@ -478,7 +499,7 @@ export const schools = [
     name: 'School-Lyceum No. 66 named after Dinmukhamed Kunayev',
     official_name: 'PMEME "School-Lyceum No. 66 named after Dinmukhamed Kunaev"',
     official_name_local: '«Дінмұхамед Қонаев атындағы №66 мектеп-лицей» ШЖҚ МКК',
-    district: 'Yesil',
+    district: 'yesil',
     address: 'Dinmukhamed Konaev St, 33/1, Astana',
     phone: '87172432479',
     language: 'Kazakh',
@@ -493,7 +514,7 @@ export const schools = [
     name: 'Gymnasium No. 67',
     official_name: 'PMEME "Gymnasium No. 67"',
     official_name_local: '"№ 67 гимназия" ШЖҚ КММ',
-    district: 'Saryarka',
+    district: 'saryarka',
     address: 'Shaymerden Kosshygululy St, 23/1, Astana',
     phone: '87172729239',
     language: 'Kazakh',
@@ -508,7 +529,7 @@ export const schools = [
     name: 'School-Gymnasium No. 68 named after Mirzhakyp Dulatuly',
     official_name: 'MPI "School-gymnasium No. 68 named after Mirzhakyp Dulatuly"',
     official_name_local: '«Міржақып Дулатұлы ат. № 68 мектеп-гимназия» КММ',
-    district: 'Saryarka',
+    district: 'saryarka',
     address: 'Kusmuryn St, 2, Koktal residential area, Astana',
     phone: '87172501552',
     language: 'Kazakh',
@@ -523,7 +544,7 @@ export const schools = [
     name: 'School-Gymnasium No. 69',
     official_name: 'MPI "School-gymnasium No. 69"',
     official_name_local: '«№ 69 мектеп-гимназия» КММ',
-    district: 'Yesil',
+    district: 'yesil',
     address: 'Isatai Batyr St, 141, Urker residential area, Astana',
     phone: '87172577580',
     language: 'Kazakh, Russian',
@@ -538,7 +559,7 @@ export const schools = [
     name: 'School-Lyceum No. 70',
     official_name: 'PMEME "School-Lyceum No. 70"',
     official_name_local: '«№ 70 мектеп-лицей» ШЖҚ КММ',
-    district: 'Almaty',
+    district: 'almaty',
     address: 'Maykayyn St, 1, South-East residential area, Astana',
     phone: '87172501531',
     language: 'Kazakh',
@@ -553,7 +574,7 @@ export const schools = [
     name: 'School-Lyceum No. 71',
     official_name: 'PMEME "School-Lyceum No. 71"',
     official_name_local: '"№ 71 мектеп-лицей" ШЖҚ МКК',
-    district: 'Yesil',
+    district: 'yesil',
     address: 'Iliyas Omarov St, 4, Astana',
     phone: '87172501625',
     language: 'Kazakh, Russian',
@@ -568,7 +589,7 @@ export const schools = [
     name: 'School-Lyceum No. 72',
     official_name: 'PMEME "School-Lyceum No. 72"',
     official_name_local: '"№72 мектеп-лицей" ШЖҚ КММ',
-    district: 'Almaty',
+    district: 'almaty',
     address: 'Akhmet Baitursynuly St, 25, Astana',
     phone: '87172313175',
     language: 'Kazakh, Russian',
@@ -583,7 +604,7 @@ export const schools = [
     name: 'School-Lyceum No. 73',
     official_name: 'PMEME "School-Lyceum No. 73"',
     official_name_local: '"№73 мектеп-лицей" ШЖҚ МКК',
-    district: 'Almaty',
+    district: 'almaty',
     address: 'A 191 St, 2, Astana',
     phone: '87172492097',
     language: 'Kazakh',
@@ -598,7 +619,7 @@ export const schools = [
     name: 'School-Gymnasium No. 74 named after Mukagali Makataev',
     official_name: 'PMEME "School-gymnasium No. 74 named after Mukagali Makataev"',
     official_name_local: '«Мұқағали Мақатаев № 74 мектеп-гимназия» ШЖҚ МКК',
-    district: 'Almaty',
+    district: 'almaty',
     address: 'Temirbek Zhurgenov St, 29, Astana',
     phone: '87172247405',
     language: 'Kazakh',
@@ -613,7 +634,7 @@ export const schools = [
     name: 'School-Gymnasium No. 75',
     official_name: 'PMEME "School-gymnasium No. 75"',
     official_name_local: '«№ 75 мектеп-гимназия» ШЖҚ КММ',
-    district: 'Yesil',
+    district: 'yesil',
     address: 'Mangilik El Prospect, 28/1, Astana',
     phone: '87172202615',
     language: 'Kazakh, Russian',
@@ -628,7 +649,7 @@ export const schools = [
     name: 'School-Lyceum No. 76 named after Alikhan Bokeikhan',
     official_name: 'PMEME "School-Lyceum No. 76 named after Alikhan Bokeikhan"',
     official_name_local: '«Әлихан Бөкейхан ат. № 76 мектеп-лицей» ШЖҚ КММ',
-    district: 'Yesil',
+    district: 'yesil',
     address: 'Turkistan St, 10/1, Astana',
     phone: '87172576583',
     language: 'Kazakh',
@@ -643,7 +664,7 @@ export const schools = [
     name: 'School-Gymnasium No. 77 named after Fariza Ongarsynova',
     official_name: 'PMEME "School-gymnasium No. 77 named after Fariza Ongarsynova"',
     official_name_local: '"Фариза Оңғарсынова атындағы № 77 мектеп-гимназия" ШЖҚ МКК',
-    district: 'Yesil',
+    district: 'yesil',
     address: 'Mangilik El Prospect, 22/1, Astana',
     phone: '87172248875',
     language: 'Kazakh',
@@ -658,7 +679,7 @@ export const schools = [
     name: 'School-Gymnasium No. 78 named after Smagul Saduakasuly',
     official_name: 'PMEME "School-Gymnasium No. 78 named after Smagul Saduakasuly"',
     official_name_local: '«Смағұл Сәдуақасұлы атындағы № 78 мектеп-гимназия» ШЖҚ МКК',
-    district: 'Yesil',
+    district: 'yesil',
     address: 'E 11 St, 8, Astana',
     phone: '87172408356',
     language: 'Kazakh',
@@ -673,7 +694,7 @@ export const schools = [
     name: 'School-Lyceum No. 79',
     official_name: 'PMEME "School-Lyceum No. 79"',
     official_name_local: '«№ 79 мектеп-лицей» ШЖҚМКК',
-    district: 'Yesil',
+    district: 'yesil',
     address: 'Maksut Narikbaev St, 3, Astana',
     phone: '87172491911',
     language: 'Kazakh, Russian',
@@ -688,7 +709,7 @@ export const schools = [
     name: 'School-Gymnasium No. 80 named after Saken Seifullin',
     official_name: 'PMEME "School-Gymnasium No. 80 named after Saken Seifullin"',
     official_name_local: '«Сәкен Сейфуллин атындағы № 80 мектеп-гимназия» ШЖҚ МКК',
-    district: 'Saryarka',
+    district: 'saryarka',
     address: 'Shaymerden Kosshygululy St, 17/2, Astana',
     phone: '87172271005',
     language: 'Kazakh, Russian',
@@ -703,7 +724,7 @@ export const schools = [
     name: 'Specialized Gymnasium No. 81 Astana English School',
     official_name: 'International Specialized Gymnasium No. 81 Astana English School',
     official_name_local: '«№ 81 Astana English School» халықаралық мамандандырылған гимназиясы',
-    district: 'Yesil',
+    district: 'yesil',
     address: 'Iliyas Omarov St, 2, Astana',
     phone: '87172259040',
     language: 'Kazakh',
@@ -719,7 +740,7 @@ export const schools = [
     name: 'Specialized Lyceum No. 82 Daryn',
     official_name: 'MPI "Specialized Lyceum No. 82 Daryn"',
     official_name_local: '«№ 82 Дарын мамандандырылған лицейі» КММ',
-    district: 'Yesil',
+    district: 'yesil',
     address: 'Uly Dala Ave, 27/2, Astana',
     phone: '87172202844',
     language: 'Kazakh',
@@ -735,7 +756,7 @@ export const schools = [
     name: 'School-Gymnasium No. 83',
     official_name: 'PMEME "School-Gymnasium No. 83"',
     official_name_local: '«№ 83 мектеп-гимназия» ШЖҚ МКК',
-    district: 'Almaty',
+    district: 'almaty',
     address: 'Akhmet Baitursynuly St, 35, Astana',
     phone: '87172490740',
     language: 'Kazakh, Russian',
@@ -750,7 +771,7 @@ export const schools = [
     name: 'School-Lyceum No. 84 named after Sheikh Khalifa bin Zayed Al Nahyan',
     official_name: 'PMEME "School-Lyceum No. 84 named after Sheikh Khalifa bin Zayed Al Nahyan"',
     official_name_local: '«Шейх Халифа бен Заид әл-Нахаян атындағы № 84 мектеп-лицей» ШЖҚ МКК',
-    district: 'Yesil',
+    district: 'yesil',
     address: 'Uly Dala Ave, 7/1, Astana',
     phone: '87172996617',
     language: 'Kazakh, Russian',
@@ -765,7 +786,7 @@ export const schools = [
     name: 'School-Lyceum No. 85 named after Sheikh Tamim bin Hamad Al Thani',
     official_name: 'PMEME "School-Lyceum No. 85 named after Sheikh Tamim bin Hamad Al Thani"',
     official_name_local: '«Шейх Тамим бен Хамад әл-Тани атындағы № 85 мектеп-лицей» ШЖҚ МКК',
-    district: 'Yesil',
+    district: 'yesil',
     address: 'Kabanbay Batyr Ave, 56/1, Astana',
     phone: '87172336774',
     language: 'Kazakh, Russian',
@@ -780,7 +801,7 @@ export const schools = [
     name: 'School-Gymnasium No. 86 named after Mukhtar Auezov',
     official_name: 'MPI "School-Gymnasium No. 86 named after Mukhtar Auezov"',
     official_name_local: '«Мұхтар Әуезов атындағы № 86 мектеп-гимназия» КММ',
-    district: 'Almaty',
+    district: 'almaty',
     address: 'Amanzhol Bolekpaev St, 20, Astana',
     phone: '87172578595',
     language: 'Kazakh',
@@ -795,7 +816,7 @@ export const schools = [
     name: 'School-Gymnasium No. 87 named after Abai Kunanbaiuly',
     official_name: 'PMEME "School-Gymnasium No. 87 named after Abai Kunanbaiuly"',
     official_name_local: '«Абай Құнанбайұлы атындағы № 87 мектеп-гимназия» ШЖҚ МКК',
-    district: 'Baikonyr',
+    district: 'baikonyr',
     address: 'Amangeldi Imanov St, 37, Astana',
     phone: '87016230176',
     language: 'Kazakh',
@@ -810,7 +831,7 @@ export const schools = [
     name: 'School-Lyceum No. 88',
     official_name: 'MPI "School-Lyceum No. 88"',
     official_name_local: '«№ 88 мектеп-лицей» КММ',
-    district: 'Yesil',
+    district: 'yesil',
     address: 'Mangilik El Ave, 28/1, Astana',
     phone: '87172571217',
     language: 'Kazakh, Russian',
@@ -825,7 +846,7 @@ export const schools = [
     name: 'School-Lyceum No. 89',
     official_name: 'PMEME "School-Lyceum No. 89"',
     official_name_local: '«№ 89 мектеп-лицей» ШЖҚ МКК',
-    district: 'Yesil',
+    district: 'yesil',
     address: 'Sauran St, 11, Astana',
     phone: '87172918331',
     language: 'Kazakh, Russian',

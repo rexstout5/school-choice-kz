@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getLocalizedSchoolValue, schools } from '../../../src/data/schools.js';
+import { getLocalizedCityLabel, getLocalizedDistrictLabel, getLocalizedSchoolValue, schools } from '../../../src/data/schools.js';
 
 const defaultLanguage = 'ru';
 
@@ -7,7 +7,7 @@ const translations = {
   ru: {
     backToSchools: 'Назад к школам',
     pageKicker: 'Профиль школы',
-    cityDistrict: (school) => `${school.city} • ${school.district}`,
+    cityDistrict: (school, language) => `${getLocalizedCityLabel(school.city, language)} • ${getLocalizedDistrictLabel(school.district, language)}`,
     typeOptions: {
       public: 'Государственная',
       private: 'Частная'
@@ -56,7 +56,7 @@ const translations = {
   kz: {
     backToSchools: 'Мектептерге оралу',
     pageKicker: 'Мектеп профилі',
-    cityDistrict: (school) => `${school.city} • ${school.district}`,
+    cityDistrict: (school, language) => `${getLocalizedCityLabel(school.city, language)} • ${getLocalizedDistrictLabel(school.district, language)}`,
     typeOptions: {
       public: 'Мемлекеттік',
       private: 'Жеке'
@@ -105,7 +105,7 @@ const translations = {
   en: {
     backToSchools: 'Back to schools',
     pageKicker: 'School profile',
-    cityDistrict: (school) => `${school.city} • ${school.district}`,
+    cityDistrict: (school, language) => `${getLocalizedCityLabel(school.city, language)} • ${getLocalizedDistrictLabel(school.district, language)}`,
     typeOptions: {
       public: 'Public',
       private: 'Private'
@@ -234,7 +234,7 @@ export default async function SchoolDetailPage({ params, searchParams }) {
         <header className="school-detail__hero">
           <div>
             <p className="hero__kicker">{t.pageKicker}</p>
-            <p className="school-card__eyebrow">{t.cityDistrict(school)}</p>
+            <p className="school-card__eyebrow">{t.cityDistrict(school, language)}</p>
             <h1>{localizedName}</h1>
             <p>{localizedDescription}</p>
           </div>
