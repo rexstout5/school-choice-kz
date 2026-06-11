@@ -1,4 +1,4 @@
-import { schools } from '../src/data/schools.js';
+import { dataStatuses, priceStatuses, schools, yesNoUnknownStatuses } from '../src/data/schools.js';
 
 const requiredFields = [
   'id',
@@ -12,8 +12,11 @@ const requiredFields = [
   'instruction_languages',
   'monthly_price',
   'tuition_fee',
+  'price_status',
+  'data_status',
   'after_school_program',
   'school_bus',
+  'admission_test',
   'class_size',
   'admission_requirements',
   'rating',
@@ -60,13 +63,19 @@ schools.forEach((school, index) => {
     errors.push(`${school.id} monthly_price must match tuition_fee`);
   }
 
-  if (typeof school.after_school_program !== 'boolean') {
-    errors.push(`${school.id} after_school_program must be a boolean`);
+  if (!priceStatuses.includes(school.price_status)) {
+    errors.push(`${school.id} has invalid price_status ${school.price_status}`);
   }
 
-  if (typeof school.school_bus !== 'boolean') {
-    errors.push(`${school.id} school_bus must be a boolean`);
+  if (!dataStatuses.includes(school.data_status)) {
+    errors.push(`${school.id} has invalid data_status ${school.data_status}`);
   }
+
+  ['after_school_program', 'school_bus', 'admission_test'].forEach((field) => {
+    if (!yesNoUnknownStatuses.includes(school[field])) {
+      errors.push(`${school.id} has invalid ${field} ${school[field]}`);
+    }
+  });
 
   if (typeof school.class_size !== 'string' || school.class_size.length === 0) {
     errors.push(`${school.id} must include a class_size description`);
@@ -100,6 +109,14 @@ schools.forEach((school, index) => {
     errors.push(`${school.id} contact details must mirror top-level address and phone`);
   }
 
+  if (school.academics?.admission_test !== school.admission_test) {
+    errors.push(`${school.id} academics.admission_test must mirror top-level admission_test`);
+  }
+
+  if (school.metadata?.price_status !== school.price_status || school.metadata?.data_status !== school.data_status) {
+    errors.push(`${school.id} metadata statuses must mirror top-level statuses`);
+  }
+
   if (!Array.isArray(school.sources) || school.sources.length === 0) {
     errors.push(`${school.id} must include at least one source`);
   }
@@ -109,8 +126,8 @@ schools.forEach((school, index) => {
   }
 });
 
-if (schools.length < 20) {
-  errors.push(`Expected at least 20 schools, found ${schools.length}`);
+if (schools.length < 30) {
+  errors.push(`Expected at least 30 schools, found ${schools.length}`);
 }
 
 if (errors.length > 0) {

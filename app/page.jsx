@@ -69,6 +69,9 @@ const translations = {
       language: 'Язык',
       verification: 'Проверка',
       tuitionFee: 'Стоимость обучения',
+      priceStatus: 'Статус цены',
+      dataStatus: 'Статус данных',
+      admissionTest: 'Вступительный тест',
       afterSchoolProgram: 'Продленка',
       schoolBus: 'Школьный автобус',
       classSize: 'Размер класса',
@@ -76,11 +79,27 @@ const translations = {
       rating: 'Рейтинг',
       address: 'Адрес',
       programsAria: (name) => `Программы школы ${name}`,
-      website: 'Сайт'
+      website: 'Сайт',
+      details: 'Подробнее'
     },
     verificationStatuses: {
       verified: 'Проверено',
       unverified: 'Не проверено'
+    },
+    priceStatuses: {
+      verified: 'Подтверждена',
+      estimated: 'Оценочная',
+      unknown: 'Неизвестна'
+    },
+    dataStatuses: {
+      verified: 'Проверены',
+      partially_verified: 'Частично проверены',
+      needs_review: 'Нужна проверка'
+    },
+    statusValues: {
+      yes: 'Да',
+      no: 'Нет',
+      unknown: 'Неизвестно'
     },
     yes: 'Да',
     no: 'Нет',
@@ -148,6 +167,9 @@ const translations = {
       language: 'Тілі',
       verification: 'Тексеру',
       tuitionFee: 'Оқу ақысы',
+      priceStatus: 'Баға мәртебесі',
+      dataStatus: 'Дерек мәртебесі',
+      admissionTest: 'Қабылдау тесті',
       afterSchoolProgram: 'Сабақтан кейінгі бағдарлама',
       schoolBus: 'Мектеп автобусы',
       classSize: 'Сынып көлемі',
@@ -155,11 +177,27 @@ const translations = {
       rating: 'Рейтинг',
       address: 'Мекенжай',
       programsAria: (name) => `${name} бағдарламалары`,
-      website: 'Сайт'
+      website: 'Сайт',
+      details: 'Толығырақ'
     },
     verificationStatuses: {
       verified: 'Тексерілген',
       unverified: 'Тексерілмеген'
+    },
+    priceStatuses: {
+      verified: 'Расталған',
+      estimated: 'Шамамен',
+      unknown: 'Белгісіз'
+    },
+    dataStatuses: {
+      verified: 'Тексерілген',
+      partially_verified: 'Ішінара тексерілген',
+      needs_review: 'Тексеру қажет'
+    },
+    statusValues: {
+      yes: 'Иә',
+      no: 'Жоқ',
+      unknown: 'Белгісіз'
     },
     yes: 'Иә',
     no: 'Жоқ',
@@ -227,6 +265,9 @@ const translations = {
       language: 'Language',
       verification: 'Verification',
       tuitionFee: 'Tuition fee',
+      priceStatus: 'Price status',
+      dataStatus: 'Data status',
+      admissionTest: 'Admission test',
       afterSchoolProgram: 'After-school program',
       schoolBus: 'School bus',
       classSize: 'Class size',
@@ -234,11 +275,27 @@ const translations = {
       rating: 'Rating',
       address: 'Address',
       programsAria: (name) => `${name} programs`,
-      website: 'Website'
+      website: 'Website',
+      details: 'Details'
     },
     verificationStatuses: {
       verified: 'Verified',
       unverified: 'Unverified'
+    },
+    priceStatuses: {
+      verified: 'Verified',
+      estimated: 'Estimated',
+      unknown: 'Unknown'
+    },
+    dataStatuses: {
+      verified: 'Verified',
+      partially_verified: 'Partially verified',
+      needs_review: 'Needs review'
+    },
+    statusValues: {
+      yes: 'Yes',
+      no: 'No',
+      unknown: 'Unknown'
     },
     yes: 'Yes',
     no: 'No',
@@ -350,9 +407,9 @@ function PriceFilter({ value, onChange, t }) {
   );
 }
 
-function SchoolCard({ school, moneyFormatter, t }) {
+function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
   const formatPrice = (price) => (price === 0 ? t.freePublicSchool : `${moneyFormatter.format(price)} / ${t.perMonth}`);
-  const formatBoolean = (value) => (value ? t.yes : t.no);
+  const formatStatusValue = (value) => getTranslatedOption(t.statusValues, value);
   const formatRating = (rating) => (rating > 0 ? `${rating.toFixed(1)} / 5` : t.notYetRated);
 
   return (
@@ -376,8 +433,11 @@ function SchoolCard({ school, moneyFormatter, t }) {
           [t.schoolCard.language, school.language],
           [t.schoolCard.verification, getTranslatedOption(t.verificationStatuses, school.verification_status)],
           [t.schoolCard.tuitionFee, formatPrice(school.tuition_fee)],
-          [t.schoolCard.afterSchoolProgram, formatBoolean(school.after_school_program)],
-          [t.schoolCard.schoolBus, formatBoolean(school.school_bus)],
+          [t.schoolCard.priceStatus, getTranslatedOption(t.priceStatuses, school.price_status)],
+          [t.schoolCard.dataStatus, getTranslatedOption(t.dataStatuses, school.data_status)],
+          [t.schoolCard.afterSchoolProgram, formatStatusValue(school.after_school_program)],
+          [t.schoolCard.schoolBus, formatStatusValue(school.school_bus)],
+          [t.schoolCard.admissionTest, formatStatusValue(school.admission_test)],
           [t.schoolCard.classSize, school.class_size],
           [t.schoolCard.admissionRequirements, school.admission_requirements],
           [t.schoolCard.rating, formatRating(school.rating)],
@@ -401,6 +461,7 @@ function SchoolCard({ school, moneyFormatter, t }) {
           {t.schoolCard.website}
         </a>
         <a href={`tel:${formatPhoneLink(school.phone)}`}>{school.phone}</a>
+        <a href={`/schools/${school.id}?lang=${currentLanguage}`}>{t.schoolCard.details}</a>
       </div>
     </article>
   );
@@ -537,9 +598,12 @@ export default function Home() {
 
   useEffect(() => {
     try {
+      const urlLanguage = new URLSearchParams(window.location.search).get('lang');
       const storedLanguage = window.localStorage.getItem(languageStorageKey);
-      if (storedLanguage && translations[storedLanguage]) {
-        setCurrentLanguage(storedLanguage);
+      const nextLanguage = translations[urlLanguage] ? urlLanguage : storedLanguage;
+
+      if (nextLanguage && translations[nextLanguage]) {
+        setCurrentLanguage(nextLanguage);
       }
     } catch {
       setCurrentLanguage(defaultLanguage);
@@ -652,7 +716,7 @@ export default function Home() {
       {filteredSchools.length > 0 ? (
         <section className="school-grid" aria-label={t.filteredSchoolsAria}>
           {filteredSchools.map((school) => (
-            <SchoolCard key={school.id} school={school} moneyFormatter={moneyFormatter} t={t} />
+            <SchoolCard key={school.id} school={school} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} />
           ))}
         </section>
       ) : (

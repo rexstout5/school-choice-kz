@@ -34,8 +34,11 @@ const createAstanaPublicSchool = ({
   programs,
   verification_status = 'verified',
   tuition_fee = 0,
-  after_school_program = false,
-  school_bus = false,
+  price_status = 'verified',
+  data_status = 'partially_verified',
+  after_school_program = 'unknown',
+  school_bus = 'unknown',
+  admission_test = 'no',
   class_size = 'Varies by grade and available capacity',
   admission_requirements = 'Standard public school enrollment documents and local catchment eligibility',
   rating = 0
@@ -52,8 +55,11 @@ const createAstanaPublicSchool = ({
   instruction_languages,
   monthly_price: tuition_fee,
   tuition_fee,
+  price_status,
+  data_status,
   after_school_program,
   school_bus,
+  admission_test,
   class_size,
   admission_requirements,
   rating,
@@ -71,11 +77,14 @@ const createAstanaPublicSchool = ({
   academics: {
     school_type,
     instruction_languages,
-    programs
+    programs,
+    admission_test
   },
   metadata: {
     school_number: number,
     ownership: 'public',
+    price_status,
+    data_status,
     expandable_fields: ['admissions', 'catchment_area', 'coordinates', 'fees', 'reviews', 'transportation']
   },
   sources: [ASTANA_PUBLIC_SCHOOL_SOURCE, WEBSITE_SOURCE]
@@ -381,6 +390,158 @@ export const schools = [
     school_type: 'Public school-lyceum',
     description: 'A public school-lyceum on Maksut Narikbaev Street with Kazakh and Russian language instruction.',
     programs: ['Lyceum curriculum', 'General secondary education', 'Bilingual school streams', 'Natural sciences']
+  }),
+  createAstanaPublicSchool({
+    id: 'astana-school-80-seifullin',
+    number: 80,
+    name: 'School-Gymnasium No. 80 named after Saken Seifullin',
+    official_name: 'PMEME "School-Gymnasium No. 80 named after Saken Seifullin"',
+    official_name_local: '«Сәкен Сейфуллин атындағы № 80 мектеп-гимназия» ШЖҚ МКК',
+    district: 'Saryarka',
+    address: 'Shaymerden Kosshygululy St, 17/2, Astana',
+    phone: '87172271005',
+    language: 'Kazakh, Russian',
+    instruction_languages: ['Kazakh', 'Russian'],
+    school_type: 'Public school-gymnasium',
+    description: 'A Saryarka district public school-gymnasium named after writer and statesman Saken Seifullin, with Kazakh and Russian streams.',
+    programs: ['Gymnasium curriculum', 'General secondary education', 'Bilingual school streams', 'Student activities']
+  }),
+  createAstanaPublicSchool({
+    id: 'astana-school-81-astana-english',
+    number: 81,
+    name: 'Specialized Gymnasium No. 81 Astana English School',
+    official_name: 'International Specialized Gymnasium No. 81 Astana English School',
+    official_name_local: '«№ 81 Astana English School» халықаралық мамандандырылған гимназиясы',
+    district: 'Yesil',
+    address: 'Iliyas Omarov St, 2, Astana',
+    phone: '87172259040',
+    language: 'Kazakh',
+    instruction_languages: ['Kazakh'],
+    school_type: 'International specialized public gymnasium',
+    description: 'A specialized public gymnasium in Yesil district with an international English-school profile and Kazakh-medium instruction.',
+    programs: ['Specialized gymnasium curriculum', 'Kazakh-medium instruction', 'English enrichment', 'International profile'],
+    admission_test: 'yes'
+  }),
+  createAstanaPublicSchool({
+    id: 'astana-school-82-daryn',
+    number: 82,
+    name: 'Specialized Lyceum No. 82 Daryn',
+    official_name: 'MPI "Specialized Lyceum No. 82 Daryn"',
+    official_name_local: '«№ 82 Дарын мамандандырылған лицейі» КММ',
+    district: 'Yesil',
+    address: 'Uly Dala Ave, 27/2, Astana',
+    phone: '87172202844',
+    language: 'Kazakh',
+    instruction_languages: ['Kazakh'],
+    school_type: 'Specialized public lyceum',
+    description: 'A Kazakh-language specialized lyceum in Yesil district focused on advanced academic preparation for motivated students.',
+    programs: ['Specialized lyceum curriculum', 'Kazakh-medium instruction', 'Academic competitions', 'Gifted education'],
+    admission_test: 'yes'
+  }),
+  createAstanaPublicSchool({
+    id: 'astana-school-83',
+    number: 83,
+    name: 'School-Gymnasium No. 83',
+    official_name: 'PMEME "School-Gymnasium No. 83"',
+    official_name_local: '«№ 83 мектеп-гимназия» ШЖҚ МКК',
+    district: 'Almaty',
+    address: 'Akhmet Baitursynuly St, 35, Astana',
+    phone: '87172490740',
+    language: 'Kazakh, Russian',
+    instruction_languages: ['Kazakh', 'Russian'],
+    school_type: 'Public school-gymnasium',
+    description: 'An Almaty district public school-gymnasium with Kazakh and Russian language instruction.',
+    programs: ['Gymnasium curriculum', 'General secondary education', 'Bilingual school streams', 'Student clubs']
+  }),
+  createAstanaPublicSchool({
+    id: 'astana-school-84-khalifa',
+    number: 84,
+    name: 'School-Lyceum No. 84 named after Sheikh Khalifa bin Zayed Al Nahyan',
+    official_name: 'PMEME "School-Lyceum No. 84 named after Sheikh Khalifa bin Zayed Al Nahyan"',
+    official_name_local: '«Шейх Халифа бен Заид әл-Нахаян атындағы № 84 мектеп-лицей» ШЖҚ МКК',
+    district: 'Yesil',
+    address: 'Uly Dala Ave, 7/1, Astana',
+    phone: '87172996617',
+    language: 'Kazakh, Russian',
+    instruction_languages: ['Kazakh', 'Russian'],
+    school_type: 'Public school-lyceum',
+    description: 'A Yesil district public school-lyceum named after Sheikh Khalifa bin Zayed Al Nahyan, serving Kazakh and Russian streams.',
+    programs: ['Lyceum curriculum', 'General secondary education', 'Bilingual school streams', 'Cultural education']
+  }),
+  createAstanaPublicSchool({
+    id: 'astana-school-85-tamim',
+    number: 85,
+    name: 'School-Lyceum No. 85 named after Sheikh Tamim bin Hamad Al Thani',
+    official_name: 'PMEME "School-Lyceum No. 85 named after Sheikh Tamim bin Hamad Al Thani"',
+    official_name_local: '«Шейх Тамим бен Хамад әл-Тани атындағы № 85 мектеп-лицей» ШЖҚ МКК',
+    district: 'Yesil',
+    address: 'Kabanbay Batyr Ave, 56/1, Astana',
+    phone: '87172336774',
+    language: 'Kazakh, Russian',
+    instruction_languages: ['Kazakh', 'Russian'],
+    school_type: 'Public school-lyceum',
+    description: 'A public school-lyceum on Kabanbay Batyr Avenue with Kazakh and Russian streams.',
+    programs: ['Lyceum curriculum', 'General secondary education', 'Bilingual school streams', 'Academic clubs']
+  }),
+  createAstanaPublicSchool({
+    id: 'astana-school-86-auezov',
+    number: 86,
+    name: 'School-Gymnasium No. 86 named after Mukhtar Auezov',
+    official_name: 'MPI "School-Gymnasium No. 86 named after Mukhtar Auezov"',
+    official_name_local: '«Мұхтар Әуезов атындағы № 86 мектеп-гимназия» КММ',
+    district: 'Almaty',
+    address: 'Amanzhol Bolekpaev St, 20, Astana',
+    phone: '87172578595',
+    language: 'Kazakh',
+    instruction_languages: ['Kazakh'],
+    school_type: 'Public school-gymnasium',
+    description: 'A Kazakh-language public school-gymnasium in Almaty district named after writer Mukhtar Auezov.',
+    programs: ['Gymnasium curriculum', 'Kazakh-medium instruction', 'Literature', 'Student development']
+  }),
+  createAstanaPublicSchool({
+    id: 'astana-school-87-abai',
+    number: 87,
+    name: 'School-Gymnasium No. 87 named after Abai Kunanbaiuly',
+    official_name: 'PMEME "School-Gymnasium No. 87 named after Abai Kunanbaiuly"',
+    official_name_local: '«Абай Құнанбайұлы атындағы № 87 мектеп-гимназия» ШЖҚ МКК',
+    district: 'Baikonyr',
+    address: 'Amangeldi Imanov St, 37, Astana',
+    phone: '87016230176',
+    language: 'Kazakh',
+    instruction_languages: ['Kazakh'],
+    school_type: 'Public school-gymnasium',
+    description: 'A Kazakh-language public school-gymnasium in Baikonyr district named after poet and philosopher Abai Kunanbaiuly.',
+    programs: ['Gymnasium curriculum', 'Kazakh-medium instruction', 'Literature', 'Civic education']
+  }),
+  createAstanaPublicSchool({
+    id: 'astana-school-88',
+    number: 88,
+    name: 'School-Lyceum No. 88',
+    official_name: 'MPI "School-Lyceum No. 88"',
+    official_name_local: '«№ 88 мектеп-лицей» КММ',
+    district: 'Yesil',
+    address: 'Mangilik El Ave, 28/1, Astana',
+    phone: '87172571217',
+    language: 'Kazakh, Russian',
+    instruction_languages: ['Kazakh', 'Russian'],
+    school_type: 'Public school-lyceum',
+    description: 'A Yesil district public school-lyceum with Kazakh and Russian language streams.',
+    programs: ['Lyceum curriculum', 'General secondary education', 'Bilingual school streams', 'Academic enrichment']
+  }),
+  createAstanaPublicSchool({
+    id: 'astana-school-89',
+    number: 89,
+    name: 'School-Lyceum No. 89',
+    official_name: 'PMEME "School-Lyceum No. 89"',
+    official_name_local: '«№ 89 мектеп-лицей» ШЖҚ МКК',
+    district: 'Yesil',
+    address: 'Sauran St, 11, Astana',
+    phone: '87172918331',
+    language: 'Kazakh, Russian',
+    instruction_languages: ['Kazakh', 'Russian'],
+    school_type: 'Public school-lyceum',
+    description: 'A public school-lyceum on Sauran Street with Kazakh and Russian instruction.',
+    programs: ['Lyceum curriculum', 'General secondary education', 'Bilingual school streams', 'Student clubs']
   })
 ];
 
@@ -388,3 +549,6 @@ export const schoolTypes = [...new Set(schools.map((school) => school.type))].so
 export const schoolLanguages = [...new Set(schools.flatMap((school) => school.instruction_languages))].sort();
 export const schoolDistricts = [...new Set(schools.map((school) => school.district))].sort();
 export const verificationStatuses = ['verified', 'unverified'];
+export const priceStatuses = ['verified', 'estimated', 'unknown'];
+export const dataStatuses = ['verified', 'partially_verified', 'needs_review'];
+export const yesNoUnknownStatuses = ['yes', 'no', 'unknown'];
