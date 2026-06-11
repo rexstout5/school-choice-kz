@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getLocalizedCityLabel, getLocalizedDistrictLabel, getLocalizedSchoolValue, schools } from '../../../src/data/schools.js';
+import { getLocalizedEnumLabel, getLocalizedSchoolValue, schools } from '../../../src/data/schools.js';
 
 const defaultLanguage = 'ru';
 
@@ -7,11 +7,6 @@ const translations = {
   ru: {
     backToSchools: 'Назад к школам',
     pageKicker: 'Профиль школы',
-    cityDistrict: (school, language) => `${getLocalizedCityLabel(school.city, language)} • ${getLocalizedDistrictLabel(school.district, language)}`,
-    typeOptions: {
-      public: 'Государственная',
-      private: 'Частная'
-    },
     detailsTitle: 'Ключевые сведения',
     programsTitle: 'Программы',
     contactsTitle: 'Контакты',
@@ -34,21 +29,6 @@ const translations = {
       phone: 'Телефон',
       website: 'Сайт'
     },
-    priceStatuses: {
-      verified: 'Подтверждена',
-      estimated: 'Оценочная',
-      unknown: 'Неизвестна'
-    },
-    dataStatuses: {
-      verified: 'Проверены',
-      partially_verified: 'Частично проверены',
-      needs_review: 'Нужна проверка'
-    },
-    statusValues: {
-      yes: 'Да',
-      no: 'Нет',
-      unknown: 'Неизвестно'
-    },
     freePublicSchool: 'Бесплатная государственная школа',
     perMonth: 'в месяц',
     notYetRated: 'Пока нет оценки'
@@ -56,11 +36,6 @@ const translations = {
   kz: {
     backToSchools: 'Мектептерге оралу',
     pageKicker: 'Мектеп профилі',
-    cityDistrict: (school, language) => `${getLocalizedCityLabel(school.city, language)} • ${getLocalizedDistrictLabel(school.district, language)}`,
-    typeOptions: {
-      public: 'Мемлекеттік',
-      private: 'Жеке'
-    },
     detailsTitle: 'Негізгі мәліметтер',
     programsTitle: 'Бағдарламалар',
     contactsTitle: 'Байланыс',
@@ -83,21 +58,6 @@ const translations = {
       phone: 'Телефон',
       website: 'Сайт'
     },
-    priceStatuses: {
-      verified: 'Расталған',
-      estimated: 'Шамамен',
-      unknown: 'Белгісіз'
-    },
-    dataStatuses: {
-      verified: 'Тексерілген',
-      partially_verified: 'Ішінара тексерілген',
-      needs_review: 'Тексеру қажет'
-    },
-    statusValues: {
-      yes: 'Иә',
-      no: 'Жоқ',
-      unknown: 'Белгісіз'
-    },
     freePublicSchool: 'Тегін мемлекеттік мектеп',
     perMonth: 'айына',
     notYetRated: 'Әзірге баға жоқ'
@@ -105,11 +65,6 @@ const translations = {
   en: {
     backToSchools: 'Back to schools',
     pageKicker: 'School profile',
-    cityDistrict: (school, language) => `${getLocalizedCityLabel(school.city, language)} • ${getLocalizedDistrictLabel(school.district, language)}`,
-    typeOptions: {
-      public: 'Public',
-      private: 'Private'
-    },
     detailsTitle: 'Key details',
     programsTitle: 'Programs',
     contactsTitle: 'Contacts',
@@ -132,21 +87,6 @@ const translations = {
       phone: 'Phone',
       website: 'Website'
     },
-    priceStatuses: {
-      verified: 'Verified',
-      estimated: 'Estimated',
-      unknown: 'Unknown'
-    },
-    dataStatuses: {
-      verified: 'Verified',
-      partially_verified: 'Partially verified',
-      needs_review: 'Needs review'
-    },
-    statusValues: {
-      yes: 'Yes',
-      no: 'No',
-      unknown: 'Unknown'
-    },
     freePublicSchool: 'Free public school',
     perMonth: 'month',
     notYetRated: 'Not yet rated'
@@ -154,7 +94,6 @@ const translations = {
 };
 
 const getLanguage = (lang) => (lang && translations[lang] ? lang : defaultLanguage);
-const getTranslatedOption = (translationMap, option) => translationMap[option] ?? option;
 const formatPhoneLink = (phone) => phone.replace(/[^+\d]/g, '');
 
 const getMoneyFormatter = (language) =>
@@ -166,6 +105,8 @@ const getMoneyFormatter = (language) =>
 
 const formatPrice = (price, formatter, t) => (price === 0 ? t.freePublicSchool : `${formatter.format(price)} / ${t.perMonth}`);
 const formatRating = (rating, t) => (rating > 0 ? `${rating.toFixed(1)} / 5` : t.notYetRated);
+const formatCityDistrict = (school, language) =>
+  `${getLocalizedEnumLabel('cities', school.city, language)} • ${getLocalizedEnumLabel('districts', school.district, language)}`;
 
 export function generateStaticParams() {
   return schools.map((school) => ({ id: school.id }));
@@ -214,11 +155,11 @@ export default async function SchoolDetailPage({ params, searchParams }) {
     [t.fields.schoolType, localizedSchoolType],
     [t.fields.language, localizedLanguages],
     [t.fields.tuitionFee, formatPrice(school.tuition_fee, moneyFormatter, t)],
-    [t.fields.priceStatus, getTranslatedOption(t.priceStatuses, school.price_status)],
-    [t.fields.dataStatus, getTranslatedOption(t.dataStatuses, school.data_status)],
-    [t.fields.afterSchoolProgram, getTranslatedOption(t.statusValues, school.after_school_program)],
-    [t.fields.schoolBus, getTranslatedOption(t.statusValues, school.school_bus)],
-    [t.fields.admissionTest, getTranslatedOption(t.statusValues, school.admission_test)],
+    [t.fields.priceStatus, getLocalizedEnumLabel('priceStatuses', school.price_status, language)],
+    [t.fields.dataStatus, getLocalizedEnumLabel('dataStatuses', school.data_status, language)],
+    [t.fields.afterSchoolProgram, getLocalizedEnumLabel('yesNoUnknown', school.after_school_program, language)],
+    [t.fields.schoolBus, getLocalizedEnumLabel('yesNoUnknown', school.school_bus, language)],
+    [t.fields.admissionTest, getLocalizedEnumLabel('yesNoUnknown', school.admission_test, language)],
     [t.fields.classSize, localizedClassSize],
     [t.fields.admissionRequirements, localizedAdmissionRequirements],
     [t.fields.rating, formatRating(school.rating, t)]
@@ -234,11 +175,11 @@ export default async function SchoolDetailPage({ params, searchParams }) {
         <header className="school-detail__hero">
           <div>
             <p className="hero__kicker">{t.pageKicker}</p>
-            <p className="school-card__eyebrow">{t.cityDistrict(school, language)}</p>
+            <p className="school-card__eyebrow">{formatCityDistrict(school, language)}</p>
             <h1>{localizedName}</h1>
             <p>{localizedDescription}</p>
           </div>
-          <span className={`badge badge--${school.type}`}>{getTranslatedOption(t.typeOptions, school.type)}</span>
+          <span className={`badge badge--${school.type}`}>{getLocalizedEnumLabel('schoolTypes', school.type, language)}</span>
         </header>
 
         <section className="school-detail__section" aria-labelledby="details-title">

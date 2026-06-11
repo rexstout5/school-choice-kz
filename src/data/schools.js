@@ -45,6 +45,34 @@ const instructionLanguageTranslations = {
   English: { ru: 'Английский', kk: 'Ағылшын тілі', en: 'English' }
 };
 
+const schoolOwnershipTypeTranslations = {
+  public: { ru: 'Государственная', kk: 'Мемлекеттік', en: 'Public' },
+  private: { ru: 'Частная', kk: 'Жеке', en: 'Private' }
+};
+
+const verificationStatusTranslations = {
+  verified: { ru: 'Проверено', kk: 'Тексерілген', en: 'Verified' },
+  unverified: { ru: 'Не проверено', kk: 'Тексерілмеген', en: 'Unverified' }
+};
+
+const priceStatusTranslations = {
+  verified: { ru: 'Подтверждена', kk: 'Расталған', en: 'Verified' },
+  estimated: { ru: 'Оценочная', kk: 'Шамамен', en: 'Estimated' },
+  unknown: { ru: 'Неизвестна', kk: 'Белгісіз', en: 'Unknown' }
+};
+
+const dataStatusTranslations = {
+  verified: { ru: 'Проверены', kk: 'Тексерілген', en: 'Verified' },
+  partially_verified: { ru: 'Частично проверены', kk: 'Ішінара тексерілген', en: 'Partially verified' },
+  needs_review: { ru: 'Нужна проверка', kk: 'Тексеру қажет', en: 'Needs review' }
+};
+
+const yesNoUnknownTranslations = {
+  yes: { ru: 'Да', kk: 'Иә', en: 'Yes' },
+  no: { ru: 'Нет', kk: 'Жоқ', en: 'No' },
+  unknown: { ru: 'Неизвестно', kk: 'Белгісіз', en: 'Unknown' }
+};
+
 const schoolTypeTranslations = {
   'Public school-lyceum': { ru: 'Государственная школа-лицей', kk: 'Мемлекеттік мектеп-лицей', en: 'Public school-lyceum' },
   'Public school-gymnasium': { ru: 'Государственная школа-гимназия', kk: 'Мемлекеттік мектеп-гимназия', en: 'Public school-gymnasium' },
@@ -191,17 +219,30 @@ export const cityLabels = {
   Astana: { ru: 'Астана', kk: 'Астана', en: 'Astana' }
 };
 
+export const localizedEnumLabels = {
+  districts: districtLabels,
+  cities: cityLabels,
+  schoolTypes: schoolOwnershipTypeTranslations,
+  schoolFormats: schoolTypeTranslations,
+  instructionLanguages: instructionLanguageTranslations,
+  verificationStatuses: verificationStatusTranslations,
+  priceStatuses: priceStatusTranslations,
+  dataStatuses: dataStatusTranslations,
+  yesNoUnknown: yesNoUnknownTranslations
+};
+
 const normalizeLanguageCode = (language) => (language === 'kz' ? 'kk' : language);
 
-export const getLocalizedDistrictLabel = (district, language) => {
+export const getLocalizedEnumLabel = (dictionaryName, value, language) => {
+  const dictionary = localizedEnumLabels[dictionaryName];
   const normalizedLanguage = normalizeLanguageCode(language);
-  return districtLabels[district]?.[normalizedLanguage] ?? districtLabels[district]?.en ?? district;
+
+  return dictionary?.[value]?.[normalizedLanguage] ?? dictionary?.[value]?.en ?? value;
 };
 
-export const getLocalizedCityLabel = (city, language) => {
-  const normalizedLanguage = normalizeLanguageCode(language);
-  return cityLabels[city]?.[normalizedLanguage] ?? cityLabels[city]?.en ?? city;
-};
+export const getLocalizedDistrictLabel = (district, language) => getLocalizedEnumLabel('districts', district, language);
+
+export const getLocalizedCityLabel = (city, language) => getLocalizedEnumLabel('cities', city, language);
 
 const districtLabel = (district, language) => {
   const translatedDistrict = getLocalizedDistrictLabel(district, language);
@@ -860,7 +901,11 @@ export const schools = [
 export const schoolTypes = [...new Set(schools.map((school) => school.type))].sort();
 export const schoolLanguages = [...new Set(schools.flatMap((school) => school.instruction_languages))].sort();
 export const schoolDistricts = [...new Set(schools.map((school) => school.district))].sort();
-export const verificationStatuses = ['verified', 'unverified'];
-export const priceStatuses = ['verified', 'estimated', 'unknown'];
-export const dataStatuses = ['verified', 'partially_verified', 'needs_review'];
-export const yesNoUnknownStatuses = ['yes', 'no', 'unknown'];
+export const cityValues = Object.keys(localizedEnumLabels.cities);
+export const schoolTypeValues = Object.keys(localizedEnumLabels.schoolTypes);
+export const schoolFormatValues = Object.keys(localizedEnumLabels.schoolFormats);
+export const instructionLanguageValues = Object.keys(localizedEnumLabels.instructionLanguages);
+export const verificationStatuses = Object.keys(localizedEnumLabels.verificationStatuses);
+export const priceStatuses = Object.keys(localizedEnumLabels.priceStatuses);
+export const dataStatuses = Object.keys(localizedEnumLabels.dataStatuses);
+export const yesNoUnknownStatuses = Object.keys(localizedEnumLabels.yesNoUnknown);

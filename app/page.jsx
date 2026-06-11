@@ -2,8 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import {
-  getLocalizedCityLabel,
-  getLocalizedDistrictLabel,
+  getLocalizedEnumLabel,
   getLocalizedSchoolValue,
   schoolDistricts,
   schoolLanguages,
@@ -57,15 +56,6 @@ const translations = {
       '700000': 'До 700 000 KZT',
       '1000000': 'До 1 000 000 KZT'
     },
-    typeOptions: {
-      public: 'Государственная',
-      private: 'Частная'
-    },
-    languageOptions: {
-      Kazakh: 'Казахский',
-      Russian: 'Русский',
-      English: 'Английский'
-    },
     schoolsMatch: (count) => `${count} ${pluralizeRu(count, ['школа подходит', 'школы подходят', 'школ подходят'])} под фильтры`,
     resetFilters: 'Сбросить фильтры',
     filteredSchoolsAria: 'Отфильтрованные школы',
@@ -95,27 +85,6 @@ const translations = {
       website: 'Сайт',
       details: 'Подробнее'
     },
-    verificationStatuses: {
-      verified: 'Проверено',
-      unverified: 'Не проверено'
-    },
-    priceStatuses: {
-      verified: 'Подтверждена',
-      estimated: 'Оценочная',
-      unknown: 'Неизвестна'
-    },
-    dataStatuses: {
-      verified: 'Проверены',
-      partially_verified: 'Частично проверены',
-      needs_review: 'Нужна проверка'
-    },
-    statusValues: {
-      yes: 'Да',
-      no: 'Нет',
-      unknown: 'Неизвестно'
-    },
-    yes: 'Да',
-    no: 'Нет',
     notYetRated: 'Пока нет оценки',
     freePublicSchool: 'Бесплатная государственная школа',
     perMonth: 'в месяц',
@@ -160,15 +129,6 @@ const translations = {
       '700000': '700 000 KZT дейін',
       '1000000': '1 000 000 KZT дейін'
     },
-    typeOptions: {
-      public: 'Мемлекеттік',
-      private: 'Жеке'
-    },
-    languageOptions: {
-      Kazakh: 'Қазақ тілі',
-      Russian: 'Орыс тілі',
-      English: 'Ағылшын тілі'
-    },
     schoolsMatch: (count) => `${count} мектеп сүзгілерге сәйкес келеді`,
     resetFilters: 'Сүзгілерді тазалау',
     filteredSchoolsAria: 'Сүзілген мектептер',
@@ -198,27 +158,6 @@ const translations = {
       website: 'Сайт',
       details: 'Толығырақ'
     },
-    verificationStatuses: {
-      verified: 'Тексерілген',
-      unverified: 'Тексерілмеген'
-    },
-    priceStatuses: {
-      verified: 'Расталған',
-      estimated: 'Шамамен',
-      unknown: 'Белгісіз'
-    },
-    dataStatuses: {
-      verified: 'Тексерілген',
-      partially_verified: 'Ішінара тексерілген',
-      needs_review: 'Тексеру қажет'
-    },
-    statusValues: {
-      yes: 'Иә',
-      no: 'Жоқ',
-      unknown: 'Белгісіз'
-    },
-    yes: 'Иә',
-    no: 'Жоқ',
     notYetRated: 'Әзірге баға жоқ',
     freePublicSchool: 'Тегін мемлекеттік мектеп',
     perMonth: 'айына',
@@ -263,15 +202,6 @@ const translations = {
       '700000': 'Up to 700,000 KZT',
       '1000000': 'Up to 1,000,000 KZT'
     },
-    typeOptions: {
-      public: 'Public',
-      private: 'Private'
-    },
-    languageOptions: {
-      Kazakh: 'Kazakh',
-      Russian: 'Russian',
-      English: 'English'
-    },
     schoolsMatch: (count) => `${count} ${count === 1 ? 'school matches' : 'schools match'} your filters`,
     resetFilters: 'Reset filters',
     filteredSchoolsAria: 'Filtered schools',
@@ -301,27 +231,6 @@ const translations = {
       website: 'Website',
       details: 'Details'
     },
-    verificationStatuses: {
-      verified: 'Verified',
-      unverified: 'Unverified'
-    },
-    priceStatuses: {
-      verified: 'Verified',
-      estimated: 'Estimated',
-      unknown: 'Unknown'
-    },
-    dataStatuses: {
-      verified: 'Verified',
-      partially_verified: 'Partially verified',
-      needs_review: 'Needs review'
-    },
-    statusValues: {
-      yes: 'Yes',
-      no: 'No',
-      unknown: 'Unknown'
-    },
-    yes: 'Yes',
-    no: 'No',
     notYetRated: 'Not yet rated',
     freePublicSchool: 'Free public school',
     perMonth: 'month',
@@ -379,9 +288,8 @@ const getStoredFeedback = () => {
   }
 };
 
-const getTranslatedOption = (translationMap, option) => translationMap[option] ?? option;
-const getDistrictOptionLabels = (language) =>
-  Object.fromEntries(schoolDistricts.map((district) => [district, getLocalizedDistrictLabel(district, language)]));
+const getEnumOptionLabels = (dictionaryName, options, language) =>
+  Object.fromEntries(options.map((option) => [option, getLocalizedEnumLabel(dictionaryName, option, language)]));
 const formatPhoneLink = (phone) => phone.replace(/[^+\d]/g, '');
 
 function LanguageSwitcher({ currentLanguage, onLanguageChange, t }) {
@@ -410,7 +318,7 @@ function FilterControl({ id, label, value, options, allLabel, optionLabels = {},
         <option value="all">{allLabel}</option>
         {options.map((option) => (
           <option key={option} value={option}>
-            {getTranslatedOption(optionLabels, option)}
+            {optionLabels[option] ?? option}
           </option>
         ))}
       </select>
@@ -443,10 +351,10 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
   const localizedClassSize = getLocalizedSchoolValue(school.class_size, currentLanguage);
   const localizedAddress = getLocalizedSchoolValue(school.address, currentLanguage);
   const localizedOfficialName = currentLanguage === 'en' ? school.official_name : school.official_name_local;
-  const localizedCity = getLocalizedCityLabel(school.city, currentLanguage);
-  const localizedDistrict = getLocalizedDistrictLabel(school.district, currentLanguage);
+  const localizedCity = getLocalizedEnumLabel('cities', school.city, currentLanguage);
+  const localizedDistrict = getLocalizedEnumLabel('districts', school.district, currentLanguage);
   const formatPrice = (price) => (price === 0 ? t.freePublicSchool : `${moneyFormatter.format(price)} / ${t.perMonth}`);
-  const formatStatusValue = (value) => getTranslatedOption(t.statusValues, value);
+  const formatStatusValue = (value) => getLocalizedEnumLabel('yesNoUnknown', value, currentLanguage);
   const formatRating = (rating) => (rating > 0 ? `${rating.toFixed(1)} / 5` : t.notYetRated);
 
   return (
@@ -458,7 +366,7 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
           </p>
           <h2>{localizedName}</h2>
         </div>
-        <span className={`badge badge--${school.type}`}>{getTranslatedOption(t.typeOptions, school.type)}</span>
+        <span className={`badge badge--${school.type}`}>{getLocalizedEnumLabel('schoolTypes', school.type, currentLanguage)}</span>
       </div>
 
       <p className="school-card__description">{localizedDescription}</p>
@@ -468,10 +376,10 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
           [t.schoolCard.officialName, localizedOfficialName],
           [t.schoolCard.schoolType, localizedSchoolType],
           [t.schoolCard.language, localizedLanguages],
-          [t.schoolCard.verification, getTranslatedOption(t.verificationStatuses, school.verification_status)],
+          [t.schoolCard.verification, getLocalizedEnumLabel('verificationStatuses', school.verification_status, currentLanguage)],
           [t.schoolCard.tuitionFee, formatPrice(school.tuition_fee)],
-          [t.schoolCard.priceStatus, getTranslatedOption(t.priceStatuses, school.price_status)],
-          [t.schoolCard.dataStatus, getTranslatedOption(t.dataStatuses, school.data_status)],
+          [t.schoolCard.priceStatus, getLocalizedEnumLabel('priceStatuses', school.price_status, currentLanguage)],
+          [t.schoolCard.dataStatus, getLocalizedEnumLabel('dataStatuses', school.data_status, currentLanguage)],
           [t.schoolCard.afterSchoolProgram, formatStatusValue(school.after_school_program)],
           [t.schoolCard.schoolBus, formatStatusValue(school.school_bus)],
           [t.schoolCard.admissionTest, formatStatusValue(school.admission_test)],
@@ -621,7 +529,7 @@ function FeedbackForm({ t, currentLanguage }) {
             <option value="">{t.feedback.selectDistrict}</option>
             {schoolDistricts.map((district) => (
               <option key={district} value={district}>
-                {getLocalizedDistrictLabel(district, currentLanguage)}
+                {getLocalizedEnumLabel('districts', district, currentLanguage)}
               </option>
             ))}
           </select>
@@ -684,7 +592,7 @@ export default function Home() {
   }, []);
 
   const t = translations[currentLanguage];
-  const districtOptionLabels = useMemo(() => getDistrictOptionLabels(currentLanguage), [currentLanguage]);
+  const districtOptionLabels = useMemo(() => getEnumOptionLabels('districts', schoolDistricts, currentLanguage), [currentLanguage]);
 
   const moneyFormatter = useMemo(
     () =>
@@ -768,7 +676,7 @@ export default function Home() {
           value={filters.type}
           options={schoolTypes}
           allLabel={t.all}
-          optionLabels={t.typeOptions}
+          optionLabels={getEnumOptionLabels('schoolTypes', schoolTypes, currentLanguage)}
           onChange={(value) => updateFilter('type', value)}
         />
         <FilterControl
@@ -777,7 +685,7 @@ export default function Home() {
           value={filters.language}
           options={schoolLanguages}
           allLabel={t.all}
-          optionLabels={t.languageOptions}
+          optionLabels={getEnumOptionLabels('instructionLanguages', schoolLanguages, currentLanguage)}
           onChange={(value) => updateFilter('language', value)}
         />
         <FilterControl

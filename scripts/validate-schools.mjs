@@ -1,4 +1,14 @@
-import { dataStatuses, getLocalizedSchoolValue, priceStatuses, schools, yesNoUnknownStatuses } from '../src/data/schools.js';
+import {
+  cityValues,
+  dataStatuses,
+  getLocalizedSchoolValue,
+  instructionLanguageValues,
+  priceStatuses,
+  schoolTypeValues,
+  schools,
+  verificationStatuses,
+  yesNoUnknownStatuses
+} from '../src/data/schools.js';
 
 const requiredFields = [
   'id',
@@ -64,15 +74,15 @@ schools.forEach((school, index) => {
   }
   ids.add(school.id);
 
-  if (school.city !== 'Astana') {
-    errors.push(`${school.id} is not in Astana`);
+  if (!cityValues.includes(school.city)) {
+    errors.push(`${school.id} has invalid city ${school.city}`);
   }
 
-  if (!['public', 'private'].includes(school.type)) {
+  if (!schoolTypeValues.includes(school.type)) {
     errors.push(`${school.id} has invalid type ${school.type}`);
   }
 
-  if (!['verified', 'unverified'].includes(school.verification_status)) {
+  if (!verificationStatuses.includes(school.verification_status)) {
     errors.push(`${school.id} has invalid verification status ${school.verification_status}`);
   }
 
@@ -120,7 +130,7 @@ schools.forEach((school, index) => {
   }
 
   const invalidLanguages = school.instruction_languages.filter(
-    (language) => !['Kazakh', 'Russian', 'English'].includes(language)
+    (language) => !instructionLanguageValues.includes(language)
   );
 
   if (invalidLanguages.length > 0) {
