@@ -1,4 +1,4 @@
-import { dataStatuses, priceStatuses, schools, yesNoUnknownStatuses } from '../src/data/schools.js';
+import { dataStatuses, getLocalizedSchoolValue, priceStatuses, schools, yesNoUnknownStatuses } from '../src/data/schools.js';
 
 const requiredFields = [
   'id',
@@ -34,6 +34,21 @@ const requiredFields = [
 
 const errors = [];
 const ids = new Set();
+const localizedObjectFields = ['name', 'description', 'admission_requirements'];
+const languages = ['ru', 'kk', 'en'];
+
+const isLocalizedObject = (value) =>
+  value &&
+  typeof value === 'object' &&
+  !Array.isArray(value) &&
+  languages.every((language) => typeof value[language] === 'string' && value[language].length > 0);
+
+const isLocalizedProgramObject = (value) =>
+  value &&
+  typeof value === 'object' &&
+  !Array.isArray(value) &&
+  languages.every((language) => Array.isArray(value[language]) && value[language].length > 0);
+
 
 schools.forEach((school, index) => {
   requiredFields.forEach((field) => {
@@ -81,9 +96,21 @@ schools.forEach((school, index) => {
     errors.push(`${school.id} must include a class_size description`);
   }
 
-  if (typeof school.admission_requirements !== 'string' || school.admission_requirements.length === 0) {
-    errors.push(`${school.id} must include admission_requirements`);
+  localizedObjectFields.forEach((field) => {
+    if (!isLocalizedObject(school[field])) {
+      errors.push(`${school.id} must include localized ${field} values for ru, kk, and en`);
+    }
+  });
+
+  if (!isLocalizedProgramObject(school.programs)) {
+    errors.push(`${school.id} must include localized program arrays for ru, kk, and en`);
   }
+
+  ['ru', 'kz', 'en', 'fr'].forEach((language) => {
+    if (typeof getLocalizedSchoolValue(school.name, language) !== 'string' || getLocalizedSchoolValue(school.name, language).length === 0) {
+      errors.push(`${school.id} cannot resolve localized name for ${language}`);
+    }
+  });
 
   if (typeof school.rating !== 'number' || school.rating < 0 || school.rating > 5) {
     errors.push(`${school.id} rating must be a number from 0 to 5`);
@@ -121,8 +148,8 @@ schools.forEach((school, index) => {
     errors.push(`${school.id} must include at least one source`);
   }
 
-  if (!Array.isArray(school.programs) || school.programs.length === 0) {
-    errors.push(`${school.id} must include at least one program`);
+  if (!Array.isArray(getLocalizedSchoolValue(school.programs, 'en')) || getLocalizedSchoolValue(school.programs, 'en').length === 0) {
+    errors.push(`${school.id} must include at least one English program`);
   }
 });
 

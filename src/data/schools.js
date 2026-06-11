@@ -18,6 +18,176 @@ const WEBSITE_SOURCE = {
 const formatPhone = (phone) => `+7 (${phone.slice(1, 4)}) ${phone.slice(4, 7)}-${phone.slice(7, 9)}-${phone.slice(9)}`;
 const schoolWebsite = (schoolNumber) => `https://${schoolNumber}.astana-bilim.kz`;
 
+const fallbackLanguageOrder = ['ru', 'en', 'kk'];
+
+const namedAfterTranslations = {
+  'Kanysh Satpayev': { ru: 'Каныша Сатпаева', kk: 'Қаныш Сәтбаев' },
+  'Dinmukhamed Kunayev': { ru: 'Динмухамеда Кунаева', kk: 'Дінмұхамед Қонаев' },
+  'Mirzhakyp Dulatuly': { ru: 'Миржакыпа Дулатулы', kk: 'Міржақып Дулатұлы' },
+  'Mukagali Makataev': { ru: 'Мукагали Макатаева', kk: 'Мұқағали Мақатаев' },
+  'Alikhan Bokeikhan': { ru: 'Алихана Бокейхана', kk: 'Әлихан Бөкейхан' },
+  'Fariza Ongarsynova': { ru: 'Фаризы Онгарсыновой', kk: 'Фариза Оңғарсынова' },
+  'Smagul Saduakasuly': { ru: 'Смагула Садуакасулы', kk: 'Смағұл Сәдуақасұлы' },
+  'Saken Seifullin': { ru: 'Сакена Сейфуллина', kk: 'Сәкен Сейфуллин' },
+  'Sheikh Khalifa bin Zayed Al Nahyan': {
+    ru: 'шейха Халифы бен Заида Аль Нахайяна',
+    kk: 'Шейх Халифа бен Заид әл-Нахаян'
+  },
+  'Sheikh Tamim bin Hamad Al Thani': {
+    ru: 'шейха Тамима бен Хамада Аль Тани',
+    kk: 'Шейх Тамим бен Хамад әл-Тани'
+  },
+  'Mukhtar Auezov': { ru: 'Мухтара Ауэзова', kk: 'Мұхтар Әуезов' },
+  'Abai Kunanbaiuly': { ru: 'Абая Кунанбаюлы', kk: 'Абай Құнанбайұлы' }
+};
+
+const schoolKindTranslations = {
+  'School-Lyceum': { ru: 'Школа-лицей', kk: 'мектеп-лицейі' },
+  'School-Gymnasium': { ru: 'Школа-гимназия', kk: 'мектеп-гимназиясы' },
+  Gymnasium: { ru: 'Гимназия', kk: 'гимназиясы' }
+};
+
+const programTranslations = {
+  'Lyceum curriculum': { ru: 'Лицейская программа', kk: 'Лицей бағдарламасы' },
+  'General secondary education': { ru: 'Общее среднее образование', kk: 'Жалпы орта білім' },
+  'Kazakh language': { ru: 'Казахский язык', kk: 'Қазақ тілі' },
+  'Russian language': { ru: 'Русский язык', kk: 'Орыс тілі' },
+  'Kazakh-medium instruction': { ru: 'Обучение на казахском языке', kk: 'Қазақ тілінде оқыту' },
+  'Science enrichment': { ru: 'Углубление естественных наук', kk: 'Жаратылыстану бағытындағы тереңдету' },
+  'Student clubs': { ru: 'Ученические клубы', kk: 'Оқушылар клубтары' },
+  'Bilingual school streams': { ru: 'Казахские и русские потоки', kk: 'Қазақ және орыс тіліндегі сыныптар' },
+  'Academic clubs': { ru: 'Академические кружки', kk: 'Академиялық үйірмелер' },
+  'Gymnasium curriculum': { ru: 'Гимназическая программа', kk: 'Гимназия бағдарламасы' },
+  'Language development': { ru: 'Развитие языков', kk: 'Тілдерді дамыту' },
+  'Student activities': { ru: 'Ученические активности', kk: 'Оқушылар іс-шаралары' },
+  'Core academics': { ru: 'Основные учебные предметы', kk: 'Негізгі пәндер' },
+  Electives: { ru: 'Элективные курсы', kk: 'Таңдау курстары' },
+  Clubs: { ru: 'Кружки', kk: 'Үйірмелер' },
+  'Academic enrichment': { ru: 'Академическое развитие', kk: 'Академиялық дамыту' },
+  'Olympiad preparation': { ru: 'Подготовка к олимпиадам', kk: 'Олимпиадаға дайындық' },
+  Humanities: { ru: 'Гуманитарные предметы', kk: 'Гуманитарлық пәндер' },
+  Literature: { ru: 'Литература', kk: 'Әдебиет' },
+  'Civic education': { ru: 'Гражданское образование', kk: 'Азаматтық тәрбие' },
+  'Extracurricular activities': { ru: 'Внеурочные занятия', kk: 'Сыныптан тыс іс-шаралар' },
+  'Student development': { ru: 'Развитие учеников', kk: 'Оқушыларды дамыту' },
+  'Mathematics enrichment': { ru: 'Углубленная математика', kk: 'Математиканы тереңдету' },
+  'Creative arts': { ru: 'Творческие искусства', kk: 'Шығармашылық өнер' },
+  'History and civic education': { ru: 'История и гражданское образование', kk: 'Тарих және азаматтық тәрбие' },
+  'Leadership activities': { ru: 'Лидерские активности', kk: 'Көшбасшылық іс-шаралары' },
+  'Natural sciences': { ru: 'Естественные науки', kk: 'Жаратылыстану ғылымдары' },
+  'Specialized gymnasium curriculum': { ru: 'Программа специализированной гимназии', kk: 'Мамандандырылған гимназия бағдарламасы' },
+  'English enrichment': { ru: 'Углубленный английский язык', kk: 'Ағылшын тілін тереңдету' },
+  'International profile': { ru: 'Международный профиль', kk: 'Халықаралық бағыт' },
+  'Specialized lyceum curriculum': { ru: 'Программа специализированного лицея', kk: 'Мамандандырылған лицей бағдарламасы' },
+  'Academic competitions': { ru: 'Академические соревнования', kk: 'Академиялық сайыстар' },
+  'Gifted education': { ru: 'Обучение одаренных детей', kk: 'Дарынды балаларды оқыту' },
+  'Cultural education': { ru: 'Культурное образование', kk: 'Мәдени білім' }
+};
+
+const districtLabel = (district, language) => {
+  const suffix = language === 'ru' ? 'районе' : 'ауданында';
+  return `${district} ${suffix}`;
+};
+
+const localizeName = (name) => {
+  const specializedGymnasium = name.match(/^Specialized Gymnasium No\. (\d+) (.+)$/);
+  if (specializedGymnasium) {
+    const [, number, brand] = specializedGymnasium;
+    return {
+      ru: `Специализированная гимназия № ${number} ${brand}`,
+      kk: `№ ${number} ${brand} мамандандырылған гимназиясы`,
+      en: name
+    };
+  }
+
+  const specializedLyceum = name.match(/^Specialized Lyceum No\. (\d+) (.+)$/);
+  if (specializedLyceum) {
+    const [, number, brand] = specializedLyceum;
+    return {
+      ru: `Специализированный лицей № ${number} ${brand}`,
+      kk: `№ ${number} ${brand} мамандандырылған лицейі`,
+      en: name
+    };
+  }
+
+  const match = name.match(/^(School-Lyceum|School-Gymnasium|Gymnasium) No\. (\d+)(?: named after (.+))?$/);
+  if (!match) {
+    return { ru: name, kk: name, en: name };
+  }
+
+  const [, kind, number, namedAfter] = match;
+  const translatedKind = schoolKindTranslations[kind];
+  const translatedPerson = namedAfterTranslations[namedAfter];
+
+  return {
+    ru: `${translatedKind.ru} № ${number}${translatedPerson ? ` имени ${translatedPerson.ru}` : ''}`,
+    kk: `${translatedPerson ? `${translatedPerson.kk} атындағы ` : ''}№ ${number} ${translatedKind.kk}`,
+    en: name
+  };
+};
+
+const localizePrograms = (programs) => ({
+  ru: programs.map((program) => programTranslations[program]?.ru ?? program),
+  kk: programs.map((program) => programTranslations[program]?.kk ?? program),
+  en: programs
+});
+
+const localizeDescription = ({ description, district, instruction_languages, school_type }) => {
+  const isKazakhOnly = instruction_languages.length === 1 && instruction_languages[0] === 'Kazakh';
+  const isSpecialized = school_type.toLowerCase().includes('specialized');
+  const isGymnasium = school_type.toLowerCase().includes('gymnasium');
+  const schoolFormatRu = isSpecialized
+    ? isGymnasium
+      ? 'специализированная государственная гимназия'
+      : 'специализированный государственный лицей'
+    : isGymnasium
+      ? 'государственная школа-гимназия'
+      : 'государственная школа-лицей';
+  const schoolFormatKk = isSpecialized
+    ? isGymnasium
+      ? 'мамандандырылған мемлекеттік гимназия'
+      : 'мамандандырылған мемлекеттік лицей'
+    : isGymnasium
+      ? 'мемлекеттік мектеп-гимназия'
+      : 'мемлекеттік мектеп-лицей';
+  const languageRu = isKazakhOnly ? 'обучением на казахском языке' : 'казахскими и русскими потоками обучения';
+  const languageKk = isKazakhOnly ? 'қазақ тілінде оқытатын' : 'қазақ және орыс тілдерінде оқытатын';
+
+  return {
+    ru: `Это ${schoolFormatRu} в ${districtLabel(district, 'ru')} с ${languageRu} и программой общего среднего образования.`,
+    kk: `Бұл ${districtLabel(district, 'kk')} орналасқан, ${languageKk} ${schoolFormatKk} және жалпы орта білім бағдарламасын ұсынады.`,
+    en: description
+  };
+};
+
+const localizeAdmissionRequirements = (admissionRequirements) => ({
+  ru: 'Стандартные документы для зачисления в государственную школу и подтверждение права обучения по месту проживания.',
+  kk: 'Мемлекеттік мектепке қабылдауға арналған стандартты құжаттар және тұрғылықты жері бойынша бекітілу құқығын растау.',
+  en: admissionRequirements
+});
+
+export const getLocalizedSchoolValue = (value, language) => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return value;
+  }
+
+  const normalizedLanguage = language === 'kz' ? 'kk' : language;
+  const languagesToTry = [normalizedLanguage, ...fallbackLanguageOrder].filter(Boolean);
+
+  for (const languageCode of languagesToTry) {
+    const translatedValue = value[languageCode];
+    if (Array.isArray(translatedValue) && translatedValue.length > 0) {
+      return translatedValue;
+    }
+
+    if (typeof translatedValue === 'string' && translatedValue.trim().length > 0) {
+      return translatedValue;
+    }
+  }
+
+  return '';
+};
+
 const createAstanaPublicSchool = ({
   id,
   number,
@@ -42,9 +212,15 @@ const createAstanaPublicSchool = ({
   class_size = 'Varies by grade and available capacity',
   admission_requirements = 'Standard public school enrollment documents and local catchment eligibility',
   rating = 0
-}) => ({
+}) => {
+  const localizedName = localizeName(name);
+  const localizedDescription = localizeDescription({ description, district, instruction_languages, school_type });
+  const localizedPrograms = localizePrograms(programs);
+  const localizedAdmissionRequirements = localizeAdmissionRequirements(admission_requirements);
+
+  return ({
   id,
-  name,
+  name: localizedName,
   official_name,
   official_name_local,
   city: 'Astana',
@@ -61,13 +237,13 @@ const createAstanaPublicSchool = ({
   school_bus,
   admission_test,
   class_size,
-  admission_requirements,
+  admission_requirements: localizedAdmissionRequirements,
   rating,
   address,
   website: schoolWebsite(number),
   phone: formatPhone(phone),
-  description,
-  programs,
+  description: localizedDescription,
+  programs: localizedPrograms,
   verification_status,
   contact: {
     address,
@@ -77,7 +253,7 @@ const createAstanaPublicSchool = ({
   academics: {
     school_type,
     instruction_languages,
-    programs,
+    programs: localizedPrograms,
     admission_test
   },
   metadata: {
@@ -89,6 +265,7 @@ const createAstanaPublicSchool = ({
   },
   sources: [ASTANA_PUBLIC_SCHOOL_SOURCE, WEBSITE_SOURCE]
 });
+};
 
 export const schools = [
   createAstanaPublicSchool({

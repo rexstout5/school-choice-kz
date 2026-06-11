@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { schools } from '../../../src/data/schools.js';
+import { getLocalizedSchoolValue, schools } from '../../../src/data/schools.js';
 
 const defaultLanguage = 'ru';
 
@@ -182,8 +182,8 @@ export async function generateMetadata({ params }) {
   }
 
   return {
-    title: `${school.name} | School Choice Kazakhstan`,
-    description: school.description
+    title: `${getLocalizedSchoolValue(school.name, defaultLanguage)} | School Choice Kazakhstan`,
+    description: getLocalizedSchoolValue(school.description, defaultLanguage)
   };
 }
 
@@ -199,6 +199,10 @@ export default async function SchoolDetailPage({ params, searchParams }) {
   }
 
   const moneyFormatter = getMoneyFormatter(language);
+  const localizedName = getLocalizedSchoolValue(school.name, language);
+  const localizedDescription = getLocalizedSchoolValue(school.description, language);
+  const localizedPrograms = getLocalizedSchoolValue(school.programs, language);
+  const localizedAdmissionRequirements = getLocalizedSchoolValue(school.admission_requirements, language);
   const details = [
     [t.fields.officialName, school.official_name],
     [t.fields.localName, school.official_name_local],
@@ -211,7 +215,7 @@ export default async function SchoolDetailPage({ params, searchParams }) {
     [t.fields.schoolBus, getTranslatedOption(t.statusValues, school.school_bus)],
     [t.fields.admissionTest, getTranslatedOption(t.statusValues, school.admission_test)],
     [t.fields.classSize, school.class_size],
-    [t.fields.admissionRequirements, school.admission_requirements],
+    [t.fields.admissionRequirements, localizedAdmissionRequirements],
     [t.fields.rating, formatRating(school.rating, t)]
   ];
 
@@ -226,8 +230,8 @@ export default async function SchoolDetailPage({ params, searchParams }) {
           <div>
             <p className="hero__kicker">{t.pageKicker}</p>
             <p className="school-card__eyebrow">{t.cityDistrict(school)}</p>
-            <h1>{school.name}</h1>
-            <p>{school.description}</p>
+            <h1>{localizedName}</h1>
+            <p>{localizedDescription}</p>
           </div>
           <span className={`badge badge--${school.type}`}>{getTranslatedOption(t.typeOptions, school.type)}</span>
         </header>
@@ -247,7 +251,7 @@ export default async function SchoolDetailPage({ params, searchParams }) {
         <section className="school-detail__section" aria-labelledby="programs-title">
           <h2 id="programs-title">{t.programsTitle}</h2>
           <div className="program-list">
-            {school.programs.map((program) => (
+            {localizedPrograms.map((program) => (
               <span key={program}>{program}</span>
             ))}
           </div>

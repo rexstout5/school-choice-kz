@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { schoolDistricts, schoolLanguages, schools, schoolTypes } from '../src/data/schools.js';
+import { getLocalizedSchoolValue, schoolDistricts, schoolLanguages, schools, schoolTypes } from '../src/data/schools.js';
 
 const initialFilters = {
   type: 'all',
@@ -61,6 +61,11 @@ const translations = {
     schoolsMatch: (count) => `${count} ${pluralizeRu(count, ['школа подходит', 'школы подходят', 'школ подходят'])} под фильтры`,
     resetFilters: 'Сбросить фильтры',
     filteredSchoolsAria: 'Отфильтрованные школы',
+    paginationAria: 'Навигация по страницам школ',
+    previousPage: 'Назад',
+    nextPage: 'Вперед',
+    pageLabel: (page) => `Страница ${page}`,
+    pageStatus: (current, total) => `Страница ${current} из ${total}`,
     noResultsTitle: 'Школы не найдены',
     noResultsDescription: 'Попробуйте изменить район, язык обучения, тип школы или ограничение по цене.',
     schoolCard: {
@@ -159,6 +164,11 @@ const translations = {
     schoolsMatch: (count) => `${count} мектеп сүзгілерге сәйкес келеді`,
     resetFilters: 'Сүзгілерді тазалау',
     filteredSchoolsAria: 'Сүзілген мектептер',
+    paginationAria: 'Мектеп беттері бойынша навигация',
+    previousPage: 'Алдыңғы',
+    nextPage: 'Келесі',
+    pageLabel: (page) => `${page}-бет`,
+    pageStatus: (current, total) => `${current}/${total} бет`,
     noResultsTitle: 'Мектептер табылмады',
     noResultsDescription: 'Ауданды, оқыту тілін, мектеп түрін немесе баға шектеуін өзгертіп көріңіз.',
     schoolCard: {
@@ -257,6 +267,11 @@ const translations = {
     schoolsMatch: (count) => `${count} ${count === 1 ? 'school matches' : 'schools match'} your filters`,
     resetFilters: 'Reset filters',
     filteredSchoolsAria: 'Filtered schools',
+    paginationAria: 'School pages navigation',
+    previousPage: 'Previous',
+    nextPage: 'Next',
+    pageLabel: (page) => `Page ${page}`,
+    pageStatus: (current, total) => `Page ${current} of ${total}`,
     noResultsTitle: 'No schools found',
     noResultsDescription: 'Try changing the district, instruction language, school type, or price limit.',
     schoolCard: {
@@ -325,6 +340,7 @@ const translations = {
 };
 
 const priceOptionValues = ['all', '0', '400000', '700000', '1000000'];
+const schoolsPerPage = 20;
 
 function pluralizeRu(count, forms) {
   const absoluteCount = Math.abs(count) % 100;
@@ -408,6 +424,10 @@ function PriceFilter({ value, onChange, t }) {
 }
 
 function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
+  const localizedName = getLocalizedSchoolValue(school.name, currentLanguage);
+  const localizedDescription = getLocalizedSchoolValue(school.description, currentLanguage);
+  const localizedPrograms = getLocalizedSchoolValue(school.programs, currentLanguage);
+  const localizedAdmissionRequirements = getLocalizedSchoolValue(school.admission_requirements, currentLanguage);
   const formatPrice = (price) => (price === 0 ? t.freePublicSchool : `${moneyFormatter.format(price)} / ${t.perMonth}`);
   const formatStatusValue = (value) => getTranslatedOption(t.statusValues, value);
   const formatRating = (rating) => (rating > 0 ? `${rating.toFixed(1)} / 5` : t.notYetRated);
@@ -419,12 +439,12 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
           <p className="school-card__eyebrow">
             {school.city} • {school.district}
           </p>
-          <h2>{school.name}</h2>
+          <h2>{localizedName}</h2>
         </div>
         <span className={`badge badge--${school.type}`}>{getTranslatedOption(t.typeOptions, school.type)}</span>
       </div>
 
-      <p className="school-card__description">{school.description}</p>
+      <p className="school-card__description">{localizedDescription}</p>
 
       <dl className="school-card__facts">
         {[
@@ -439,7 +459,7 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
           [t.schoolCard.schoolBus, formatStatusValue(school.school_bus)],
           [t.schoolCard.admissionTest, formatStatusValue(school.admission_test)],
           [t.schoolCard.classSize, school.class_size],
-          [t.schoolCard.admissionRequirements, school.admission_requirements],
+          [t.schoolCard.admissionRequirements, localizedAdmissionRequirements],
           [t.schoolCard.rating, formatRating(school.rating)],
           [t.schoolCard.address, school.address]
         ].map(([term, detail]) => (
@@ -450,8 +470,8 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
         ))}
       </dl>
 
-      <div className="program-list" aria-label={t.schoolCard.programsAria(school.name)}>
-        {school.programs.map((program) => (
+      <div className="program-list" aria-label={t.schoolCard.programsAria(localizedName)}>
+        {localizedPrograms.map((program) => (
           <span key={program}>{program}</span>
         ))}
       </div>
@@ -464,6 +484,41 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
         <a href={`/schools/${school.id}?lang=${currentLanguage}`}>{t.schoolCard.details}</a>
       </div>
     </article>
+  );
+}
+
+
+function Pagination({ currentPage, totalPages, onPageChange, t }) {
+  if (totalPages <= 1) {
+    return null;
+  }
+
+  return (
+    <nav className="pagination" aria-label={t.paginationAria}>
+      <button type="button" onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1}>
+        {t.previousPage}
+      </button>
+
+      <div className="pagination__pages">
+        {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+          <button
+            key={pageNumber}
+            type="button"
+            className={pageNumber === currentPage ? 'pagination__page pagination__page--active' : 'pagination__page'}
+            aria-current={pageNumber === currentPage ? 'page' : undefined}
+            aria-label={t.pageLabel(pageNumber)}
+            onClick={() => onPageChange(pageNumber)}
+          >
+            {pageNumber}
+          </button>
+        ))}
+      </div>
+
+      <button type="button" onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+        {t.nextPage}
+      </button>
+      <span className="pagination__status">{t.pageStatus(currentPage, totalPages)}</span>
+    </nav>
   );
 }
 
@@ -595,6 +650,7 @@ function FeedbackForm({ t }) {
 export default function Home() {
   const [filters, setFilters] = useState(initialFilters);
   const [currentLanguage, setCurrentLanguage] = useState(defaultLanguage);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     try {
@@ -636,11 +692,15 @@ export default function Home() {
     [filters]
   );
 
+  const totalPages = Math.max(1, Math.ceil(filteredSchools.length / schoolsPerPage));
+  const visibleSchools = filteredSchools.slice((currentPage - 1) * schoolsPerPage, currentPage * schoolsPerPage);
+
   const updateFilter = (name, value) => {
     setFilters((currentFilters) => ({
       ...currentFilters,
       [name]: value
     }));
+    setCurrentPage(1);
   };
 
   const updateLanguage = (language) => {
@@ -653,7 +713,14 @@ export default function Home() {
     }
   };
 
-  const resetFilters = () => setFilters(initialFilters);
+  const resetFilters = () => {
+    setFilters(initialFilters);
+    setCurrentPage(1);
+  };
+
+  const updatePage = (page) => {
+    setCurrentPage(Math.min(Math.max(page, 1), totalPages));
+  };
 
   return (
     <main>
@@ -714,11 +781,14 @@ export default function Home() {
       </section>
 
       {filteredSchools.length > 0 ? (
-        <section className="school-grid" aria-label={t.filteredSchoolsAria}>
-          {filteredSchools.map((school) => (
-            <SchoolCard key={school.id} school={school} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} />
-          ))}
-        </section>
+        <>
+          <section className="school-grid" aria-label={t.filteredSchoolsAria}>
+            {visibleSchools.map((school) => (
+              <SchoolCard key={school.id} school={school} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} />
+            ))}
+          </section>
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={updatePage} t={t} />
+        </>
       ) : (
         <section className="empty-state" aria-live="polite">
           <h2>{t.noResultsTitle}</h2>
