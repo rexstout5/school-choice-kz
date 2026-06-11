@@ -1,6 +1,7 @@
 import {
   cityValues,
   dataStatuses,
+  getLocalizedEnumLabel,
   getLocalizedSchoolValue,
   instructionLanguageValues,
   priceStatuses,
@@ -47,6 +48,16 @@ const requiredFields = [
 const errors = [];
 const ids = new Set();
 const localizedObjectFields = ['name', 'school_type', 'languages', 'description', 'address', 'admission_requirements', 'class_size'];
+const auditedLocalizedFields = [
+  'name',
+  'school_type',
+  'languages',
+  'address',
+  'class_size',
+  'admission_requirements',
+  'programs'
+];
+const nonLocalizedContentPattern = /[A-Za-z]{2,}/;
 const languages = ['ru', 'kk', 'en'];
 
 const isLocalizedObject = (value) =>
@@ -60,6 +71,8 @@ const isLocalizedProgramObject = (value) =>
   typeof value === 'object' &&
   !Array.isArray(value) &&
   languages.every((language) => Array.isArray(value[language]) && value[language].length > 0);
+
+const toArray = (value) => (Array.isArray(value) ? value : [value]);
 
 
 schools.forEach((school, index) => {
@@ -121,6 +134,32 @@ schools.forEach((school, index) => {
     }
   });
 
+  auditedLocalizedFields.forEach((field) => {
+    ['ru', 'kk'].forEach((language) => {
+      const localizedValue = getLocalizedSchoolValue(school[field], language);
+      toArray(localizedValue).forEach((value) => {
+        if (typeof value === 'string' && nonLocalizedContentPattern.test(value)) {
+          errors.push(`${school.id} has non-localized ${language} ${field} value: ${value}`);
+        }
+      });
+    });
+  });
+
+  ['ru', 'kk'].forEach((language) => {
+    [
+      ['district', getLocalizedEnumLabel('districts', school.district, language)],
+      ['ownership type', getLocalizedEnumLabel('schoolTypes', school.type, language)],
+      ...school.instruction_languages.map((instructionLanguage) => [
+        'instruction language',
+        getLocalizedEnumLabel('instructionLanguages', instructionLanguage, language)
+      ])
+    ].forEach(([field, value]) => {
+      if (nonLocalizedContentPattern.test(value)) {
+        errors.push(`${school.id} has non-localized ${language} ${field} value: ${value}`);
+      }
+    });
+  });
+
   if (typeof school.rating !== 'number' || school.rating < 0 || school.rating > 5) {
     errors.push(`${school.id} rating must be a number from 0 to 5`);
   }
@@ -177,6 +216,12 @@ schools.forEach((school, index) => {
   if (!Array.isArray(school.sources) || school.sources.length === 0) {
     errors.push(`${school.id} must include at least one source`);
   }
+
+  school.sources.forEach((source) => {
+    if (!isLocalizedObject(source.localized_name)) {
+      errors.push(`${school.id} source ${source.url} must include localized source names for ru, kk, and en`);
+    }
+  });
 
   if (!Array.isArray(getLocalizedSchoolValue(school.programs, 'en')) || getLocalizedSchoolValue(school.programs, 'en').length === 0) {
     errors.push(`${school.id} must include at least one English program`);
