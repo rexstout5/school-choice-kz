@@ -100,6 +100,7 @@ const getMoneyFormatter = (language) =>
   new Intl.NumberFormat(language === 'en' ? 'en-US' : language === 'kz' ? 'kk-KZ' : 'ru-RU', {
     style: 'currency',
     currency: 'KZT',
+    currencyDisplay: 'narrowSymbol',
     maximumFractionDigits: 0
   });
 
@@ -148,10 +149,11 @@ export default async function SchoolDetailPage({ params, searchParams }) {
   const localizedLanguages = getLocalizedSchoolValue(school.languages, language);
   const localizedClassSize = getLocalizedSchoolValue(school.class_size, language);
   const localizedAddress = getLocalizedSchoolValue(school.address, language);
-  const localizedOfficialName = language === 'en' ? school.official_name : school.official_name_local;
+  const localizedOfficialName = language === 'en' ? school.official_name : localizedName;
+  const localizedLocalName = language === 'en' ? school.official_name_local : localizedName;
   const details = [
     [t.fields.officialName, localizedOfficialName],
-    [t.fields.localName, school.official_name_local],
+    [t.fields.localName, localizedLocalName],
     [t.fields.schoolType, localizedSchoolType],
     [t.fields.language, localizedLanguages],
     [t.fields.tuitionFee, formatPrice(school.tuition_fee, moneyFormatter, t)],
@@ -233,7 +235,7 @@ export default async function SchoolDetailPage({ params, searchParams }) {
             {school.sources.map((source) => (
               <li key={source.url}>
                 <a href={source.url} target="_blank" rel="noreferrer">
-                  {source.name}
+                  {getLocalizedSchoolValue(source.localized_name, language)}
                 </a>
               </li>
             ))}

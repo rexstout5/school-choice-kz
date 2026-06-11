@@ -36,9 +36,9 @@ const languageOptions = [
 
 const translations = {
   ru: {
-    pageTitle: 'School Choice Kazakhstan',
+    pageTitle: 'Выбор школы в Казахстане',
     languageSwitcherLabel: 'Выберите язык интерфейса',
-    heroKicker: 'School Choice Kazakhstan',
+    heroKicker: 'Выбор школы в Казахстане',
     heroTitle: 'Изучите школы Астаны в удобном формате',
     heroDescription:
       'Сравнивайте школы Астаны по району, языку обучения, типу школы, статусу проверки и ключевым программам на основе единой модели данных.',
@@ -52,9 +52,9 @@ const translations = {
     priceOptions: {
       all: 'Все',
       '0': 'Бесплатные государственные школы',
-      '400000': 'До 400 000 KZT',
-      '700000': 'До 700 000 KZT',
-      '1000000': 'До 1 000 000 KZT'
+      '400000': 'До 400 000 ₸',
+      '700000': 'До 700 000 ₸',
+      '1000000': 'До 1 000 000 ₸'
     },
     schoolsMatch: (count) => `${count} ${pluralizeRu(count, ['школа подходит', 'школы подходят', 'школ подходят'])} под фильтры`,
     resetFilters: 'Сбросить фильтры',
@@ -109,9 +109,9 @@ const translations = {
     footer: 'Проект помогает семьям сравнивать школы Астаны. Данные можно расширять новыми городами, отзывами и деталями поступления.'
   },
   kz: {
-    pageTitle: 'School Choice Kazakhstan',
+    pageTitle: 'Қазақстандағы мектеп таңдауы',
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
-    heroKicker: 'School Choice Kazakhstan',
+    heroKicker: 'Қазақстандағы мектеп таңдауы',
     heroTitle: 'Астана мектептерін ыңғайлы форматта зерттеңіз',
     heroDescription:
       'Астана мектептерін аудан, оқыту тілі, мектеп түрі, тексеру мәртебесі және негізгі бағдарламалар бойынша бірыңғай деректер моделі арқылы салыстырыңыз.',
@@ -125,9 +125,9 @@ const translations = {
     priceOptions: {
       all: 'Барлығы',
       '0': 'Тегін мемлекеттік мектептер',
-      '400000': '400 000 KZT дейін',
-      '700000': '700 000 KZT дейін',
-      '1000000': '1 000 000 KZT дейін'
+      '400000': '400 000 ₸ дейін',
+      '700000': '700 000 ₸ дейін',
+      '1000000': '1 000 000 ₸ дейін'
     },
     schoolsMatch: (count) => `${count} мектеп сүзгілерге сәйкес келеді`,
     resetFilters: 'Сүзгілерді тазалау',
@@ -350,7 +350,7 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
   const localizedLanguages = getLocalizedSchoolValue(school.languages, currentLanguage);
   const localizedClassSize = getLocalizedSchoolValue(school.class_size, currentLanguage);
   const localizedAddress = getLocalizedSchoolValue(school.address, currentLanguage);
-  const localizedOfficialName = currentLanguage === 'en' ? school.official_name : school.official_name_local;
+  const localizedOfficialName = currentLanguage === 'en' ? school.official_name : localizedName;
   const localizedCity = getLocalizedEnumLabel('cities', school.city, currentLanguage);
   const localizedDistrict = getLocalizedEnumLabel('districts', school.district, currentLanguage);
   const formatPrice = (price) => (price === 0 ? t.freePublicSchool : `${moneyFormatter.format(price)} / ${t.perMonth}`);
@@ -599,6 +599,7 @@ export default function Home() {
       new Intl.NumberFormat(currentLanguage === 'en' ? 'en-US' : currentLanguage === 'kz' ? 'kk-KZ' : 'ru-RU', {
         style: 'currency',
         currency: 'KZT',
+        currencyDisplay: 'narrowSymbol',
         maximumFractionDigits: 0
       }),
     [currentLanguage]

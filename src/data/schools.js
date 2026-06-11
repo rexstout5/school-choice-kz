@@ -7,11 +7,21 @@
  */
 const ASTANA_PUBLIC_SCHOOL_SOURCE = {
   name: 'Electronic government of the Republic of Kazakhstan: contacts of secondary schools',
+  localized_name: {
+    ru: 'Электронное правительство Республики Казахстан: контакты средних школ',
+    kk: 'Қазақстан Республикасының электрондық үкіметі: орта мектептердің байланыстары',
+    en: 'Electronic government of the Republic of Kazakhstan: contacts of secondary schools'
+  },
   url: 'https://egov.kz/cms/en/articles/secondary_school/2Fspisok_wkol_rk/1000'
 };
 
 const WEBSITE_SOURCE = {
   name: 'Astana education school website network',
+  localized_name: {
+    ru: 'Сеть школьных сайтов управления образования Астаны',
+    kk: 'Астана білім басқармасының мектеп сайттары желісі',
+    en: 'Astana education school website network'
+  },
   url: 'https://astana-bilim.kz/'
 };
 
