@@ -29,6 +29,7 @@ const requiredFields = [
   'contact',
   'academics',
   'metadata',
+  'audit',
   'sources'
 ];
 
@@ -142,6 +143,23 @@ schools.forEach((school, index) => {
 
   if (school.metadata?.price_status !== school.price_status || school.metadata?.data_status !== school.data_status) {
     errors.push(`${school.id} metadata statuses must mirror top-level statuses`);
+  }
+
+  if (school.metadata?.audit_status !== school.audit?.status) {
+    errors.push(`${school.id} metadata audit_status must mirror audit status`);
+  }
+
+  if (
+    !school.audit ||
+    school.audit.status !== 'verified_public_registry_match' ||
+    typeof school.audit.audited_at !== 'string' ||
+    !isLocalizedObject(school.audit.note) ||
+    !Array.isArray(school.audit.scope) ||
+    school.audit.scope.length === 0 ||
+    !Array.isArray(school.audit.source_names) ||
+    school.audit.source_names.length === 0
+  ) {
+    errors.push(`${school.id} must include merged audit results with localized notes and source names`);
   }
 
   if (!Array.isArray(school.sources) || school.sources.length === 0) {
