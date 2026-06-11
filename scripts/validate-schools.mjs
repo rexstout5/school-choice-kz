@@ -1,4 +1,4 @@
-import { dataStatuses, priceStatuses, schools, yesNoUnknownStatuses } from '../src/data/schools.js';
+import { dataStatuses, priceStatuses, schools, verificationStatuses, yesNoUnknownStatuses } from '../src/data/schools.js';
 
 const requiredFields = [
   'id',
@@ -55,9 +55,15 @@ schools.forEach((school, index) => {
     errors.push(`${school.id} has invalid type ${school.type}`);
   }
 
-  if (!['verified', 'unverified'].includes(school.verification_status)) {
+  if (!verificationStatuses.includes(school.verification_status)) {
     errors.push(`${school.id} has invalid verification status ${school.verification_status}`);
   }
+
+  ['verified', 'partially_verified', 'unverified'].forEach((field) => {
+    if (typeof school[field] !== 'boolean') {
+      errors.push(`${school.id} must include boolean ${field}`);
+    }
+  });
 
   if (school.monthly_price !== school.tuition_fee) {
     errors.push(`${school.id} monthly_price must match tuition_fee`);
@@ -77,13 +83,19 @@ schools.forEach((school, index) => {
     }
   });
 
-  if (typeof school.class_size !== 'string' || school.class_size.length === 0) {
-    errors.push(`${school.id} must include a class_size description`);
+  if (typeof school.class_size !== 'string') {
+    errors.push(`${school.id} class_size must be a string; leave it empty when unverified`);
   }
 
-  if (typeof school.admission_requirements !== 'string' || school.admission_requirements.length === 0) {
-    errors.push(`${school.id} must include admission_requirements`);
+  if (typeof school.admission_requirements !== 'string') {
+    errors.push(`${school.id} admission_requirements must be a string; leave it empty when unverified`);
   }
+
+  ['official_name_ru', 'official_name_kk', 'official_name_en', 'description_ru', 'description_kk', 'admission_information', 'data_source'].forEach((field) => {
+    if (typeof school[field] !== 'string') {
+      errors.push(`${school.id} ${field} must be a string; leave it empty when unverified`);
+    }
+  });
 
   if (typeof school.rating !== 'number' || school.rating < 0 || school.rating > 5) {
     errors.push(`${school.id} rating must be a number from 0 to 5`);
@@ -121,8 +133,8 @@ schools.forEach((school, index) => {
     errors.push(`${school.id} must include at least one source`);
   }
 
-  if (!Array.isArray(school.programs) || school.programs.length === 0) {
-    errors.push(`${school.id} must include at least one program`);
+  if (!Array.isArray(school.programs)) {
+    errors.push(`${school.id} programs must be an array; leave it empty when unverified`);
   }
 });
 
