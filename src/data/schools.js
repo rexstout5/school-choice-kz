@@ -39,6 +39,24 @@ const schoolWebsite = (schoolNumber) => `https://${schoolNumber}.astana-bilim.kz
 
 const fallbackLanguageOrder = ['ru', 'en', 'kk'];
 
+const instructionLanguageTranslations = {
+  Kazakh: { ru: 'Казахский', kk: 'Қазақ тілі', en: 'Kazakh' },
+  Russian: { ru: 'Русский', kk: 'Орыс тілі', en: 'Russian' },
+  English: { ru: 'Английский', kk: 'Ағылшын тілі', en: 'English' }
+};
+
+const schoolTypeTranslations = {
+  'Public school-lyceum': { ru: 'Государственная школа-лицей', kk: 'Мемлекеттік мектеп-лицей', en: 'Public school-lyceum' },
+  'Public school-gymnasium': { ru: 'Государственная школа-гимназия', kk: 'Мемлекеттік мектеп-гимназия', en: 'Public school-gymnasium' },
+  'Public gymnasium': { ru: 'Государственная гимназия', kk: 'Мемлекеттік гимназия', en: 'Public gymnasium' },
+  'International specialized public gymnasium': {
+    ru: 'Международная специализированная государственная гимназия',
+    kk: 'Халықаралық мамандандырылған мемлекеттік гимназия',
+    en: 'International specialized public gymnasium'
+  },
+  'Specialized public lyceum': { ru: 'Специализированный государственный лицей', kk: 'Мамандандырылған мемлекеттік лицей', en: 'Specialized public lyceum' }
+};
+
 const namedAfterTranslations = {
   'Kanysh Satpayev': { ru: 'Каныша Сатпаева', kk: 'Қаныш Сәтбаев' },
   'Dinmukhamed Kunayev': { ru: 'Динмухамеда Кунаева', kk: 'Дінмұхамед Қонаев' },
@@ -58,6 +76,11 @@ const namedAfterTranslations = {
   },
   'Mukhtar Auezov': { ru: 'Мухтара Ауэзова', kk: 'Мұхтар Әуезов' },
   'Abai Kunanbaiuly': { ru: 'Абая Кунанбаюлы', kk: 'Абай Құнанбайұлы' }
+};
+
+const specializedBrandTranslations = {
+  'Astana English School': { ru: 'Астана инглиш скул', kk: 'Астана инглиш скул' },
+  Daryn: { ru: 'Дарын', kk: 'Дарын' }
 };
 
 const schoolKindTranslations = {
@@ -103,9 +126,70 @@ const programTranslations = {
   'Cultural education': { ru: 'Культурное образование', kk: 'Мәдени білім' }
 };
 
+const addressTranslations = {
+  'Stepan Kubrin St, 21/1, Astana': { ru: 'ул. Степана Кубрина, 21/1, Астана', kk: 'Степан Кубрин көш., 21/1, Астана' },
+  'Constitution St, 33, Astana': { ru: 'ул. Конституции, 33, Астана', kk: 'Конституция көш., 33, Астана' },
+  'Maskeu St, 41, Astana': { ru: 'ул. Мәскеу, 41, Астана', kk: 'Мәскеу көш., 41, Астана' },
+  'Lepsi St, 38, South-East residential area, Astana': { ru: 'ул. Лепсы, 38, жилой массив Юго-Восток, Астана', kk: 'Лепсі көш., 38, Оңтүстік-Шығыс тұрғын алабы, Астана' },
+  'Gabit Musrepov St, 15, Astana': { ru: 'ул. Габита Мусрепова, 15, Астана', kk: 'Ғабит Мүсірепов көш., 15, Астана' },
+  'Shaymerden Kosshygululy St, 18/1, Astana': { ru: 'ул. Шаймердена Косшыгулулы, 18/1, Астана', kk: 'Шәймерден Қосшығұлұлы көш., 18/1, Астана' },
+  'Dinmukhamed Konaev St, 33/1, Astana': { ru: 'ул. Динмухамеда Кунаева, 33/1, Астана', kk: 'Дінмұхамед Қонаев көш., 33/1, Астана' },
+  'Shaymerden Kosshygululy St, 23/1, Astana': { ru: 'ул. Шаймердена Косшыгулулы, 23/1, Астана', kk: 'Шәймерден Қосшығұлұлы көш., 23/1, Астана' },
+  'Kusmuryn St, 2, Koktal residential area, Astana': { ru: 'ул. Кусмурын, 2, жилой массив Коктал, Астана', kk: 'Құсмұрын көш., 2, Көктал тұрғын алабы, Астана' },
+  'Isatai Batyr St, 141, Urker residential area, Astana': { ru: 'ул. Исатай батыр, 141, жилой массив Үркер, Астана', kk: 'Исатай батыр көш., 141, Үркер тұрғын алабы, Астана' },
+  'Maykayyn St, 1, South-East residential area, Astana': { ru: 'ул. Майкайын, 1, жилой массив Юго-Восток, Астана', kk: 'Майқайың көш., 1, Оңтүстік-Шығыс тұрғын алабы, Астана' },
+  'Iliyas Omarov St, 4, Astana': { ru: 'ул. Ильяса Омарова, 4, Астана', kk: 'Ілияс Омаров көш., 4, Астана' },
+  'Akhmet Baitursynuly St, 25, Astana': { ru: 'ул. Ахмета Байтурсынулы, 25, Астана', kk: 'Ахмет Байтұрсынұлы көш., 25, Астана' },
+  'A 191 St, 2, Astana': { ru: 'ул. A 191, 2, Астана', kk: 'A 191 көш., 2, Астана' },
+  'Temirbek Zhurgenov St, 29, Astana': { ru: 'ул. Темирбека Жургенова, 29, Астана', kk: 'Темірбек Жүргенов көш., 29, Астана' },
+  'Mangilik El Prospect, 28/1, Astana': { ru: 'пр. Мәңгілік Ел, 28/1, Астана', kk: 'Мәңгілік Ел даңғ., 28/1, Астана' },
+  'Turkistan St, 10/1, Astana': { ru: 'ул. Туркестан, 10/1, Астана', kk: 'Түркістан көш., 10/1, Астана' },
+  'Mangilik El Prospect, 22/1, Astana': { ru: 'пр. Мәңгілік Ел, 22/1, Астана', kk: 'Мәңгілік Ел даңғ., 22/1, Астана' },
+  'E 11 St, 8, Astana': { ru: 'ул. E 11, 8, Астана', kk: 'E 11 көш., 8, Астана' },
+  'Maksut Narikbaev St, 3, Astana': { ru: 'ул. Максута Нарикбаева, 3, Астана', kk: 'Мақсұт Нәрікбаев көш., 3, Астана' },
+  'Shaymerden Kosshygululy St, 17/2, Astana': { ru: 'ул. Шаймердена Косшыгулулы, 17/2, Астана', kk: 'Шәймерден Қосшығұлұлы көш., 17/2, Астана' },
+  'Iliyas Omarov St, 2, Astana': { ru: 'ул. Ильяса Омарова, 2, Астана', kk: 'Ілияс Омаров көш., 2, Астана' },
+  'Uly Dala Ave, 27/2, Astana': { ru: 'пр. Улы Дала, 27/2, Астана', kk: 'Ұлы Дала даңғ., 27/2, Астана' },
+  'Akhmet Baitursynuly St, 35, Astana': { ru: 'ул. Ахмета Байтурсынулы, 35, Астана', kk: 'Ахмет Байтұрсынұлы көш., 35, Астана' },
+  'Uly Dala Ave, 7/1, Astana': { ru: 'пр. Улы Дала, 7/1, Астана', kk: 'Ұлы Дала даңғ., 7/1, Астана' },
+  'Kabanbay Batyr Ave, 56/1, Astana': { ru: 'пр. Кабанбай батыра, 56/1, Астана', kk: 'Қабанбай батыр даңғ., 56/1, Астана' },
+  'Amanzhol Bolekpaev St, 20, Astana': { ru: 'ул. Аманжола Болекпаева, 20, Астана', kk: 'Аманжол Бөлекпаев көш., 20, Астана' },
+  'Amangeldi Imanov St, 37, Astana': { ru: 'ул. Амангельды Иманова, 37, Астана', kk: 'Амангелді Иманов көш., 37, Астана' },
+  'Mangilik El Ave, 28/1, Astana': { ru: 'пр. Мәңгілік Ел, 28/1, Астана', kk: 'Мәңгілік Ел даңғ., 28/1, Астана' },
+  'Sauran St, 11, Astana': { ru: 'ул. Сауран, 11, Астана', kk: 'Сауран көш., 11, Астана' }
+};
+
+const localizeLanguages = (instructionLanguages) => ({
+  ru: instructionLanguages.map((language) => instructionLanguageTranslations[language]?.ru ?? language).join(', '),
+  kk: instructionLanguages.map((language) => instructionLanguageTranslations[language]?.kk ?? language).join(', '),
+  en: instructionLanguages.map((language) => instructionLanguageTranslations[language]?.en ?? language).join(', ')
+});
+
+const localizeSchoolType = (schoolType) => schoolTypeTranslations[schoolType] ?? { ru: schoolType, kk: schoolType, en: schoolType };
+
+const localizeAddress = (address) => ({
+  ru: addressTranslations[address]?.ru ?? address,
+  kk: addressTranslations[address]?.kk ?? address,
+  en: address
+});
+
+const localizeClassSize = (classSize) => ({
+  ru: classSize === 'Varies by grade and available capacity' ? 'Зависит от класса и доступных мест' : classSize,
+  kk: classSize === 'Varies by grade and available capacity' ? 'Сыныпқа және бос орындарға байланысты' : classSize,
+  en: classSize
+});
+
+const districtTranslations = {
+  Almaty: { ru: 'Алматинском', kk: 'Алматы' },
+  Baikonyr: { ru: 'Байконырском', kk: 'Байқоңыр' },
+  Saryarka: { ru: 'Сарыаркинском', kk: 'Сарыарқа' },
+  Yesil: { ru: 'Есильском', kk: 'Есіл' }
+};
+
 const districtLabel = (district, language) => {
+  const translatedDistrict = districtTranslations[district]?.[language] ?? district;
   const suffix = language === 'ru' ? 'районе' : 'ауданында';
-  return `${district} ${suffix}`;
+  return `${translatedDistrict} ${suffix}`;
 };
 
 const localizeName = (name) => {
@@ -113,8 +197,8 @@ const localizeName = (name) => {
   if (specializedGymnasium) {
     const [, number, brand] = specializedGymnasium;
     return {
-      ru: `Специализированная гимназия № ${number} ${brand}`,
-      kk: `№ ${number} ${brand} мамандандырылған гимназиясы`,
+      ru: `Специализированная гимназия № ${number} ${specializedBrandTranslations[brand]?.ru ?? brand}`,
+      kk: `№ ${number} ${specializedBrandTranslations[brand]?.kk ?? brand} мамандандырылған гимназиясы`,
       en: name
     };
   }
@@ -123,8 +207,8 @@ const localizeName = (name) => {
   if (specializedLyceum) {
     const [, number, brand] = specializedLyceum;
     return {
-      ru: `Специализированный лицей № ${number} ${brand}`,
-      kk: `№ ${number} ${brand} мамандандырылған лицейі`,
+      ru: `Специализированный лицей № ${number} ${specializedBrandTranslations[brand]?.ru ?? brand}`,
+      kk: `№ ${number} ${specializedBrandTranslations[brand]?.kk ?? brand} мамандандырылған лицейі`,
       en: name
     };
   }
@@ -236,6 +320,10 @@ const createAstanaPublicSchool = ({
   const localizedDescription = localizeDescription({ description, district, instruction_languages, school_type });
   const localizedPrograms = localizePrograms(programs);
   const localizedAdmissionRequirements = localizeAdmissionRequirements(admission_requirements);
+  const localizedSchoolType = localizeSchoolType(school_type);
+  const localizedLanguages = localizeLanguages(instruction_languages);
+  const localizedAddress = localizeAddress(address);
+  const localizedClassSize = localizeClassSize(class_size);
 
   return ({
   id,
@@ -245,8 +333,9 @@ const createAstanaPublicSchool = ({
   city: 'Astana',
   district,
   type: 'public',
-  school_type,
+  school_type: localizedSchoolType,
   language,
+  languages: localizedLanguages,
   instruction_languages,
   monthly_price: tuition_fee,
   tuition_fee,
@@ -255,22 +344,23 @@ const createAstanaPublicSchool = ({
   after_school_program,
   school_bus,
   admission_test,
-  class_size,
+  class_size: localizedClassSize,
   admission_requirements: localizedAdmissionRequirements,
   rating,
-  address,
+  address: localizedAddress,
   website: schoolWebsite(number),
   phone: formatPhone(phone),
   description: localizedDescription,
   programs: localizedPrograms,
   verification_status,
   contact: {
-    address,
+    address: localizedAddress,
     website: schoolWebsite(number),
     phone: formatPhone(phone)
   },
   academics: {
-    school_type,
+    school_type: localizedSchoolType,
+    languages: localizedLanguages,
     instruction_languages,
     programs: localizedPrograms,
     admission_test
