@@ -53,11 +53,12 @@ const translations = {
     priceOptions: {
       all: 'Все',
       free: 'Только бесплатные',
-      paid: 'Только платные',
-      '0-200000': 'До 200 000 ₸',
-      '200000-400000': '200 000–400 000 ₸',
-      '400000-800000': '400 000–800 000 ₸',
-      '800000+': '800 000+ ₸'
+      paid_only: 'Только платные',
+      up_to_200000: 'Платные до 200 000 ₸',
+      range_200000_400000: 'Платные 200 000–400 000 ₸',
+      range_400000_800000: 'Платные 400 000–800 000 ₸',
+      range_800000_plus: 'Платные от 800 000 ₸',
+      unknown_price: 'Стоимость неизвестна'
     },
     schoolsMatch: (count) => `${count} ${pluralizeRu(count, ['школа подходит', 'школы подходят', 'школ подходят'])} под фильтры`,
     resetFilters: 'Сбросить фильтры',
@@ -128,10 +129,13 @@ const translations = {
     maxMonthlyPrice: 'Айлық ең жоғары баға',
     priceOptions: {
       all: 'Барлығы',
-      '0': 'Тегін мемлекеттік мектептер',
-      '400000': '400 000 ₸ дейін',
-      '700000': '700 000 ₸ дейін',
-      '1000000': '1 000 000 ₸ дейін'
+      free: 'Тек тегін',
+      paid_only: 'Тек ақылы',
+      up_to_200000: 'Ақылы 200 000 ₸ дейін',
+      range_200000_400000: 'Ақылы 200 000–400 000 ₸',
+      range_400000_800000: 'Ақылы 400 000–800 000 ₸',
+      range_800000_plus: 'Ақылы 800 000 ₸ бастап',
+      unknown_price: 'Бағасы белгісіз'
     },
     schoolsMatch: (count) => `${count} мектеп сүзгілерге сәйкес келеді`,
     resetFilters: 'Сүзгілерді тазалау',
@@ -203,11 +207,12 @@ const translations = {
     priceOptions: {
       all: 'All',
       free: 'Free only',
-      paid: 'Paid only',
-      '0-200000': 'Up to 200,000 KZT',
-      '200000-400000': '200,000–400,000 KZT',
-      '400000-800000': '400,000–800,000 KZT',
-      '800000+': '800,000+ KZT'
+      paid_only: 'Paid only',
+      up_to_200000: 'Paid up to 200,000 KZT',
+      range_200000_400000: 'Paid 200,000–400,000 KZT',
+      range_400000_800000: 'Paid 400,000–800,000 KZT',
+      range_800000_plus: 'Paid 800,000+ KZT',
+      unknown_price: 'Unknown price'
     },
     schoolsMatch: (count) => `${count} ${count === 1 ? 'school matches' : 'schools match'} your filters`,
     resetFilters: 'Reset filters',
