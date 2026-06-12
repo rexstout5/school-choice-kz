@@ -6,14 +6,14 @@ const defaultLanguage = 'ru';
 const translations = {
   ru: {
     languageSwitcherLabel: 'Выберите язык интерфейса',
-    backToCatalog: 'Назад в каталог',
+    backToCatalog: 'Назад к каталогу',
     pageKicker: 'Профиль школы',
     imagePlaceholder: 'Фото школы скоро появится',
     detailsTitle: 'Ключевые сведения',
     programsTitle: 'Программы',
     contactsTitle: 'Контакты',
     sourcesTitle: 'Источники данных',
-    reportIncorrectInfo: 'Сообщить о неточной информации',
+    reportIncorrectInfo: 'Сообщить об ошибке',
     fields: {
       schoolName: 'Название школы',
       district: 'Район',
