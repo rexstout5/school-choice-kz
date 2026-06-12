@@ -1047,6 +1047,8 @@ export const schools = [
     programs: localizedPrograms(['British curriculum', 'IB Diploma Programme', 'Co-curricular activities']),
     description: localizedPrivateDescription('Хейлибери Астана', 'Хейлибери Астана', 'Haileybury Astana', { ru: 'британской программой и IB Diploma Programme', kk: 'британдық бағдарлама мен IB Diploma Programme бағдарламасын', en: 'a British curriculum and the IB Diploma Programme' }),
     school_bus: 'yes',
+    tuition_fee: 1500000,
+    price_status: 'estimated',
     sources: [source('Haileybury Astana overview and contacts', 'https://www.haileybury.kz/en/astana/our-overview')]
   }),
   createAstanaPrivateSchool({
@@ -1063,6 +1065,8 @@ export const schools = [
     programs: localizedPrograms(['IB Primary Years Programme', 'IB Middle Years Programme', 'IB Diploma Programme']),
     description: localizedPrivateDescription('Мирас интернешнл скул Астана', 'Мирас интернешнл скул Астана', 'Miras International School Astana', { ru: 'программами International Baccalaureate', kk: 'International Baccalaureate бағдарламаларын', en: 'International Baccalaureate programmes' }),
     after_school_program: 'yes',
+    tuition_fee: 1150000,
+    price_status: 'estimated',
     sources: [source('International Baccalaureate: Miras International School, Astana', 'https://www.ibo.org/en/school/002159'), source('Miras Secondary School Student-Parent Handbook', 'https://miras-astana.kz/app/webroot/js/kcfinder/upload/files/Secondary%20School%20SP%20Handbook%202022-2023.pdf')]
   }),
   createAstanaPrivateSchool({
@@ -1079,6 +1083,8 @@ export const schools = [
     programs: localizedPrograms(['Cambridge pathway', 'IGCSE', 'AS/A Level']),
     description: localizedPrivateDescription('Спектрум интернешнл скул', 'Спектрум интернешнл скул', 'Spectrum International School', { ru: 'кембриджской международной программой', kk: 'Кембридж халықаралық бағдарламасын', en: 'a Cambridge international pathway' }),
     after_school_program: 'yes',
+    tuition_fee: 850000,
+    price_status: 'estimated',
     sources: [source('Spectrum International School contact page', 'https://spectrum.edupage.org/contact/'), source('Spectrum International School official website', 'https://spectrum.edu.kz/')]
   }),
   createAstanaPrivateSchool({
@@ -1095,6 +1101,8 @@ export const schools = [
     programs: localizedPrograms(['American curriculum', 'Mastery Learning', 'College preparation']),
     description: localizedPrivateDescription('Кью эс ай интернешнл скул Астана', 'Кью эс ай интернешнл скул Астана', 'QSI International School of Astana', { ru: 'американской программой Quality Schools International', kk: 'Quality Schools International американдық бағдарламасын', en: 'a Quality Schools International American curriculum' }),
     after_school_program: 'yes',
+    tuition_fee: 1250000,
+    price_status: 'estimated',
     sources: [source('Quality Schools International contact directory', 'https://www.qsi.org/connect/contact'), source('QSI International School of Astana academics', 'https://astana.qsi.org/academics')]
   }),
   createAstanaPrivateSchool({
@@ -1110,6 +1118,8 @@ export const schools = [
     website: 'https://www.cischool.edu.kz/',
     programs: localizedPrograms(['British Columbia curriculum', 'Kazakhstan state diploma pathway', 'University and career counselling']),
     description: localizedPrivateDescription('Канадиан интернешнл скул Астана', 'Канадиан интернешнл скул Астана', 'Canadian International School Astana', { ru: 'канадской программой British Columbia и двойным дипломом', kk: 'British Columbia канадалық бағдарламасы мен қос дипломды', en: 'the British Columbia Canadian curriculum and a dual-diploma pathway' }),
+    tuition_fee: 950000,
+    price_status: 'estimated',
     sources: [source('Ulytau Educational Foundation: CIS Astana', 'https://uef.kz/cisastana'), source('Canadian Information Centre for International Credentials: CIS Astana', 'https://www.cicdi.ca/966/canadian_international_school___astana.canada?id=9133')]
   }),
   createAstanaPrivateSchool({
@@ -1125,6 +1135,8 @@ export const schools = [
     website: 'https://agis.edu.kz/',
     programs: localizedPrograms(['IB Primary Years Programme', 'IB Career-related Programme', 'Multilingual instruction']),
     description: localizedPrivateDescription('Астана гарден интернешнл скул', 'Астана гарден интернешнл скул', 'Astana Garden International School', { ru: 'программами International Baccalaureate', kk: 'International Baccalaureate бағдарламаларын', en: 'International Baccalaureate programmes' }),
+    tuition_fee: 900000,
+    price_status: 'estimated',
     sources: [source('International Baccalaureate: Astana Garden International School', 'https://www.ibo.org/en/school/062624')]
   }),
   createAstanaPrivateSchool({
@@ -1141,6 +1153,8 @@ export const schools = [
     programs: localizedPrograms(['STEM programme', 'Project-based learning', 'Academic competitions']),
     description: localizedPrivateDescription('Квантум стем скул', 'Квантум стем скул', 'Quantum STEM School', { ru: 'естественно-математическим STEM-профилем', kk: 'жаратылыстану-математика STEM бағытын', en: 'a STEM profile' }),
     after_school_program: 'yes',
+    tuition_fee: 450000,
+    price_status: 'estimated',
     sources: [source('Quantum STEM School contact page', 'https://quantumstem.edupage.org/contact/')]
   }),
   createAstanaPrivateSchool({
@@ -1158,6 +1172,8 @@ export const schools = [
     description: localizedPrivateDescription('Тамос спейс скул / Спейс скул Астана', 'Тамос спейс скул / Спейс скул Астана', 'Tamos Space School / Space School Astana', { ru: 'кембриджской программой и STEM-направлением', kk: 'Кембридж бағдарламасы мен STEM бағытын', en: 'Cambridge programmes and a STEM focus' }),
     after_school_program: 'yes',
     school_bus: 'yes',
+    tuition_fee: 520000,
+    price_status: 'estimated',
     sources: [source('Space School Astana programme', 'https://spaceschool.edu.kz/en/astana/program/'), source('Tamos Space School legacy site', 'https://spaceschool.kz/kz/')]
   }),
   createAstanaPrivateSchool({
@@ -1174,6 +1190,8 @@ export const schools = [
     programs: localizedPrograms(['National curriculum', 'Advanced Placement pathway', 'Olympiad preparation']),
     description: localizedPrivateDescription('Нурорда школа-лицей', 'Нұрорда мектеп-лицейі', 'Nurorda School-Lyceum', { ru: 'трехъязычной программой и олимпиадной подготовкой', kk: 'үш тілді бағдарлама мен олимпиадалық дайындықты', en: 'trilingual learning and olympiad preparation' }),
     after_school_program: 'yes',
+    tuition_fee: 380000,
+    price_status: 'estimated',
     sources: [source('John Catt International School Search: Lyceum School Nurorda', 'https://www.internationalschoolsearch.com/listing/lyceum-school-nurorda-kazakhstan'), source('Beyond Curriculum: Bilim-Innovation network', 'https://scoreboard.bc-pf.org/en/organizations/6153bb5bd7af56e7d9894c8a')]
   }),
   createAstanaPrivateSchool({
@@ -1189,6 +1207,8 @@ export const schools = [
     website: 'https://www.ngs-school.kz/en',
     programs: localizedPrograms(['National curriculum', 'Innovation-focused learning', 'Language development']),
     description: localizedPrivateDescription('Нью дженерейшн скул', 'Нью дженерейшн скул', 'New Generation School', { ru: 'частной школьной программой, ориентированной на инновации', kk: 'инновацияға бағытталған жеке мектеп бағдарламасын', en: 'an innovation-focused private school programme' }),
+    tuition_fee: 420000,
+    price_status: 'estimated',
     sources: [source('New Generation School Astana official website', 'https://www.ngs-school.kz/en')]
   }),
   createAstanaPrivateSchool({
@@ -1205,6 +1225,8 @@ export const schools = [
     programs: localizedPrograms(['National curriculum', 'Creative arts', 'Language development']),
     description: localizedPrivateDescription('Креативная школа Бибигуль Тулегеновой', 'Бибігүл Төлегенова креатив мектебі', 'Bibigul Tulegenova Creative School', { ru: 'частной программой с творческим профилем', kk: 'шығармашылық бағыттағы жеке бағдарламаны', en: 'a creative private school profile' }),
     after_school_program: 'yes',
+    tuition_fee: 350000,
+    price_status: 'estimated',
     sources: [source('Bibigul Tulegenova Creative School contact page', 'https://btcs.edupage.org/contact/')]
   }),
   createAstanaPrivateSchool({
@@ -1220,6 +1242,8 @@ export const schools = [
     website: 'https://www.ardingly.edu.kz/',
     programs: localizedPrograms(['British independent school curriculum', 'World Ready programme', 'Admissions assessment']),
     description: localizedPrivateDescription('Ардингли Астана', 'Ардингли Астана', 'Ardingly Astana', { ru: 'британской независимой школьной программой', kk: 'британдық тәуелсіз мектеп бағдарламасын', en: 'a British independent school curriculum' }),
+    tuition_fee: 1400000,
+    price_status: 'estimated',
     sources: [source('Ardingly Astana official website', 'https://www.ardingly.edu.kz/')]
   }),
   createAstanaPrivateSchool({
@@ -1235,6 +1259,8 @@ export const schools = [
     website: 'https://maplebear.kz/',
     programs: localizedPrograms(['Canadian methodology', 'Bilingual education', 'Early years and school programmes']),
     description: localizedPrivateDescription('Мейпл Бир Астана', 'Мейпл Бир Астана', 'Maple Bear Astana', { ru: 'канадской методикой и билингвальным обучением', kk: 'канадалық әдістеме мен билингвалды оқытуды', en: 'Canadian methodology and bilingual education' }),
+    tuition_fee: 650000,
+    price_status: 'estimated',
     sources: [source('Maple Bear Kazakhstan official website', 'https://maplebear.kz/')]
   }),
 
@@ -1253,6 +1279,8 @@ export const schools = [
     description: localizedPrivateDescription('Французская международная школа Шарль де Голль-Мирас', 'Шарль де Голль-Мирас француз халықаралық мектебі', 'Ecole Française Internationale Charles de Gaulle-Miras', { ru: 'французской программой и многоязычным обучением', kk: 'француз бағдарламасы мен көптілді оқытуды', en: 'a French curriculum and multilingual learning' }),
     after_school_program: 'yes',
     school_bus: 'yes',
+    tuition_fee: 780000,
+    price_status: 'estimated',
     sources: [source('Mission laïque française: Section française de l’École internationale Miras', 'https://www.mlfmonde.org/etablissements/section-francaise-de-lecole-internationale-miras/'), source('Ecole Française Internationale Charles de Gaulle-Miras admissions', 'https://www.efns.kz/Inscription?id_article=19&lang=en')]
   }),
   createAstanaPrivateSchool({
@@ -1269,6 +1297,8 @@ export const schools = [
     programs: localizedPrograms(['National curriculum', 'STEM and STEAM development', 'English and Kazakh language development']),
     description: localizedPrivateDescription('Алпамыс скул', 'Алпамыс мектебі', 'Alpamys School', { ru: 'частной программой полного дня и STEM/STEAM-направлением', kk: 'толық күндік жеке бағдарлама мен STEM/STEAM бағытын', en: 'a full-day private programme and STEM/STEAM focus' }),
     after_school_program: 'yes',
+    tuition_fee: 470000,
+    price_status: 'estimated',
     sources: [source('Alpamys School contacts', 'https://www.alpamys.edu.kz/kontakty/'), source('Alpamys School admissions overview', 'https://alpamys-school.kz/eng')]
   }),
   createAstanaPrivateSchool({

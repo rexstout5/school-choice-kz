@@ -10,6 +10,7 @@ import {
   verificationStatuses,
   yesNoUnknownStatuses
 } from '../src/data/schools.js';
+import { doesSchoolMatchPriceFilter } from '../src/lib/priceFilters.js';
 
 const requiredFields = [
   'id',
@@ -74,6 +75,45 @@ const isLocalizedProgramObject = (value) =>
 
 const toArray = (value) => (Array.isArray(value) ? value : [value]);
 
+
+const privateOrInternationalSchools = schools.filter((school) => ['private', 'international'].includes(school.type));
+const paidSchools = schools.filter((school) => typeof school.tuition_fee === 'number' && school.tuition_fee > 0);
+const paidFilterResults = schools.filter((school) => doesSchoolMatchPriceFilter(school, 'paid'));
+const midRangeFilterResults = schools.filter((school) => doesSchoolMatchPriceFilter(school, '400000-800000'));
+
+if (paidSchools.length < 10) {
+  errors.push(`Expected at least 10 paid schools, found ${paidSchools.length}`);
+}
+
+if (paidFilterResults.length === 0 || paidFilterResults.some((school) => !(typeof school.tuition_fee === 'number' && school.tuition_fee > 0))) {
+  errors.push('Paid-only filter must return only schools with tuition_fee > 0');
+}
+
+if (midRangeFilterResults.length === 0 || midRangeFilterResults.some((school) => !(typeof school.tuition_fee === 'number' && school.tuition_fee >= 400000 && school.tuition_fee <= 800000))) {
+  errors.push('400000-800000 filter must return only schools with tuition_fee between 400000 and 800000 inclusive');
+}
+
+if (schools.some((school) => school.tuition_fee === null && doesSchoolMatchPriceFilter(school, '400000-800000'))) {
+  errors.push('Unknown tuition_fee values must not appear in numeric price ranges');
+}
+
+privateOrInternationalSchools.forEach((school) => {
+  if (!isLocalizedObject(school.school_type)) {
+    errors.push(`${school.id} private/international record must include a localized school_type`);
+  }
+
+  if (!(typeof school.tuition_fee === 'number' || school.tuition_fee === null)) {
+    errors.push(`${school.id} tuition_fee must be a numeric monthly KZT value or null`);
+  }
+
+  if (typeof school.tuition_fee === 'number' && !Number.isFinite(school.tuition_fee)) {
+    errors.push(`${school.id} tuition_fee must be finite`);
+  }
+
+  if (!priceStatuses.includes(school.price_status)) {
+    errors.push(`${school.id} private/international record must include a valid price_status`);
+  }
+});
 
 schools.forEach((school, index) => {
   requiredFields.forEach((field) => {

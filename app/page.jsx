@@ -9,6 +9,7 @@ import {
   schools,
   schoolTypes
 } from '../src/data/schools.js';
+import { doesSchoolMatchPriceFilter, priceOptionValues } from '../src/lib/priceFilters.js';
 
 const initialFilters = {
   type: 'all',
@@ -263,9 +264,6 @@ const translations = {
   }
 };
 
-const priceOptionValues = ['all', 'free', 'paid', '0-200000', '200000-400000', '400000-800000', '800000+'];
-const schoolsPerPage = 20;
-
 function pluralizeRu(count, forms) {
   const absoluteCount = Math.abs(count) % 100;
   const lastDigit = absoluteCount % 10;
@@ -295,36 +293,10 @@ const getStoredFeedback = () => {
   }
 };
 
+const schoolsPerPage = 20;
+
 const getEnumOptionLabels = (dictionaryName, options, language) =>
   Object.fromEntries(options.map((option) => [option, getLocalizedEnumLabel(dictionaryName, option, language)]));
-
-const doesSchoolMatchPriceFilter = (school, selectedPrice) => {
-  const price = school.monthly_price;
-
-  if (price === null || price === undefined) {
-    return selectedPrice === 'all';
-  }
-
-  if (selectedPrice === 'all') {
-    return true;
-  }
-
-  if (selectedPrice === 'free') {
-    return price === 0;
-  }
-
-  if (selectedPrice === 'paid') {
-    return price > 0;
-  }
-
-  if (selectedPrice === '800000+') {
-    return price >= 800000;
-  }
-
-  const [minPrice, maxPrice] = selectedPrice.split('-').map(Number);
-
-  return price > 0 && price > minPrice && price <= maxPrice;
-};
 
 const formatPhoneLink = (phone) => phone.replace(/[^+\d]/g, '');
 
