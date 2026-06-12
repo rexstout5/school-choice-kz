@@ -5,98 +5,111 @@ const defaultLanguage = 'ru';
 
 const translations = {
   ru: {
-    backToSchools: 'Назад к школам',
+    languageSwitcherLabel: 'Выберите язык интерфейса',
+    backToCatalog: 'Назад в каталог',
     pageKicker: 'Профиль школы',
+    imagePlaceholder: 'Фото школы скоро появится',
     detailsTitle: 'Ключевые сведения',
     programsTitle: 'Программы',
     contactsTitle: 'Контакты',
     sourcesTitle: 'Источники данных',
+    reportIncorrectInfo: 'Сообщить о неточной информации',
     fields: {
-      officialName: 'Официальное название',
-      localName: 'Локальное название',
+      schoolName: 'Название школы',
+      district: 'Район',
       schoolType: 'Тип школы',
+      schoolFormat: 'Формат школы',
       language: 'Язык обучения',
       tuitionFee: 'Стоимость обучения',
       priceStatus: 'Статус цены',
       dataStatus: 'Статус данных',
       afterSchoolProgram: 'Продленка',
       schoolBus: 'Школьный автобус',
-      admissionTest: 'Вступительный тест',
-      classSize: 'Размер класса',
       admissionRequirements: 'Требования к поступлению',
-      rating: 'Рейтинг',
+      classSize: 'Размер класса',
       address: 'Адрес',
       phone: 'Телефон',
-      website: 'Сайт'
+      website: 'Сайт',
+      description: 'Описание'
     },
     freePublicSchool: 'Бесплатная государственная школа',
     priceUnknown: 'Стоимость уточняется',
-    perMonth: 'в месяц',
-    notYetRated: 'Пока нет оценки'
+    perMonth: 'в месяц'
   },
   kz: {
-    backToSchools: 'Мектептерге оралу',
+    languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
+    backToCatalog: 'Каталогқа оралу',
     pageKicker: 'Мектеп профилі',
+    imagePlaceholder: 'Мектеп фотосы жақында қосылады',
     detailsTitle: 'Негізгі мәліметтер',
     programsTitle: 'Бағдарламалар',
     contactsTitle: 'Байланыс',
     sourcesTitle: 'Дерек көздері',
+    reportIncorrectInfo: 'Қате ақпарат туралы хабарлау',
     fields: {
-      officialName: 'Ресми атауы',
-      localName: 'Жергілікті атауы',
+      schoolName: 'Мектеп атауы',
+      district: 'Аудан',
       schoolType: 'Мектеп түрі',
+      schoolFormat: 'Мектеп форматы',
       language: 'Оқыту тілі',
       tuitionFee: 'Оқу ақысы',
       priceStatus: 'Баға мәртебесі',
       dataStatus: 'Дерек мәртебесі',
       afterSchoolProgram: 'Сабақтан кейінгі бағдарлама',
       schoolBus: 'Мектеп автобусы',
-      admissionTest: 'Қабылдау тесті',
-      classSize: 'Сынып көлемі',
       admissionRequirements: 'Қабылдау талаптары',
-      rating: 'Рейтинг',
+      classSize: 'Сынып көлемі',
       address: 'Мекенжай',
       phone: 'Телефон',
-      website: 'Сайт'
+      website: 'Сайт',
+      description: 'Сипаттама'
     },
     freePublicSchool: 'Тегін мемлекеттік мектеп',
     priceUnknown: 'Құны нақтыланады',
-    perMonth: 'айына',
-    notYetRated: 'Әзірге баға жоқ'
+    perMonth: 'айына'
   },
   en: {
-    backToSchools: 'Back to schools',
+    languageSwitcherLabel: 'Choose interface language',
+    backToCatalog: 'Back to catalog',
     pageKicker: 'School profile',
+    imagePlaceholder: 'School photo coming soon',
     detailsTitle: 'Key details',
     programsTitle: 'Programs',
     contactsTitle: 'Contacts',
     sourcesTitle: 'Data sources',
+    reportIncorrectInfo: 'Report incorrect information',
     fields: {
-      officialName: 'Official name',
-      localName: 'Local name',
+      schoolName: 'School name',
+      district: 'District',
       schoolType: 'School type',
+      schoolFormat: 'School format',
       language: 'Instruction language',
       tuitionFee: 'Tuition fee',
       priceStatus: 'Price status',
       dataStatus: 'Data status',
       afterSchoolProgram: 'After-school program',
       schoolBus: 'School bus',
-      admissionTest: 'Admission test',
-      classSize: 'Class size',
       admissionRequirements: 'Admission requirements',
-      rating: 'Rating',
+      classSize: 'Class size',
       address: 'Address',
       phone: 'Phone',
-      website: 'Website'
+      website: 'Website',
+      description: 'Description'
     },
     freePublicSchool: 'Free public school',
     priceUnknown: 'Tuition to be confirmed',
-    perMonth: 'month',
-    notYetRated: 'Not yet rated'
+    perMonth: 'month'
   }
 };
 
+const languageOptions = [
+  { code: 'ru', label: 'RU' },
+  { code: 'kz', label: 'KZ' },
+  { code: 'en', label: 'EN' }
+];
+
 const getLanguage = (lang) => (lang && translations[lang] ? lang : defaultLanguage);
+const getSchoolSlug = (school) => school.slug ?? school.id;
 const formatPhoneLink = (phone) => phone.replace(/[^+\d]/g, '');
 
 const getMoneyFormatter = (language) =>
@@ -114,17 +127,21 @@ const formatPrice = (price, formatter, t) => {
 
   return price === 0 ? t.freePublicSchool : `${formatter.format(price)} / ${t.perMonth}`;
 };
-const formatRating = (rating, t) => (rating > 0 ? `${rating.toFixed(1)} / 5` : t.notYetRated);
-const formatCityDistrict = (school, language) =>
-  `${getLocalizedEnumLabel('cities', school.city, language)} • ${getLocalizedEnumLabel('districts', school.district, language)}`;
+
+const getReportMailto = (schoolName, slug, language) => {
+  const subject = encodeURIComponent(`School Choice KZ: incorrect information for ${schoolName}`);
+  const body = encodeURIComponent(`School: ${schoolName}\nURL: /schools/${slug}?lang=${language}\n\nPlease describe the incorrect information:\n`);
+
+  return `mailto:info@school-choice.kz?subject=${subject}&body=${body}`;
+};
 
 export function generateStaticParams() {
-  return schools.map((school) => ({ id: school.id }));
+  return schools.map((school) => ({ slug: getSchoolSlug(school) }));
 }
 
 export async function generateMetadata({ params }) {
-  const { id } = await params;
-  const school = schools.find((item) => item.id === id);
+  const { slug } = await params;
+  const school = schools.find((item) => getSchoolSlug(item) === slug);
 
   if (!school) {
     return {
@@ -139,11 +156,11 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function SchoolDetailPage({ params, searchParams }) {
-  const { id } = await params;
+  const { slug } = await params;
   const resolvedSearchParams = await searchParams;
   const language = getLanguage(resolvedSearchParams?.lang);
   const t = translations[language];
-  const school = schools.find((item) => item.id === id);
+  const school = schools.find((item) => getSchoolSlug(item) === slug);
 
   if (!school) {
     notFound();
@@ -154,55 +171,79 @@ export default async function SchoolDetailPage({ params, searchParams }) {
   const localizedDescription = getLocalizedSchoolValue(school.description, language);
   const localizedPrograms = getLocalizedSchoolValue(school.programs, language);
   const localizedAdmissionRequirements = getLocalizedSchoolValue(school.admission_requirements, language);
-  const localizedSchoolType = getLocalizedSchoolValue(school.school_type, language);
+  const localizedSchoolFormat = getLocalizedSchoolValue(school.school_type, language);
   const localizedLanguages = getLocalizedSchoolValue(school.languages, language);
   const localizedClassSize = getLocalizedSchoolValue(school.class_size, language);
   const localizedAddress = getLocalizedSchoolValue(school.address, language);
-  const localizedOfficialName = language === 'en' ? school.official_name : localizedName;
-  const localizedLocalName = language === 'en' ? school.official_name_local : localizedName;
-  const details = [
-    [t.fields.officialName, localizedOfficialName],
-    [t.fields.localName, localizedLocalName],
+  const localizedDistrict = getLocalizedEnumLabel('districts', school.district, language);
+  const localizedSchoolType = getLocalizedEnumLabel('schoolTypes', school.type, language);
+  const detailRows = [
+    [t.fields.schoolName, localizedName],
+    [t.fields.district, localizedDistrict],
     [t.fields.schoolType, localizedSchoolType],
+    [t.fields.schoolFormat, localizedSchoolFormat],
     [t.fields.language, localizedLanguages],
     [t.fields.tuitionFee, formatPrice(school.tuition_fee, moneyFormatter, t)],
     [t.fields.priceStatus, getLocalizedEnumLabel('priceStatuses', school.price_status, language)],
     [t.fields.dataStatus, getLocalizedEnumLabel('dataStatuses', school.data_status, language)],
     [t.fields.afterSchoolProgram, getLocalizedEnumLabel('yesNoUnknown', school.after_school_program, language)],
     [t.fields.schoolBus, getLocalizedEnumLabel('yesNoUnknown', school.school_bus, language)],
-    [t.fields.admissionTest, getLocalizedEnumLabel('yesNoUnknown', school.admission_test, language)],
-    [t.fields.classSize, localizedClassSize],
-    [t.fields.admissionRequirements, localizedAdmissionRequirements],
-    [t.fields.rating, formatRating(school.rating, t)]
+    [t.fields.classSize, localizedClassSize]
   ];
 
   return (
     <main>
-      <a className="back-link" href={`/?lang=${language}`}>
-        ← {t.backToSchools}
-      </a>
+      <nav className="school-detail__topbar" aria-label={t.languageSwitcherLabel}>
+        <a className="back-link" href={`/?lang=${language}`}>
+          ← {t.backToCatalog}
+        </a>
+        <div className="language-switcher">
+          {languageOptions.map(({ code, label }) => (
+            <a
+              key={code}
+              className={language === code ? 'language-switcher__button language-switcher__button--active' : 'language-switcher__button'}
+              aria-current={language === code ? 'page' : undefined}
+              href={`/schools/${slug}?lang=${code}`}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+      </nav>
 
       <article className="school-detail">
         <header className="school-detail__hero">
-          <div>
+          <div className="school-detail__hero-copy">
             <p className="hero__kicker">{t.pageKicker}</p>
-            <p className="school-card__eyebrow">{formatCityDistrict(school, language)}</p>
+            <p className="school-card__eyebrow">{localizedDistrict}</p>
             <h1>{localizedName}</h1>
             <p>{localizedDescription}</p>
+            <div className="school-detail__actions">
+              <a className="button-link" href={getReportMailto(localizedName, slug, language)}>
+                {t.reportIncorrectInfo}
+              </a>
+            </div>
           </div>
-          <span className={`badge badge--${school.type}`}>{getLocalizedEnumLabel('schoolTypes', school.type, language)}</span>
+          <div className="school-detail__media" aria-label={t.imagePlaceholder}>
+            <span>{t.imagePlaceholder}</span>
+          </div>
         </header>
 
         <section className="school-detail__section" aria-labelledby="details-title">
           <h2 id="details-title">{t.detailsTitle}</h2>
           <dl className="school-card__facts school-detail__facts">
-            {details.map(([term, detail]) => (
+            {detailRows.map(([term, detail]) => (
               <div key={term}>
                 <dt>{term}</dt>
                 <dd>{detail}</dd>
               </div>
             ))}
           </dl>
+        </section>
+
+        <section className="school-detail__section" aria-labelledby="description-title">
+          <h2 id="description-title">{t.fields.description}</h2>
+          <p className="school-detail__text">{localizedDescription}</p>
         </section>
 
         <section className="school-detail__section" aria-labelledby="programs-title">
@@ -212,6 +253,11 @@ export default async function SchoolDetailPage({ params, searchParams }) {
               <span key={program}>{program}</span>
             ))}
           </div>
+        </section>
+
+        <section className="school-detail__section" aria-labelledby="admission-title">
+          <h2 id="admission-title">{t.fields.admissionRequirements}</h2>
+          <p className="school-detail__text">{localizedAdmissionRequirements}</p>
         </section>
 
         <section className="school-detail__section" aria-labelledby="contacts-title">

@@ -416,7 +416,7 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
       </dl>
 
       <div className="school-card__contact school-card__contact--details-only">
-        <a className="button-link" href={`/schools/${school.id}?lang=${currentLanguage}`}>{t.schoolCard.details}</a>
+        <a className="button-link" href={`/schools/${school.slug ?? school.id}?lang=${currentLanguage}`}>{t.schoolCard.details}</a>
       </div>
     </article>
   );
