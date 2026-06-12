@@ -200,6 +200,22 @@ button:disabled {
   box-shadow: 0 16px 40px rgba(29, 47, 73, 0.08);
 }
 
+
+.school-card--compact {
+  gap: 14px;
+  padding: 18px;
+  border-radius: 22px;
+}
+
+.school-card--compact .school-card__header {
+  gap: 12px;
+}
+
+.school-card--compact h2 {
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
 .school-card__header {
   display: flex;
   gap: 16px;
@@ -239,6 +255,16 @@ button:disabled {
   background: #fff0d6;
 }
 
+.badge--international {
+  color: #31407a;
+  background: #e4e9ff;
+}
+
+.badge--specialized {
+  color: #6e2872;
+  background: #fae5ff;
+}
+
 .school-card__description {
   margin: 0;
   color: #4f5e73;
@@ -249,6 +275,11 @@ button:disabled {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   margin: 0;
+}
+
+.school-card__facts--compact {
+  grid-template-columns: 1fr;
+  gap: 8px;
 }
 
 .school-card__facts div {
@@ -299,6 +330,22 @@ button:disabled {
 
 .school-card__contact a:hover {
   text-decoration: underline;
+}
+
+.school-card__contact--details-only {
+  justify-content: flex-end;
+}
+
+.button-link {
+  border-radius: 999px;
+  padding: 10px 14px;
+  color: #ffffff !important;
+  background: #0a7c8f;
+}
+
+.button-link:hover {
+  background: #075f6e;
+  text-decoration: none !important;
 }
 
 @media (max-width: 900px) {

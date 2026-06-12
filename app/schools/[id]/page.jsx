@@ -30,6 +30,7 @@ const translations = {
       website: 'Сайт'
     },
     freePublicSchool: 'Бесплатная государственная школа',
+    priceUnknown: 'Стоимость уточняется',
     perMonth: 'в месяц',
     notYetRated: 'Пока нет оценки'
   },
@@ -59,6 +60,7 @@ const translations = {
       website: 'Сайт'
     },
     freePublicSchool: 'Тегін мемлекеттік мектеп',
+    priceUnknown: 'Құны нақтыланады',
     perMonth: 'айына',
     notYetRated: 'Әзірге баға жоқ'
   },
@@ -88,6 +90,7 @@ const translations = {
       website: 'Website'
     },
     freePublicSchool: 'Free public school',
+    priceUnknown: 'Tuition to be confirmed',
     perMonth: 'month',
     notYetRated: 'Not yet rated'
   }
@@ -104,7 +107,13 @@ const getMoneyFormatter = (language) =>
     maximumFractionDigits: 0
   });
 
-const formatPrice = (price, formatter, t) => (price === 0 ? t.freePublicSchool : `${formatter.format(price)} / ${t.perMonth}`);
+const formatPrice = (price, formatter, t) => {
+  if (price === null || price === undefined) {
+    return t.priceUnknown;
+  }
+
+  return price === 0 ? t.freePublicSchool : `${formatter.format(price)} / ${t.perMonth}`;
+};
 const formatRating = (rating, t) => (rating > 0 ? `${rating.toFixed(1)} / 5` : t.notYetRated);
 const formatCityDistrict = (school, language) =>
   `${getLocalizedEnumLabel('cities', school.city, language)} • ${getLocalizedEnumLabel('districts', school.district, language)}`;
