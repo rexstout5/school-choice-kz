@@ -27,6 +27,8 @@ const initialFeedback = {
 
 const feedbackStorageKey = 'school-choice-kz-feedback';
 const languageStorageKey = 'school-choice-kz-language';
+const comparisonStorageKey = 'school-choice-kz-comparison';
+const maxComparedSchools = 3;
 const defaultLanguage = 'ru';
 
 const languageOptions = [
@@ -93,6 +95,16 @@ const translations = {
     freePublicSchool: 'Бесплатная государственная школа',
     priceUnknown: 'Стоимость уточняется',
     perMonth: 'в месяц',
+    compare: {
+      select: 'Сравнить',
+      selected: 'Выбрано для сравнения',
+      limitReached: 'Можно выбрать до 3 школ',
+      barTitle: 'Сравнение школ',
+      barSummary: (count) => `${count} из ${maxComparedSchools} выбрано`,
+      remove: 'Удалить',
+      compareSchools: 'Сравнить школы',
+      clear: 'Очистить'
+    },
     feedback: {
       kicker: 'Помогите улучшить сайт',
       title: 'Расскажите, что нужно семьям дальше',
@@ -170,6 +182,16 @@ const translations = {
     freePublicSchool: 'Тегін мемлекеттік мектеп',
     priceUnknown: 'Құны нақтыланады',
     perMonth: 'айына',
+    compare: {
+      select: 'Салыстыру',
+      selected: 'Салыстыруға таңдалды',
+      limitReached: '3 мектепке дейін таңдауға болады',
+      barTitle: 'Мектептерді салыстыру',
+      barSummary: (count) => `${count}/${maxComparedSchools} таңдалды`,
+      remove: 'Жою',
+      compareSchools: 'Мектептерді салыстыру',
+      clear: 'Тазалау'
+    },
     feedback: {
       kicker: 'Сайтты жақсартуға көмектесіңіз',
       title: 'Отбасыларға тағы не қажет екенін айтыңыз',
@@ -247,6 +269,16 @@ const translations = {
     freePublicSchool: 'Free public school',
     priceUnknown: 'Tuition to be confirmed',
     perMonth: 'month',
+    compare: {
+      select: 'Compare',
+      selected: 'Selected for comparison',
+      limitReached: 'Select up to 3 schools',
+      barTitle: 'School comparison',
+      barSummary: (count) => `${count} of ${maxComparedSchools} selected`,
+      remove: 'Remove',
+      compareSchools: 'Compare schools',
+      clear: 'Clear'
+    },
     feedback: {
       kicker: 'Help improve this website',
       title: 'Tell us what families need next',
@@ -295,6 +327,29 @@ const getStoredFeedback = () => {
     return Array.isArray(parsedFeedback) ? parsedFeedback : [];
   } catch {
     return [];
+  }
+};
+
+const normalizeComparedSchoolIds = (schoolIds) =>
+  schoolIds
+    .filter((schoolId, index) => schools.some((school) => school.id === schoolId) && schoolIds.indexOf(schoolId) === index)
+    .slice(0, maxComparedSchools);
+
+const getStoredComparedSchoolIds = () => {
+  try {
+    const storedComparison = window.localStorage.getItem(comparisonStorageKey);
+    const parsedComparison = storedComparison ? JSON.parse(storedComparison) : [];
+    return Array.isArray(parsedComparison) ? normalizeComparedSchoolIds(parsedComparison) : [];
+  } catch {
+    return [];
+  }
+};
+
+const saveComparedSchoolIds = (schoolIds) => {
+  try {
+    window.localStorage.setItem(comparisonStorageKey, JSON.stringify(normalizeComparedSchoolIds(schoolIds)));
+  } catch {
+    // Comparison still works for the current session if localStorage is unavailable.
   }
 };
 
@@ -354,7 +409,7 @@ function PriceFilter({ value, onChange, t }) {
   );
 }
 
-function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
+function SchoolCard({ school, moneyFormatter, t, currentLanguage, isCompared, isCompareDisabled, onCompareToggle }) {
   const localizedName = getLocalizedSchoolValue(school.name, currentLanguage);
   const localizedSchoolType = getLocalizedSchoolValue(school.school_type, currentLanguage);
   const localizedLanguages = getLocalizedSchoolValue(school.languages, currentLanguage);
@@ -392,10 +447,53 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
         ))}
       </dl>
 
+      <div className="school-card__compare">
+        <label className={isCompareDisabled ? 'compare-toggle compare-toggle--disabled' : 'compare-toggle'}>
+          <input
+            type="checkbox"
+            checked={isCompared}
+            disabled={isCompareDisabled}
+            onChange={() => onCompareToggle(school.id)}
+          />
+          <span>{isCompared ? t.compare.selected : t.compare.select}</span>
+        </label>
+        {isCompareDisabled ? <small>{t.compare.limitReached}</small> : null}
+      </div>
+
       <div className="school-card__contact school-card__contact--details-only">
         <a className="button-link" href={`/schools/${school.slug ?? school.id}?lang=${currentLanguage}`}>{t.schoolCard.details}</a>
       </div>
     </article>
+  );
+}
+
+
+function ComparisonBar({ selectedSchools, currentLanguage, onRemove, onClear, t }) {
+  if (selectedSchools.length === 0) {
+    return null;
+  }
+
+  return (
+    <aside className="comparison-bar" aria-label={t.compare.barTitle}>
+      <div className="comparison-bar__summary">
+        <strong>{t.compare.barTitle}</strong>
+        <span>{t.compare.barSummary(selectedSchools.length)}</span>
+      </div>
+      <div className="comparison-bar__schools">
+        {selectedSchools.map((school) => (
+          <span className="comparison-chip" key={school.id}>
+            {getLocalizedSchoolValue(school.name, currentLanguage)}
+            <button type="button" onClick={() => onRemove(school.id)} aria-label={`${t.compare.remove}: ${getLocalizedSchoolValue(school.name, currentLanguage)}`}>
+              ×
+            </button>
+          </span>
+        ))}
+      </div>
+      <div className="comparison-bar__actions">
+        <a className="button-link" href={`/compare?lang=${currentLanguage}`}>{t.compare.compareSchools}</a>
+        <button type="button" className="button-secondary" onClick={onClear}>{t.compare.clear}</button>
+      </div>
+    </aside>
   );
 }
 
@@ -563,6 +661,11 @@ export default function Home() {
   const [filters, setFilters] = useState(initialFilters);
   const [currentLanguage, setCurrentLanguage] = useState(defaultLanguage);
   const [currentPage, setCurrentPage] = useState(1);
+  const [comparedSchoolIds, setComparedSchoolIds] = useState([]);
+
+  useEffect(() => {
+    setComparedSchoolIds(getStoredComparedSchoolIds());
+  }, []);
 
   useEffect(() => {
     try {
@@ -608,6 +711,9 @@ export default function Home() {
 
   const totalPages = Math.max(1, Math.ceil(filteredSchools.length / schoolsPerPage));
   const visibleSchools = filteredSchools.slice((currentPage - 1) * schoolsPerPage, currentPage * schoolsPerPage);
+  const selectedSchools = comparedSchoolIds
+    .map((schoolId) => schools.find((school) => school.id === schoolId))
+    .filter(Boolean);
 
   const updateFilter = (name, value) => {
     setFilters((currentFilters) => ({
@@ -625,6 +731,35 @@ export default function Home() {
     } catch {
       // Language still changes for the current session if localStorage is unavailable.
     }
+  };
+
+
+  const updateComparedSchoolIds = (updater) => {
+    setComparedSchoolIds((currentComparedSchoolIds) => {
+      const nextComparedSchoolIds = normalizeComparedSchoolIds(
+        typeof updater === 'function' ? updater(currentComparedSchoolIds) : updater
+      );
+      saveComparedSchoolIds(nextComparedSchoolIds);
+      return nextComparedSchoolIds;
+    });
+  };
+
+  const toggleComparedSchool = (schoolId) => {
+    updateComparedSchoolIds((currentComparedSchoolIds) => {
+      if (currentComparedSchoolIds.includes(schoolId)) {
+        return currentComparedSchoolIds.filter((currentSchoolId) => currentSchoolId !== schoolId);
+      }
+
+      if (currentComparedSchoolIds.length >= maxComparedSchools) {
+        return currentComparedSchoolIds;
+      }
+
+      return [...currentComparedSchoolIds, schoolId];
+    });
+  };
+
+  const removeComparedSchool = (schoolId) => {
+    updateComparedSchoolIds((currentComparedSchoolIds) => currentComparedSchoolIds.filter((currentSchoolId) => currentSchoolId !== schoolId));
   };
 
   const resetFilters = () => {
@@ -699,7 +834,16 @@ export default function Home() {
         <>
           <section className="school-grid" aria-label={t.filteredSchoolsAria}>
             {visibleSchools.map((school) => (
-              <SchoolCard key={school.id} school={school} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} />
+              <SchoolCard
+                key={school.id}
+                school={school}
+                moneyFormatter={moneyFormatter}
+                t={t}
+                currentLanguage={currentLanguage}
+                isCompared={comparedSchoolIds.includes(school.id)}
+                isCompareDisabled={comparedSchoolIds.length >= maxComparedSchools && !comparedSchoolIds.includes(school.id)}
+                onCompareToggle={toggleComparedSchool}
+              />
             ))}
           </section>
           <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={updatePage} t={t} />
@@ -713,6 +857,14 @@ export default function Home() {
           </button>
         </section>
       )}
+
+      <ComparisonBar
+        selectedSchools={selectedSchools}
+        currentLanguage={currentLanguage}
+        onRemove={removeComparedSchool}
+        onClear={() => updateComparedSchoolIds([])}
+        t={t}
+      />
 
       <FeedbackForm t={t} currentLanguage={currentLanguage} />
 
