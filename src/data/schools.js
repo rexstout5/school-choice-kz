@@ -44,7 +44,17 @@ const AUDIT_RESULT = {
   }
 };
 
-const formatPhone = (phone) => `+7 (${phone.slice(1, 4)}) ${phone.slice(4, 7)}-${phone.slice(7, 9)}-${phone.slice(9)}`;
+const formatPhone = (phone) => {
+  if (!phone) {
+    return '';
+  }
+
+  if (phone.startsWith('+')) {
+    return phone;
+  }
+
+  return `+7 (${phone.slice(1, 4)}) ${phone.slice(4, 7)}-${phone.slice(7, 9)}-${phone.slice(9)}`;
+};
 const schoolWebsite = (schoolNumber) => `https://${schoolNumber}.astana-bilim.kz`;
 
 const fallbackLanguageOrder = ['ru', 'en', 'kk'];
@@ -52,7 +62,8 @@ const fallbackLanguageOrder = ['ru', 'en', 'kk'];
 const instructionLanguageTranslations = {
   Kazakh: { ru: 'Казахский', kk: 'Қазақ тілі', en: 'Kazakh' },
   Russian: { ru: 'Русский', kk: 'Орыс тілі', en: 'Russian' },
-  English: { ru: 'Английский', kk: 'Ағылшын тілі', en: 'English' }
+  English: { ru: 'Английский', kk: 'Ағылшын тілі', en: 'English' },
+  French: { ru: 'Французский', kk: 'Француз тілі', en: 'French' }
 };
 
 const schoolOwnershipTypeTranslations = {
@@ -447,6 +458,7 @@ const createAstanaPublicSchool = ({
   type: resolvedType,
   school_type: localizedSchoolType,
   language,
+  language_of_instruction: instruction_languages,
   languages: localizedLanguages,
   instruction_languages,
   monthly_price: tuition_fee,
@@ -514,9 +526,9 @@ const source = (name, url) => ({
 });
 
 const localizedSchool = ({ ru, kk, en }) => ({ ru, kk, en });
-const localizedPrograms = (en) => ({
-  ru: ['Международная учебная программа', 'Языковое развитие', 'Внеурочные занятия'],
-  kk: ['Халықаралық оқу бағдарламасы', 'Тілдерді дамыту', 'Сыныптан тыс іс-шаралар'],
+const localizedPrograms = (en, ru = ['Международная учебная программа', 'Языковое развитие', 'Внеурочные занятия'], kk = ['Халықаралық оқу бағдарламасы', 'Тілдерді дамыту', 'Сыныптан тыс іс-шаралар']) => ({
+  ru,
+  kk,
   en
 });
 const localizedPrivateDescription = (ruName, kkName, enName, curriculum) => ({
@@ -538,7 +550,7 @@ const privateSources = [
   source('WE Project: 10 private educational institutions in Astana', 'https://weproject.media/en/articles/detail/which-school-in-astana-to-choose-for-your-child-10-private-educational-institutions/')
 ];
 
-const createAstanaPrivateSchool = ({ id, name, official_name, district, address, phone, instruction_languages, school_type, type, tuition_fee, price_status, data_status = 'needs_review', website, programs, description }) =>
+const createAstanaPrivateSchool = ({ id, name, official_name, district, address, phone = '', instruction_languages, school_type, type, tuition_fee = null, price_status = 'unknown', data_status = 'partially_verified', website = '', programs, description, after_school_program = 'unknown', school_bus = 'unknown', admission_test = 'yes', sources = privateSources }) =>
   createAstanaPublicSchool({
     id,
     number: 0,
@@ -557,13 +569,13 @@ const createAstanaPrivateSchool = ({ id, name, official_name, district, address,
     tuition_fee,
     price_status,
     data_status,
-    after_school_program: 'yes',
-    school_bus: 'unknown',
-    admission_test: 'yes',
+    after_school_program,
+    school_bus,
+    admission_test,
     class_size: privateClassSize,
     admission_requirements: privateAdmissionRequirements,
     website,
-    sources: privateSources,
+    sources,
     audit: PRIVATE_SCHOOL_AUDIT
   });
 
@@ -1025,194 +1037,275 @@ export const schools = [
     id: 'haileybury-astana',
     name: localizedSchool({ ru: 'Хейлибери Астана', kk: 'Хейлибери Астана', en: 'Haileybury Astana' }),
     official_name: 'Haileybury Astana',
-    district: 'yesil',
-    address: localizedSchool({ ru: 'пр. Кабанбай батыра, 4, Астана', kk: 'Қабанбай батыр даңғ., 4, Астана', en: 'Kabanbay Batyr Ave, 4, Astana' }),
-    phone: '87172559855',
+    district: 'almaty',
+    address: localizedSchool({ ru: 'ул. Ивана Панфилова, 4, Астана', kk: 'Иван Панфилов көш., 4, Астана', en: 'Ivan Panfilov St 4, Astana' }),
+    phone: '+7 (7172) 55-98-55',
     instruction_languages: ['English'],
     school_type: englishInternationalType,
     type: 'international',
-    tuition_fee: 693600,
-    price_status: 'verified',
     website: 'https://www.haileybury.kz/en/astana',
-    programs: localizedPrograms(['British curriculum', 'International Baccalaureate', 'English-medium instruction']),
-    description: localizedPrivateDescription('Хейлибери Астана', 'Хейлибери Астана', 'Haileybury Astana', { ru: 'британской программой', kk: 'британдық бағдарламаны', en: 'a British curriculum' })
+    programs: localizedPrograms(['British curriculum', 'IB Diploma Programme', 'Co-curricular activities']),
+    description: localizedPrivateDescription('Хейлибери Астана', 'Хейлибери Астана', 'Haileybury Astana', { ru: 'британской программой и IB Diploma Programme', kk: 'британдық бағдарлама мен IB Diploma Programme бағдарламасын', en: 'a British curriculum and the IB Diploma Programme' }),
+    school_bus: 'yes',
+    sources: [source('Haileybury Astana overview and contacts', 'https://www.haileybury.kz/en/astana/our-overview')]
+  }),
+  createAstanaPrivateSchool({
+    id: 'miras-international-school-astana',
+    name: localizedSchool({ ru: 'Мирас интернешнл скул Астана', kk: 'Мирас интернешнл скул Астана', en: 'Miras International School Astana' }),
+    official_name: 'Miras International School Astana',
+    district: 'almaty',
+    address: localizedSchool({ ru: 'ул. Куйши Дина, 34, Астана', kk: 'Күйші Дина көш., 34, Астана', en: '34 Kuishi Dina Street, Astana' }),
+    phone: '+7 (7172) 369 867, +7 (7172) 369 875',
+    instruction_languages: ['English', 'Russian'],
+    school_type: englishInternationalType,
+    type: 'international',
+    website: 'https://www.miras-astana.kz/',
+    programs: localizedPrograms(['IB Primary Years Programme', 'IB Middle Years Programme', 'IB Diploma Programme']),
+    description: localizedPrivateDescription('Мирас интернешнл скул Астана', 'Мирас интернешнл скул Астана', 'Miras International School Astana', { ru: 'программами International Baccalaureate', kk: 'International Baccalaureate бағдарламаларын', en: 'International Baccalaureate programmes' }),
+    after_school_program: 'yes',
+    sources: [source('International Baccalaureate: Miras International School, Astana', 'https://www.ibo.org/en/school/002159'), source('Miras Secondary School Student-Parent Handbook', 'https://miras-astana.kz/app/webroot/js/kcfinder/upload/files/Secondary%20School%20SP%20Handbook%202022-2023.pdf')]
   }),
   createAstanaPrivateSchool({
     id: 'spectrum-international-school-astana',
     name: localizedSchool({ ru: 'Спектрум интернешнл скул', kk: 'Спектрум интернешнл скул', en: 'Spectrum International School' }),
     official_name: 'Spectrum International School',
     district: 'almaty',
-    address: localizedSchool({ ru: 'пр. Рахымжана Кошкарбаева, 11, Астана', kk: 'Рақымжан Қошқарбаев даңғ., 11, Астана', en: 'Rakhymzhan Koshkarbayev Ave, 11, Astana' }),
-    phone: '87079263646',
+    address: localizedSchool({ ru: 'пр. Рахымжана Кошкарбаева, 11, Астана', kk: 'Рақымжан Қошқарбаев даңғ., 11, Астана', en: 'Raqymzhan Qoshqarbayev 11, Astana' }),
+    phone: '+7 (7172) 42-78-32',
     instruction_languages: ['English'],
     school_type: englishInternationalType,
     type: 'international',
-    tuition_fee: 616000,
-    price_status: 'verified',
     website: 'https://spectrum.edu.kz/',
-    programs: localizedPrograms(['Cambridge curriculum', 'English-medium instruction', 'International exams']),
-    description: localizedPrivateDescription('Спектрум интернешнл скул', 'Спектрум интернешнл скул', 'Spectrum International School', { ru: 'британской программой', kk: 'британдық бағдарламаны', en: 'a British curriculum' })
-  }),
-  createAstanaPrivateSchool({
-    id: 'miras-international-school-astana',
-    name: localizedSchool({ ru: 'Мирас интернешнл скул Астана', kk: 'Мирас интернешнл скул Астана', en: 'Miras International School Astana' }),
-    official_name: 'Miras International School Astana',
-    district: 'yesil',
-    address: localizedSchool({ ru: 'ул. Керей и Жанибек хандар, 30, Астана', kk: 'Керей және Жәнібек хандар көш., 30, Астана', en: 'Kerey and Zhanibek Khans St, 30, Astana' }),
-    phone: '87172515627',
-    instruction_languages: ['English', 'Russian'],
-    school_type: englishInternationalType,
-    type: 'international',
-    tuition_fee: 466710,
-    price_status: 'verified',
-    website: 'https://miras-astana.kz/',
-    programs: localizedPrograms(['IB curriculum', 'Cambridge pathway', 'Bilingual learning']),
-    description: localizedPrivateDescription('Мирас интернешнл скул Астана', 'Мирас интернешнл скул Астана', 'Miras International School Astana', { ru: 'международной программой', kk: 'халықаралық бағдарламаны', en: 'international programmes' })
+    programs: localizedPrograms(['Cambridge pathway', 'IGCSE', 'AS/A Level']),
+    description: localizedPrivateDescription('Спектрум интернешнл скул', 'Спектрум интернешнл скул', 'Spectrum International School', { ru: 'кембриджской международной программой', kk: 'Кембридж халықаралық бағдарламасын', en: 'a Cambridge international pathway' }),
+    after_school_program: 'yes',
+    sources: [source('Spectrum International School contact page', 'https://spectrum.edupage.org/contact/'), source('Spectrum International School official website', 'https://spectrum.edu.kz/')]
   }),
   createAstanaPrivateSchool({
     id: 'qsi-international-school-astana',
     name: localizedSchool({ ru: 'Кью эс ай интернешнл скул Астана', kk: 'Кью эс ай интернешнл скул Астана', en: 'QSI International School of Astana' }),
     official_name: 'QSI International School of Astana',
     district: 'saryarka',
-    address: localizedSchool({ ru: 'ул. Баян-Сулу, 15, Астана', kk: 'Баян-Сұлу көш., 15, Астана', en: 'Bayan-Sulu St, 15, Astana' }),
-    phone: '87172774382',
+    address: localizedSchool({ ru: 'ул. Баян-Сулу, 17, пос. Комсомольский, Астана', kk: 'Баян-Сұлу көш., 17, Комсомольский кенті, Астана', en: '17 Bayan-Sulu Street, Komsomolskiy Village, Astana' }),
+    phone: '+7 (7172) 277-760 / 762',
     instruction_languages: ['English'],
     school_type: englishInternationalType,
     type: 'international',
-    tuition_fee: null,
-    price_status: 'unknown',
     website: 'https://astana.qsi.org/',
-    programs: localizedPrograms(['American curriculum', 'English-medium instruction', 'College preparation']),
-    description: localizedPrivateDescription('Кью эс ай интернешнл скул Астана', 'Кью эс ай интернешнл скул Астана', 'QSI International School of Astana', { ru: 'американской программой', kk: 'америкалық бағдарламаны', en: 'an American curriculum' })
-  }),
-  createAstanaPrivateSchool({
-    id: 'ecole-francaise-charles-de-gaulle-miras',
-    name: localizedSchool({ ru: 'Французская школа Шарль де Голль Мирас', kk: 'Шарль де Голль Мирас француз мектебі', en: 'Ecole Française Internationale Charles de Gaulle-Miras' }),
-    official_name: 'Ecole Française Internationale Charles de Gaulle-Miras',
-    district: 'yesil',
-    address: localizedSchool({ ru: 'территория школы Мирас, Астана', kk: 'Мирас мектебінің аумағы, Астана', en: 'Miras school campus, Astana' }),
-    phone: '87172515627',
-    instruction_languages: ['English'],
-    school_type: englishInternationalType,
-    type: 'international',
-    tuition_fee: 433989,
-    price_status: 'estimated',
-    website: 'https://eficdg-miras.com/',
-    programs: localizedPrograms(['French curriculum', 'International pathway', 'Language development']),
-    description: localizedPrivateDescription('Французская школа Шарль де Голль Мирас', 'Шарль де Голль Мирас француз мектебі', 'Ecole Française Internationale Charles de Gaulle-Miras', { ru: 'французской программой', kk: 'француз бағдарламасын', en: 'a French curriculum' })
-  }),
-  createAstanaPrivateSchool({
-    id: 'kazakhstan-international-school-astana',
-    name: localizedSchool({ ru: 'Казахстан интернешнл скул Астана', kk: 'Қазақстан интернешнл скул Астана', en: 'Kazakhstan International School Astana' }),
-    official_name: 'Kazakhstan International School Astana',
-    district: 'yesil',
-    address: localizedSchool({ ru: 'Астана, район Есиль', kk: 'Астана, Есіл ауданы', en: 'Yesil district, Astana' }),
-    phone: '87000000001',
-    instruction_languages: ['English'],
-    school_type: englishInternationalType,
-    type: 'international',
-    tuition_fee: 492051,
-    price_status: 'estimated',
-    website: 'https://kisastana.com/',
-    programs: localizedPrograms(['International curriculum', 'English-medium instruction', 'Primary years programme']),
-    description: localizedPrivateDescription('Казахстан интернешнл скул Астана', 'Қазақстан интернешнл скул Астана', 'Kazakhstan International School Astana', { ru: 'международной программой', kk: 'халықаралық бағдарламаны', en: 'an international curriculum' })
-  }),
-  createAstanaPrivateSchool({
-    id: 'international-steppe-school-astana',
-    name: localizedSchool({ ru: 'Интернешнл степ скул Астана', kk: 'Интернешнл степ скул Астана', en: 'International Steppe School of Astana' }),
-    official_name: 'International Steppe School of Astana',
-    district: 'nura',
-    address: localizedSchool({ ru: 'Астана, район Нура', kk: 'Астана, Нұра ауданы', en: 'Nura district, Astana' }),
-    phone: '87000000002',
-    instruction_languages: ['English'],
-    school_type: englishInternationalType,
-    type: 'international',
-    tuition_fee: 420000,
-    price_status: 'estimated',
-    website: 'https://iss.edu.kz/',
-    programs: localizedPrograms(['IB curriculum', 'English-medium instruction', 'Global citizenship']),
-    description: localizedPrivateDescription('Интернешнл степ скул Астана', 'Интернешнл степ скул Астана', 'International Steppe School of Astana', { ru: 'международной программой', kk: 'халықаралық бағдарламаны', en: 'an IB curriculum' })
+    programs: localizedPrograms(['American curriculum', 'Mastery Learning', 'College preparation']),
+    description: localizedPrivateDescription('Кью эс ай интернешнл скул Астана', 'Кью эс ай интернешнл скул Астана', 'QSI International School of Astana', { ru: 'американской программой Quality Schools International', kk: 'Quality Schools International американдық бағдарламасын', en: 'a Quality Schools International American curriculum' }),
+    after_school_program: 'yes',
+    sources: [source('Quality Schools International contact directory', 'https://www.qsi.org/connect/contact'), source('QSI International School of Astana academics', 'https://astana.qsi.org/academics')]
   }),
   createAstanaPrivateSchool({
     id: 'canadian-international-school-astana',
     name: localizedSchool({ ru: 'Канадиан интернешнл скул Астана', kk: 'Канадиан интернешнл скул Астана', en: 'Canadian International School Astana' }),
     official_name: 'Canadian International School Astana',
-    district: 'yesil',
-    address: localizedSchool({ ru: 'Астана, район Есиль', kk: 'Астана, Есіл ауданы', en: 'Yesil district, Astana' }),
-    phone: '87000000003',
+    district: 'nura',
+    address: localizedSchool({ ru: 'пр. Туран, 75, Астана', kk: 'Тұран даңғ., 75, Астана', en: '75 Turan Avenue, Astana' }),
+    phone: '+7 701 348 15 34',
     instruction_languages: ['English'],
     school_type: englishInternationalType,
     type: 'international',
-    tuition_fee: 606400,
-    price_status: 'estimated',
-    website: 'https://cis-astana.kz/',
-    programs: localizedPrograms(['Canadian curriculum', 'English-medium instruction', 'University preparation']),
-    description: localizedPrivateDescription('Канадиан интернешнл скул Астана', 'Канадиан интернешнл скул Астана', 'Canadian International School Astana', { ru: 'канадской программой', kk: 'канадалық бағдарламаны', en: 'a Canadian curriculum' })
+    website: 'https://www.cischool.edu.kz/',
+    programs: localizedPrograms(['British Columbia curriculum', 'Kazakhstan state diploma pathway', 'University and career counselling']),
+    description: localizedPrivateDescription('Канадиан интернешнл скул Астана', 'Канадиан интернешнл скул Астана', 'Canadian International School Astana', { ru: 'канадской программой British Columbia и двойным дипломом', kk: 'British Columbia канадалық бағдарламасы мен қос дипломды', en: 'the British Columbia Canadian curriculum and a dual-diploma pathway' }),
+    sources: [source('Ulytau Educational Foundation: CIS Astana', 'https://uef.kz/cisastana'), source('Canadian Information Centre for International Credentials: CIS Astana', 'https://www.cicdi.ca/966/canadian_international_school___astana.canada?id=9133')]
   }),
   createAstanaPrivateSchool({
-    id: 'nurorda-school-lyceum-astana',
-    name: localizedSchool({ ru: 'Нурорда школа-лицей', kk: 'Нұрорда мектеп-лицейі', en: 'Nurorda School-Lyceum' }),
-    official_name: 'Nurorda School-Lyceum',
+    id: 'astana-garden-international-school',
+    name: localizedSchool({ ru: 'Астана гарден интернешнл скул', kk: 'Астана гарден интернешнл скул', en: 'Astana Garden International School' }),
+    official_name: 'Astana Garden International School',
     district: 'yesil',
-    address: localizedSchool({ ru: 'Астана, район Есиль', kk: 'Астана, Есіл ауданы', en: 'Yesil district, Astana' }),
-    phone: '87000000004',
-    instruction_languages: ['Kazakh', 'Russian', 'English'],
-    school_type: privateSchoolType,
-    type: 'private',
-    tuition_fee: null,
-    price_status: 'unknown',
-    website: 'https://nurorda.edu.kz/',
-    programs: localizedPrograms(['National curriculum', 'Trilingual learning', 'Olympiad preparation']),
-    description: localizedPrivateDescription('Нурорда школа-лицей', 'Нұрорда мектеп-лицейі', 'Nurorda School-Lyceum', { ru: 'трехъязычной программой', kk: 'үш тілді бағдарламаны', en: 'trilingual learning' })
+    address: localizedSchool({ ru: 'ул. Алихана Бокейхана, 34, Астана', kk: 'Әлихан Бөкейхан көш., 34, Астана', en: 'A. Bokeikhana, 34, Astana' }),
+    phone: '+7 (7172) 72-55-88',
+    instruction_languages: ['English', 'Kazakh', 'Russian'],
+    school_type: englishInternationalType,
+    type: 'international',
+    website: 'https://agis.edu.kz/',
+    programs: localizedPrograms(['IB Primary Years Programme', 'IB Career-related Programme', 'Multilingual instruction']),
+    description: localizedPrivateDescription('Астана гарден интернешнл скул', 'Астана гарден интернешнл скул', 'Astana Garden International School', { ru: 'программами International Baccalaureate', kk: 'International Baccalaureate бағдарламаларын', en: 'International Baccalaureate programmes' }),
+    sources: [source('International Baccalaureate: Astana Garden International School', 'https://www.ibo.org/en/school/062624')]
   }),
   createAstanaPrivateSchool({
     id: 'quantum-stem-school-astana',
     name: localizedSchool({ ru: 'Квантум стем скул', kk: 'Квантум стем скул', en: 'Quantum STEM School' }),
     official_name: 'Quantum STEM School',
     district: 'yesil',
-    address: localizedSchool({ ru: 'Астана, район Есиль', kk: 'Астана, Есіл ауданы', en: 'Yesil district, Astana' }),
-    phone: '87000000005',
+    address: localizedSchool({ ru: 'ул. Е-899, 2, Астана', kk: 'Е-899 көш., 2, Астана', en: 'E-899, 2, Astana' }),
+    phone: '+7 707 199 3439, +7 707 360 4004',
     instruction_languages: ['Kazakh', 'Russian', 'English'],
     school_type: privateStemType,
-    type: 'specialized',
-    tuition_fee: 350000,
-    price_status: 'estimated',
+    type: 'private',
     website: 'https://quantum.edu.kz/',
     programs: localizedPrograms(['STEM programme', 'Project-based learning', 'Academic competitions']),
-    description: localizedPrivateDescription('Квантум стем скул', 'Квантум стем скул', 'Quantum STEM School', { ru: 'естественно-математическим профилем', kk: 'жаратылыстану-математика бағытын', en: 'a STEM profile' })
-  }),
-  createAstanaPrivateSchool({
-    id: 'astana-garden-school',
-    name: localizedSchool({ ru: 'Астана гарден скул', kk: 'Астана гарден скул', en: 'Astana Garden School' }),
-    official_name: 'Astana Garden School',
-    district: 'yesil',
-    address: localizedSchool({ ru: 'Астана, район Есиль', kk: 'Астана, Есіл ауданы', en: 'Yesil district, Astana' }),
-    phone: '87000000006',
-    instruction_languages: ['Kazakh', 'Russian', 'English'],
-    school_type: privateSchoolType,
-    type: 'private',
-    tuition_fee: 280000,
-    price_status: 'estimated',
-    website: 'https://astanagardenschool.kz/',
-    programs: localizedPrograms(['National curriculum', 'Language development', 'Student clubs']),
-    description: localizedPrivateDescription('Астана гарден скул', 'Астана гарден скул', 'Astana Garden School', { ru: 'частной школьной программой', kk: 'жеке мектеп бағдарламасын', en: 'a private school programme' })
+    description: localizedPrivateDescription('Квантум стем скул', 'Квантум стем скул', 'Quantum STEM School', { ru: 'естественно-математическим STEM-профилем', kk: 'жаратылыстану-математика STEM бағытын', en: 'a STEM profile' }),
+    after_school_program: 'yes',
+    sources: [source('Quantum STEM School contact page', 'https://quantumstem.edupage.org/contact/')]
   }),
   createAstanaPrivateSchool({
     id: 'tamos-space-school-astana',
-    name: localizedSchool({ ru: 'Тамос спейс скул', kk: 'Тамос спейс скул', en: 'Tamos Space School' }),
-    official_name: 'Tamos Space School',
+    name: localizedSchool({ ru: 'Тамос спейс скул / Спейс скул Астана', kk: 'Тамос спейс скул / Спейс скул Астана', en: 'Tamos Space School / Space School Astana' }),
+    official_name: 'Tamos Space School / Space School Astana',
+    district: 'nura',
+    address: localizedSchool({ ru: 'пр. Туран, 89/1, Астана', kk: 'Тұран даңғ., 89/1, Астана', en: 'Turan Avenue 89/1, Astana' }),
+    phone: '+7 705 111 11 81',
+    instruction_languages: ['Kazakh', 'Russian', 'English'],
+    school_type: privateStemType,
+    type: 'private',
+    website: 'https://spaceschool.edu.kz/en/astana/program/',
+    programs: localizedPrograms(['Cambridge Primary', 'Cambridge Lower Secondary', 'IGCSE and A-Level']),
+    description: localizedPrivateDescription('Тамос спейс скул / Спейс скул Астана', 'Тамос спейс скул / Спейс скул Астана', 'Tamos Space School / Space School Astana', { ru: 'кембриджской программой и STEM-направлением', kk: 'Кембридж бағдарламасы мен STEM бағытын', en: 'Cambridge programmes and a STEM focus' }),
+    after_school_program: 'yes',
+    school_bus: 'yes',
+    sources: [source('Space School Astana programme', 'https://spaceschool.edu.kz/en/astana/program/'), source('Tamos Space School legacy site', 'https://spaceschool.kz/kz/')]
+  }),
+  createAstanaPrivateSchool({
+    id: 'nurorda-school-lyceum-astana',
+    name: localizedSchool({ ru: 'Нурорда школа-лицей', kk: 'Нұрорда мектеп-лицейі', en: 'Nurorda School-Lyceum' }),
+    official_name: 'Nurorda School-Lyceum',
     district: 'almaty',
-    address: localizedSchool({ ru: 'Астана, район Алматы', kk: 'Астана, Алматы ауданы', en: 'Almaty district, Astana' }),
-    phone: '87000000007',
+    address: localizedSchool({ ru: 'ул. Касым Аманжолова, 34, Астана', kk: 'Қасым Аманжолов көш., 34, Астана', en: 'Kassym Amanzholov Street 34, Astana' }),
+    phone: '+7 (7172) 42-78-29',
     instruction_languages: ['Kazakh', 'Russian', 'English'],
     school_type: privateSchoolType,
     type: 'private',
-    tuition_fee: null,
-    price_status: 'unknown',
-    website: 'https://tamos-space.kz/',
-    programs: localizedPrograms(['Primary programme', 'Language development', 'Creative arts']),
-    description: localizedPrivateDescription('Тамос спейс скул', 'Тамос спейс скул', 'Tamos Space School', { ru: 'частной школьной программой', kk: 'жеке мектеп бағдарламасын', en: 'a private school programme' })
+    website: 'https://nurorda.edu.kz/',
+    programs: localizedPrograms(['National curriculum', 'Advanced Placement pathway', 'Olympiad preparation']),
+    description: localizedPrivateDescription('Нурорда школа-лицей', 'Нұрорда мектеп-лицейі', 'Nurorda School-Lyceum', { ru: 'трехъязычной программой и олимпиадной подготовкой', kk: 'үш тілді бағдарлама мен олимпиадалық дайындықты', en: 'trilingual learning and olympiad preparation' }),
+    after_school_program: 'yes',
+    sources: [source('John Catt International School Search: Lyceum School Nurorda', 'https://www.internationalschoolsearch.com/listing/lyceum-school-nurorda-kazakhstan'), source('Beyond Curriculum: Bilim-Innovation network', 'https://scoreboard.bc-pf.org/en/organizations/6153bb5bd7af56e7d9894c8a')]
+  }),
+  createAstanaPrivateSchool({
+    id: 'new-generation-school-astana',
+    name: localizedSchool({ ru: 'Нью дженерейшн скул', kk: 'Нью дженерейшн скул', en: 'New Generation School' }),
+    official_name: 'New Generation School',
+    district: 'saryarka',
+    address: localizedSchool({ ru: 'ул. Культегин, 12, Астана', kk: 'Күлтегін көш., 12, Астана', en: '12 Kultegin Street, Astana' }),
+    phone: '+7 (776) 754 55 05',
+    instruction_languages: ['Kazakh', 'Russian', 'English'],
+    school_type: privateSchoolType,
+    type: 'private',
+    website: 'https://www.ngs-school.kz/en',
+    programs: localizedPrograms(['National curriculum', 'Innovation-focused learning', 'Language development']),
+    description: localizedPrivateDescription('Нью дженерейшн скул', 'Нью дженерейшн скул', 'New Generation School', { ru: 'частной школьной программой, ориентированной на инновации', kk: 'инновацияға бағытталған жеке мектеп бағдарламасын', en: 'an innovation-focused private school programme' }),
+    sources: [source('New Generation School Astana official website', 'https://www.ngs-school.kz/en')]
+  }),
+  createAstanaPrivateSchool({
+    id: 'bibigul-tulegenova-creative-school',
+    name: localizedSchool({ ru: 'Креативная школа Бибигуль Тулегеновой', kk: 'Бибігүл Төлегенова креатив мектебі', en: 'Bibigul Tulegenova Creative School' }),
+    official_name: 'Bibigul Tulegenova Creative School',
+    district: 'almaty',
+    address: localizedSchool({ ru: 'ул. Толе би, 31, Астана', kk: 'Төле би көш., 31, Астана', en: '31 Tole Bi Street, Astana' }),
+    phone: '+7 (707) 784-22-17',
+    instruction_languages: ['Kazakh', 'Russian', 'English'],
+    school_type: privateSchoolType,
+    type: 'private',
+    website: 'https://btcs.edu.kz/',
+    programs: localizedPrograms(['National curriculum', 'Creative arts', 'Language development']),
+    description: localizedPrivateDescription('Креативная школа Бибигуль Тулегеновой', 'Бибігүл Төлегенова креатив мектебі', 'Bibigul Tulegenova Creative School', { ru: 'частной программой с творческим профилем', kk: 'шығармашылық бағыттағы жеке бағдарламаны', en: 'a creative private school profile' }),
+    after_school_program: 'yes',
+    sources: [source('Bibigul Tulegenova Creative School contact page', 'https://btcs.edupage.org/contact/')]
+  }),
+  createAstanaPrivateSchool({
+    id: 'ardingly-astana',
+    name: localizedSchool({ ru: 'Ардингли Астана', kk: 'Ардингли Астана', en: 'Ardingly Astana' }),
+    official_name: 'Ardingly Astana',
+    district: 'nura',
+    address: localizedSchool({ ru: 'ул. Аскара Токпанова, 31, Астана', kk: 'Асқар Тоқпанов көш., 31, Астана', en: '31 Askar Tokpanov Street, Astana' }),
+    phone: '+7 700 317 1111',
+    instruction_languages: ['English'],
+    school_type: englishInternationalType,
+    type: 'international',
+    website: 'https://www.ardingly.edu.kz/',
+    programs: localizedPrograms(['British independent school curriculum', 'World Ready programme', 'Admissions assessment']),
+    description: localizedPrivateDescription('Ардингли Астана', 'Ардингли Астана', 'Ardingly Astana', { ru: 'британской независимой школьной программой', kk: 'британдық тәуелсіз мектеп бағдарламасын', en: 'a British independent school curriculum' }),
+    sources: [source('Ardingly Astana official website', 'https://www.ardingly.edu.kz/')]
+  }),
+  createAstanaPrivateSchool({
+    id: 'maple-bear-astana',
+    name: localizedSchool({ ru: 'Мейпл Бир Астана', kk: 'Мейпл Бир Астана', en: 'Maple Bear Astana' }),
+    official_name: 'Maple Bear Astana',
+    district: 'saryarka',
+    address: localizedSchool({ ru: 'ул. Арна, 6, мкр. Караоткель-2, Астана', kk: 'Арна көш., 6, Қараөткел-2 шағын ауданы, Астана', en: '6 Arna street, Karaotkel-2 microdistrict, Astana' }),
+    phone: '+7 702 820 6106',
+    instruction_languages: ['English', 'Russian'],
+    school_type: englishInternationalType,
+    type: 'international',
+    website: 'https://maplebear.kz/',
+    programs: localizedPrograms(['Canadian methodology', 'Bilingual education', 'Early years and school programmes']),
+    description: localizedPrivateDescription('Мейпл Бир Астана', 'Мейпл Бир Астана', 'Maple Bear Astana', { ru: 'канадской методикой и билингвальным обучением', kk: 'канадалық әдістеме мен билингвалды оқытуды', en: 'Canadian methodology and bilingual education' }),
+    sources: [source('Maple Bear Kazakhstan official website', 'https://maplebear.kz/')]
+  }),
+
+  createAstanaPrivateSchool({
+    id: 'ecole-francaise-charles-de-gaulle-miras',
+    name: localizedSchool({ ru: 'Французская международная школа Шарль де Голль-Мирас', kk: 'Шарль де Голль-Мирас француз халықаралық мектебі', en: 'Ecole Française Internationale Charles de Gaulle-Miras' }),
+    official_name: 'Ecole Française Internationale Charles de Gaulle-Miras',
+    district: 'almaty',
+    address: localizedSchool({ ru: 'ул. Куйши Дина, 32, Астана', kk: 'Күйші Дина көш., 32, Астана', en: '32 Kuishi Dina Street, Astana' }),
+    phone: '+7 702 387 73 30',
+    instruction_languages: ['French', 'English', 'Kazakh', 'Russian'],
+    school_type: englishInternationalType,
+    type: 'international',
+    website: 'https://www.efns.kz/?lang=en',
+    programs: localizedPrograms(['French national curriculum', 'CNED-supported secondary programme', 'Multilingual learning']),
+    description: localizedPrivateDescription('Французская международная школа Шарль де Голль-Мирас', 'Шарль де Голль-Мирас француз халықаралық мектебі', 'Ecole Française Internationale Charles de Gaulle-Miras', { ru: 'французской программой и многоязычным обучением', kk: 'француз бағдарламасы мен көптілді оқытуды', en: 'a French curriculum and multilingual learning' }),
+    after_school_program: 'yes',
+    school_bus: 'yes',
+    sources: [source('Mission laïque française: Section française de l’École internationale Miras', 'https://www.mlfmonde.org/etablissements/section-francaise-de-lecole-internationale-miras/'), source('Ecole Française Internationale Charles de Gaulle-Miras admissions', 'https://www.efns.kz/Inscription?id_article=19&lang=en')]
+  }),
+  createAstanaPrivateSchool({
+    id: 'alpamys-school-astana',
+    name: localizedSchool({ ru: 'Алпамыс скул', kk: 'Алпамыс мектебі', en: 'Alpamys School' }),
+    official_name: 'Alpamys School',
+    district: 'nura',
+    address: localizedSchool({ ru: 'пр. Кабанбай Батыра, 49/2, Астана', kk: 'Қабанбай батыр даңғ., 49/2, Астана', en: '49/2 Kabanbay Batyr Avenue, Astana' }),
+    phone: '+7 (7172) 72-56-56',
+    instruction_languages: ['Kazakh', 'English'],
+    school_type: privateSchoolType,
+    type: 'private',
+    website: 'https://www.alpamys.edu.kz/',
+    programs: localizedPrograms(['National curriculum', 'STEM and STEAM development', 'English and Kazakh language development']),
+    description: localizedPrivateDescription('Алпамыс скул', 'Алпамыс мектебі', 'Alpamys School', { ru: 'частной программой полного дня и STEM/STEAM-направлением', kk: 'толық күндік жеке бағдарлама мен STEM/STEAM бағытын', en: 'a full-day private programme and STEM/STEAM focus' }),
+    after_school_program: 'yes',
+    sources: [source('Alpamys School contacts', 'https://www.alpamys.edu.kz/kontakty/'), source('Alpamys School admissions overview', 'https://alpamys-school.kz/eng')]
+  }),
+  createAstanaPrivateSchool({
+    id: 'bilim-innovation-lyceum-boys-astana',
+    name: localizedSchool({ ru: 'Білім-инновация лицей-интернат для одаренных юношей', kk: 'Дарынды жасөспірімдерге арналған Білім-инновация лицей-интернаты', en: 'Astana Bilim-Innovation Lyceum for Gifted Boys' }),
+    official_name: 'Astana Bilim-Innovation Lyceum for gifted boys',
+    district: 'yesil',
+    address: localizedSchool({ ru: 'ул. Турара Рыскулова, 14, Астана', kk: 'Тұрар Рысқұлов көш., 14, Астана', en: 'Turar Ryskulov Street 14, Astana' }),
+    phone: '+7 (7172) 53-88-54',
+    instruction_languages: ['Kazakh', 'English'],
+    school_type: { ru: 'Специализированный лицей-интернат', kk: 'Мамандандырылған лицей-интернат', en: 'Specialized boarding lyceum' },
+    type: 'specialized',
+    website: 'https://astanaboysbil.edu.kz/',
+    programs: localizedPrograms(['IB Middle Years Programme', 'STEM and olympiad preparation', 'Boarding programme']),
+    description: localizedPrivateDescription('Білім-инновация лицей-интернат для одаренных юношей', 'Дарынды жасөспірімдерге арналған Білім-инновация лицей-интернаты', 'Astana Bilim-Innovation Lyceum for Gifted Boys', { ru: 'специализированной программой BIL и IB MYP', kk: 'BIL мамандандырылған бағдарламасы мен IB MYP бағдарламасын', en: 'a specialized BIL programme and IB MYP' }),
+    after_school_program: 'yes',
+    admission_test: 'yes',
+    sources: [source('International Baccalaureate: Astana Bilim-Innovation Lyceum for gifted boys', 'https://www.ibo.org/en/school/063653'), source('Yandex Maps: Astana BIL boys contact', 'https://yandex.com/maps/org/litsey_internat_b_l_m_innovatsiya_dlya_odarennykh_malchikov/103527299315/')]
+  }),
+  createAstanaPrivateSchool({
+    id: 'bilim-innovation-lyceum-girls-astana',
+    name: localizedSchool({ ru: 'Білім-инновация лицей-интернат для одаренных девушек', kk: 'Дарынды қыздарға арналған Білім-инновация лицей-интернаты', en: 'Astana Bilim-Innovation Lyceum for Gifted Girls' }),
+    official_name: 'Astana Bilim-Innovation Lyceum for gifted girls',
+    district: 'saryarka',
+    address: localizedSchool({ ru: 'ул. Бердибека Сокпакбаева, 17, Астана', kk: 'Бердібек Соқпақбаев көш., 17, Астана', en: 'Berdibek Soqpaqbaev Street 17, Astana' }),
+    phone: '+7 (7172) 48-11-60',
+    instruction_languages: ['Kazakh', 'English'],
+    school_type: { ru: 'Специализированный лицей-интернат', kk: 'Мамандандырылған лицей-интернат', en: 'Specialized boarding lyceum' },
+    type: 'specialized',
+    website: 'https://bilnurqyz.edu.kz/',
+    programs: localizedPrograms(['BIL curriculum', 'STEM and olympiad preparation', 'Boarding programme']),
+    description: localizedPrivateDescription('Білім-инновация лицей-интернат для одаренных девушек', 'Дарынды қыздарға арналған Білім-инновация лицей-интернаты', 'Astana Bilim-Innovation Lyceum for Gifted Girls', { ru: 'специализированной программой BIL', kk: 'BIL мамандандырылған бағдарламасын', en: 'a specialized BIL programme' }),
+    after_school_program: 'yes',
+    admission_test: 'yes',
+    sources: [source('Yandex Maps: Astana BIL girls contact', 'https://yandex.com/maps/org/bilim_innovatsiya_litsey_internat/202880731553/'), source('Beyond Curriculum: Bilim-Innovation network', 'https://scoreboard.bc-pf.org/en/organizations/6153bb5bd7af56e7d9894c8a')]
   })
+
 
 ];
 
