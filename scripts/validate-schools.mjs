@@ -10,7 +10,7 @@ import {
   verificationStatuses,
   yesNoUnknownStatuses
 } from '../src/data/schools.js';
-import { doesSchoolMatchPriceFilter } from '../src/lib/priceFilters.js';
+import { doesSchoolMatchBudgetFilter, doesSchoolMatchPriceFilter } from '../src/lib/priceFilters.js';
 
 const requiredFields = [
   'id',
@@ -87,6 +87,7 @@ const tuitionFilterFixtures = [
   { id: 'fixture-200000-boundary', tuition_fee: 200000, price_status: 'verified' },
   { id: 'fixture-400000-boundary', tuition_fee: 400000, price_status: 'estimated' },
   { id: 'fixture-800000-boundary', tuition_fee: 800000, price_status: 'estimated' },
+  { id: 'fixture-above-800000', tuition_fee: 900000, price_status: 'estimated' },
   { id: 'fixture-unknown-null', tuition_fee: null, price_status: 'unknown' },
   { id: 'fixture-unknown-status', tuition_fee: 250000, price_status: 'unknown' }
 ];
@@ -98,12 +99,13 @@ const expectedTuitionFilterMatches = {
     'fixture-200000-boundary',
     'fixture-400000-boundary',
     'fixture-800000-boundary',
+    'fixture-above-800000',
     'fixture-unknown-status'
   ],
   up_to_200000: ['fixture-low-paid', 'fixture-200000-boundary'],
   range_200000_400000: ['fixture-200000-boundary', 'fixture-400000-boundary', 'fixture-unknown-status'],
   range_400000_800000: ['fixture-400000-boundary', 'fixture-800000-boundary'],
-  range_800000_plus: ['fixture-800000-boundary'],
+  range_800000_plus: ['fixture-800000-boundary', 'fixture-above-800000'],
   unknown_price: ['fixture-unknown-null', 'fixture-unknown-status']
 };
 
@@ -115,6 +117,35 @@ Object.entries(expectedTuitionFilterMatches).forEach(([filterValue, expectedIds]
   if (actualIds.join(',') !== expectedIds.join(',')) {
     errors.push(
       `${filterValue} tuition filter expected [${expectedIds.join(', ')}], received [${actualIds.join(', ')}]`
+    );
+  }
+});
+
+const expectedRecommendationBudgetMatches = {
+  any: tuitionFilterFixtures.map((school) => school.id),
+  free: ['fixture-free'],
+  paid_only: [
+    'fixture-low-paid',
+    'fixture-200000-boundary',
+    'fixture-400000-boundary',
+    'fixture-800000-boundary',
+    'fixture-above-800000',
+    'fixture-unknown-status'
+  ],
+  up_to_200000: ['fixture-low-paid', 'fixture-200000-boundary'],
+  range_200000_400000: ['fixture-200000-boundary', 'fixture-400000-boundary', 'fixture-unknown-status'],
+  range_400000_800000: ['fixture-400000-boundary', 'fixture-800000-boundary'],
+  range_800000_plus: ['fixture-800000-boundary', 'fixture-above-800000']
+};
+
+Object.entries(expectedRecommendationBudgetMatches).forEach(([filterValue, expectedIds]) => {
+  const actualIds = tuitionFilterFixtures
+    .filter((school) => doesSchoolMatchBudgetFilter(school, filterValue))
+    .map((school) => school.id);
+
+  if (actualIds.join(',') !== expectedIds.join(',')) {
+    errors.push(
+      `${filterValue} recommendation budget expected [${expectedIds.join(', ')}], received [${actualIds.join(', ')}]`
     );
   }
 });

@@ -9,7 +9,7 @@ import {
   schools
 } from '../../src/data/schools.js';
 import { doesSchoolMatchCatalogFilters } from '../../src/lib/schoolFilters.js';
-import { doesSchoolMatchPriceFilter } from '../../src/lib/priceFilters.js';
+import { doesSchoolMatchBudgetFilter, doesSchoolMatchPriceFilter } from '../../src/lib/priceFilters.js';
 
 const defaultLanguage = 'ru';
 const languageStorageKey = 'school-choice-kz-language';
@@ -36,7 +36,7 @@ const languageOptions = [
 
 const childAgeOptions = ['5', '6', '7'];
 const schoolTypeOptions = ['public', 'private', 'international', 'any'];
-const budgetOptions = ['free', 'up_to_200000', 'range_200000_400000', 'range_400000_800000', 'range_800000_plus', 'any'];
+const budgetOptions = ['free', 'paid_only', 'up_to_200000', 'range_200000_400000', 'range_400000_800000', 'range_800000_plus', 'any'];
 const preferenceOptions = ['yes', 'no', 'not_important'];
 
 const translations = {
@@ -70,6 +70,7 @@ const translations = {
     },
     budgets: {
       free: 'Только бесплатные',
+      paid_only: 'Только платные',
       up_to_200000: 'До 200 000 ₸',
       range_200000_400000: '200 000–400 000 ₸',
       range_400000_800000: '400 000–800 000 ₸',
@@ -146,6 +147,7 @@ const translations = {
     },
     budgets: {
       free: 'Тек тегін',
+      paid_only: 'Тек ақылы',
       up_to_200000: '200 000 ₸ дейін',
       range_200000_400000: '200 000–400 000 ₸',
       range_400000_800000: '400 000–800 000 ₸',
@@ -222,6 +224,7 @@ const translations = {
     },
     budgets: {
       free: 'Free only',
+      paid_only: 'Paid only',
       up_to_200000: 'Up to 200,000 ₸',
       range_200000_400000: '200,000–400,000 ₸',
       range_400000_800000: '400,000–800,000 ₸',
@@ -523,6 +526,7 @@ export default function QuizPage() {
   const recommendations = useMemo(
     () =>
       schools
+        .filter((school) => doesSchoolMatchBudgetFilter(school, answers.budget))
         .map((school) => scoreSchool({ school, answers, language: currentLanguage, moneyFormatter, t }))
         .sort((first, second) => second.score - first.score || getLocalizedSchoolValue(first.school.name, currentLanguage).localeCompare(getLocalizedSchoolValue(second.school.name, currentLanguage)))
         .slice(0, 12),
