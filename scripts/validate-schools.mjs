@@ -78,8 +78,46 @@ const toArray = (value) => (Array.isArray(value) ? value : [value]);
 
 const privateOrInternationalSchools = schools.filter((school) => ['private', 'international'].includes(school.type));
 const paidSchools = schools.filter((school) => typeof school.tuition_fee === 'number' && school.tuition_fee > 0);
-const paidFilterResults = schools.filter((school) => doesSchoolMatchPriceFilter(school, 'paid'));
-const midRangeFilterResults = schools.filter((school) => doesSchoolMatchPriceFilter(school, '400000-800000'));
+const paidFilterResults = schools.filter((school) => doesSchoolMatchPriceFilter(school, 'paid_only'));
+const midRangeFilterResults = schools.filter((school) => doesSchoolMatchPriceFilter(school, 'range_400000_800000'));
+
+const tuitionFilterFixtures = [
+  { id: 'fixture-free', tuition_fee: 0, price_status: 'verified' },
+  { id: 'fixture-low-paid', tuition_fee: 150000, price_status: 'verified' },
+  { id: 'fixture-200000-boundary', tuition_fee: 200000, price_status: 'verified' },
+  { id: 'fixture-400000-boundary', tuition_fee: 400000, price_status: 'estimated' },
+  { id: 'fixture-800000-boundary', tuition_fee: 800000, price_status: 'estimated' },
+  { id: 'fixture-unknown-null', tuition_fee: null, price_status: 'unknown' },
+  { id: 'fixture-unknown-status', tuition_fee: 250000, price_status: 'unknown' }
+];
+
+const expectedTuitionFilterMatches = {
+  free: ['fixture-free'],
+  paid_only: [
+    'fixture-low-paid',
+    'fixture-200000-boundary',
+    'fixture-400000-boundary',
+    'fixture-800000-boundary',
+    'fixture-unknown-status'
+  ],
+  up_to_200000: ['fixture-low-paid', 'fixture-200000-boundary'],
+  range_200000_400000: ['fixture-200000-boundary', 'fixture-400000-boundary', 'fixture-unknown-status'],
+  range_400000_800000: ['fixture-400000-boundary', 'fixture-800000-boundary'],
+  range_800000_plus: ['fixture-800000-boundary'],
+  unknown_price: ['fixture-unknown-null', 'fixture-unknown-status']
+};
+
+Object.entries(expectedTuitionFilterMatches).forEach(([filterValue, expectedIds]) => {
+  const actualIds = tuitionFilterFixtures
+    .filter((school) => doesSchoolMatchPriceFilter(school, filterValue))
+    .map((school) => school.id);
+
+  if (actualIds.join(',') !== expectedIds.join(',')) {
+    errors.push(
+      `${filterValue} tuition filter expected [${expectedIds.join(', ')}], received [${actualIds.join(', ')}]`
+    );
+  }
+});
 
 if (paidSchools.length < 10) {
   errors.push(`Expected at least 10 paid schools, found ${paidSchools.length}`);
@@ -89,11 +127,15 @@ if (paidFilterResults.length === 0 || paidFilterResults.some((school) => !(typeo
   errors.push('Paid-only filter must return only schools with tuition_fee > 0');
 }
 
-if (midRangeFilterResults.length === 0 || midRangeFilterResults.some((school) => !(typeof school.tuition_fee === 'number' && school.tuition_fee >= 400000 && school.tuition_fee <= 800000))) {
-  errors.push('400000-800000 filter must return only schools with tuition_fee between 400000 and 800000 inclusive');
+if (schools.some((school) => school.tuition_fee === 0 && doesSchoolMatchPriceFilter(school, 'up_to_200000'))) {
+  errors.push('up_to_200000 filter must not return free schools with tuition_fee === 0');
 }
 
-if (schools.some((school) => school.tuition_fee === null && doesSchoolMatchPriceFilter(school, '400000-800000'))) {
+if (midRangeFilterResults.length === 0 || midRangeFilterResults.some((school) => !(typeof school.tuition_fee === 'number' && school.tuition_fee >= 400000 && school.tuition_fee <= 800000))) {
+  errors.push('range_400000_800000 filter must return only schools with tuition_fee between 400000 and 800000 inclusive');
+}
+
+if (schools.some((school) => school.tuition_fee === null && doesSchoolMatchPriceFilter(school, 'range_400000_800000'))) {
   errors.push('Unknown tuition_fee values must not appear in numeric price ranges');
 }
 
