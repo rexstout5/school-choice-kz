@@ -11,6 +11,9 @@ export const priceOptionValues = [
 
 const getMonthlyTuitionFee = (school) => school.tuition_fee;
 
+export const doesSchoolMatchBudgetFilter = (school, selectedBudget) =>
+  selectedBudget === 'any' || doesSchoolMatchPriceFilter(school, selectedBudget);
+
 export const doesSchoolMatchPriceFilter = (school, selectedPrice) => {
   const price = getMonthlyTuitionFee(school);
 
