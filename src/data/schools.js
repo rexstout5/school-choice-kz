@@ -57,7 +57,9 @@ const instructionLanguageTranslations = {
 
 const schoolOwnershipTypeTranslations = {
   public: { ru: 'Государственная', kk: 'Мемлекеттік', en: 'Public' },
-  private: { ru: 'Частная', kk: 'Жеке', en: 'Private' }
+  private: { ru: 'Частная', kk: 'Жеке', en: 'Private' },
+  international: { ru: 'Международная', kk: 'Халықаралық', en: 'International' },
+  specialized: { ru: 'Специализированная', kk: 'Мамандандырылған', en: 'Specialized' }
 };
 
 const verificationStatusTranslations = {
@@ -197,25 +199,35 @@ const addressTranslations = {
   'Sauran St, 11, Astana': { ru: 'ул. Сауран, 11, Астана', kk: 'Сауран көш., 11, Астана' }
 };
 
+const isLocalizedObjectValue = (value) =>
+  value && typeof value === 'object' && !Array.isArray(value);
+
 const localizeLanguages = (instructionLanguages) => ({
   ru: instructionLanguages.map((language) => instructionLanguageTranslations[language]?.ru ?? language).join(', '),
   kk: instructionLanguages.map((language) => instructionLanguageTranslations[language]?.kk ?? language).join(', '),
   en: instructionLanguages.map((language) => instructionLanguageTranslations[language]?.en ?? language).join(', ')
 });
 
-const localizeSchoolType = (schoolType) => schoolTypeTranslations[schoolType] ?? { ru: schoolType, kk: schoolType, en: schoolType };
+const localizeSchoolType = (schoolType) =>
+  isLocalizedObjectValue(schoolType) ? schoolType : schoolTypeTranslations[schoolType] ?? { ru: schoolType, kk: schoolType, en: schoolType };
 
-const localizeAddress = (address) => ({
-  ru: addressTranslations[address]?.ru ?? address,
-  kk: addressTranslations[address]?.kk ?? address,
-  en: address
-});
+const localizeAddress = (address) =>
+  isLocalizedObjectValue(address)
+    ? address
+    : {
+        ru: addressTranslations[address]?.ru ?? address,
+        kk: addressTranslations[address]?.kk ?? address,
+        en: address
+      };
 
-const localizeClassSize = (classSize) => ({
-  ru: classSize === 'Varies by grade and available capacity' ? 'Зависит от класса и доступных мест' : classSize,
-  kk: classSize === 'Varies by grade and available capacity' ? 'Сыныпқа және бос орындарға байланысты' : classSize,
-  en: classSize
-});
+const localizeClassSize = (classSize) =>
+  isLocalizedObjectValue(classSize)
+    ? classSize
+    : {
+        ru: classSize === 'Varies by grade and available capacity' ? 'Зависит от класса и доступных мест' : classSize,
+        kk: classSize === 'Varies by grade and available capacity' ? 'Сыныпқа және бос орындарға байланысты' : classSize,
+        en: classSize
+      };
 
 export const districtLabels = {
   saryarka: { ru: 'Сарыарка', kk: 'Сарыарқа', en: 'Saryarka' },
@@ -265,6 +277,10 @@ const districtLabel = (district, language) => {
 };
 
 const localizeName = (name) => {
+  if (isLocalizedObjectValue(name)) {
+    return name;
+  }
+
   const specializedGymnasium = name.match(/^Specialized Gymnasium No\. (\d+) (.+)$/);
   if (specializedGymnasium) {
     const [, number, brand] = specializedGymnasium;
@@ -301,13 +317,20 @@ const localizeName = (name) => {
   };
 };
 
-const localizePrograms = (programs) => ({
-  ru: programs.map((program) => programTranslations[program]?.ru ?? program),
-  kk: programs.map((program) => programTranslations[program]?.kk ?? program),
-  en: programs
-});
+const localizePrograms = (programs) =>
+  isLocalizedObjectValue(programs)
+    ? programs
+    : {
+        ru: programs.map((program) => programTranslations[program]?.ru ?? program),
+        kk: programs.map((program) => programTranslations[program]?.kk ?? program),
+        en: programs
+      };
 
 const localizeDescription = ({ description, district, instruction_languages, school_type }) => {
+  if (isLocalizedObjectValue(description)) {
+    return description;
+  }
+
   const isKazakhOnly = instruction_languages.length === 1 && instruction_languages[0] === 'Kazakh';
   const isSpecialized = school_type.toLowerCase().includes('specialized');
   const isGymnasium = school_type.toLowerCase().includes('gymnasium');
@@ -335,11 +358,14 @@ const localizeDescription = ({ description, district, instruction_languages, sch
   };
 };
 
-const localizeAdmissionRequirements = (admissionRequirements) => ({
-  ru: 'Стандартные документы для зачисления в государственную школу и подтверждение права обучения по месту проживания.',
-  kk: 'Мемлекеттік мектепке қабылдауға арналған стандартты құжаттар және тұрғылықты жері бойынша бекітілу құқығын растау.',
-  en: admissionRequirements
-});
+const localizeAdmissionRequirements = (admissionRequirements) =>
+  isLocalizedObjectValue(admissionRequirements)
+    ? admissionRequirements
+    : {
+        ru: 'Стандартные документы для зачисления в государственную школу и подтверждение права обучения по месту проживания.',
+        kk: 'Мемлекеттік мектепке қабылдауға арналған стандартты құжаттар және тұрғылықты жері бойынша бекітілу құқығын растау.',
+        en: admissionRequirements
+      };
 
 export const getLocalizedSchoolValue = (value, language) => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -386,7 +412,11 @@ const createAstanaPublicSchool = ({
   admission_test = 'no',
   class_size = 'Varies by grade and available capacity',
   admission_requirements = 'Standard public school enrollment documents and local catchment eligibility',
-  rating = 0
+  rating = 0,
+  type,
+  website,
+  sources,
+  audit = AUDIT_RESULT
 }) => {
   const localizedName = localizeName(name);
   const localizedDescription = localizeDescription({ description, district, instruction_languages, school_type });
@@ -397,6 +427,16 @@ const createAstanaPublicSchool = ({
   const localizedAddress = localizeAddress(address);
   const localizedClassSize = localizeClassSize(class_size);
 
+  const schoolTypeForClassification = typeof school_type === 'string' ? school_type : school_type.en ?? '';
+  const resolvedType = type ?? (schoolTypeForClassification.toLowerCase().includes('international')
+    ? 'international'
+    : schoolTypeForClassification.toLowerCase().includes('specialized')
+      ? 'specialized'
+      : 'public');
+  const resolvedWebsite = website ?? schoolWebsite(number);
+  const resolvedPhone = formatPhone(phone);
+  const resolvedSources = sources ?? [ASTANA_PUBLIC_SCHOOL_SOURCE, WEBSITE_SOURCE];
+
   return ({
   id,
   name: localizedName,
@@ -404,7 +444,7 @@ const createAstanaPublicSchool = ({
   official_name_local,
   city: 'Astana',
   district,
-  type: 'public',
+  type: resolvedType,
   school_type: localizedSchoolType,
   language,
   languages: localizedLanguages,
@@ -420,15 +460,15 @@ const createAstanaPublicSchool = ({
   admission_requirements: localizedAdmissionRequirements,
   rating,
   address: localizedAddress,
-  website: schoolWebsite(number),
-  phone: formatPhone(phone),
+  website: resolvedWebsite,
+  phone: resolvedPhone,
   description: localizedDescription,
   programs: localizedPrograms,
   verification_status,
   contact: {
     address: localizedAddress,
-    website: schoolWebsite(number),
-    phone: formatPhone(phone)
+    website: resolvedWebsite,
+    phone: resolvedPhone
   },
   academics: {
     school_type: localizedSchoolType,
@@ -439,19 +479,93 @@ const createAstanaPublicSchool = ({
   },
   metadata: {
     school_number: number,
-    ownership: 'public',
+    ownership: resolvedType,
     price_status,
     data_status,
-    audit_status: AUDIT_RESULT.status,
+    audit_status: audit.status,
     expandable_fields: ['admissions', 'catchment_area', 'coordinates', 'fees', 'reviews', 'transportation']
   },
   audit: {
-    ...AUDIT_RESULT,
-    source_names: [ASTANA_PUBLIC_SCHOOL_SOURCE.name, WEBSITE_SOURCE.name]
+    ...audit,
+    source_names: resolvedSources.map((source) => source.name)
   },
-  sources: [ASTANA_PUBLIC_SCHOOL_SOURCE, WEBSITE_SOURCE]
+  sources: resolvedSources
 });
 };
+
+
+const PRIVATE_SCHOOL_AUDIT = {
+  ...AUDIT_RESULT,
+  note: {
+    ru: 'Сведения о частной или международной школе сверены с открытыми школьными каталогами и сайтами; стоимость помечена по уровню надежности источника.',
+    kk: 'Жеке немесе халықаралық мектеп туралы мәліметтер ашық мектеп каталогтары және сайттары бойынша салыстырылды; оқу ақысы дереккөз сенімділігіне қарай белгіленді.',
+    en: 'Private or international school details were matched against open school directories and websites; tuition is marked by source reliability.'
+  }
+};
+
+const source = (name, url) => ({
+  name,
+  localized_name: {
+    ru: 'Открытый источник: частные и международные школы Астаны',
+    kk: 'Ашық дереккөз: Астананың жеке және халықаралық мектептері',
+    en: name
+  },
+  url
+});
+
+const localizedSchool = ({ ru, kk, en }) => ({ ru, kk, en });
+const localizedPrograms = (en) => ({
+  ru: ['Международная учебная программа', 'Языковое развитие', 'Внеурочные занятия'],
+  kk: ['Халықаралық оқу бағдарламасы', 'Тілдерді дамыту', 'Сыныптан тыс іс-шаралар'],
+  en
+});
+const localizedPrivateDescription = (ruName, kkName, enName, curriculum) => ({
+  ru: `${ruName} — частная или международная школа Астаны с ${curriculum.ru} и расширенными программами для семей, сравнивающих платные варианты обучения.`,
+  kk: `${kkName} — Астанадағы ${curriculum.kk} ұсынатын жеке немесе халықаралық мектеп, ақылы оқу нұсқаларын салыстыратын отбасыларға арналған.`,
+  en: `${enName} is a private or international Astana school with ${curriculum.en} for families comparing paid school options.`
+});
+const privateAdmissionRequirements = {
+  ru: 'Заявка, собеседование или вступительная диагностика; точный пакет документов уточняется в приемной комиссии школы.',
+  kk: 'Өтініш, сұхбат немесе қабылдау диагностикасы; нақты құжаттар тізімі мектептің қабылдау бөлімінде нақтыланады.',
+  en: 'Application, interview or admissions assessment; exact documents should be confirmed with the school admissions office.'
+};
+const privateClassSize = { ru: 'Зависит от класса и программы', kk: 'Сынып пен бағдарламаға байланысты', en: 'Varies by grade and programme' };
+const englishInternationalType = { ru: 'Частная международная школа', kk: 'Жеке халықаралық мектеп', en: 'Private international school' };
+const privateSchoolType = { ru: 'Частная школа', kk: 'Жеке мектеп', en: 'Private school' };
+const privateStemType = { ru: 'Частная специализированная школа', kk: 'Жеке мамандандырылған мектеп', en: 'Private specialized school' };
+const privateSources = [
+  source('International Schools Database: Astana schools', 'https://www.international-schools-database.com/in/nur-sultan-astana'),
+  source('WE Project: 10 private educational institutions in Astana', 'https://weproject.media/en/articles/detail/which-school-in-astana-to-choose-for-your-child-10-private-educational-institutions/')
+];
+
+const createAstanaPrivateSchool = ({ id, name, official_name, district, address, phone, instruction_languages, school_type, type, tuition_fee, price_status, data_status = 'needs_review', website, programs, description }) =>
+  createAstanaPublicSchool({
+    id,
+    number: 0,
+    name,
+    official_name,
+    official_name_local: getLocalizedSchoolValue(name, 'ru'),
+    district,
+    address,
+    phone,
+    language: instruction_languages.join(', '),
+    instruction_languages,
+    school_type,
+    type,
+    description,
+    programs,
+    tuition_fee,
+    price_status,
+    data_status,
+    after_school_program: 'yes',
+    school_bus: 'unknown',
+    admission_test: 'yes',
+    class_size: privateClassSize,
+    admission_requirements: privateAdmissionRequirements,
+    website,
+    sources: privateSources,
+    audit: PRIVATE_SCHOOL_AUDIT
+  });
 
 export const schools = [
   createAstanaPublicSchool({
@@ -906,9 +1020,203 @@ export const schools = [
     description: 'A public school-lyceum on Sauran Street with Kazakh and Russian instruction.',
     programs: ['Lyceum curriculum', 'General secondary education', 'Bilingual school streams', 'Student clubs']
   })
+,
+  createAstanaPrivateSchool({
+    id: 'haileybury-astana',
+    name: localizedSchool({ ru: 'Хейлибери Астана', kk: 'Хейлибери Астана', en: 'Haileybury Astana' }),
+    official_name: 'Haileybury Astana',
+    district: 'yesil',
+    address: localizedSchool({ ru: 'пр. Кабанбай батыра, 4, Астана', kk: 'Қабанбай батыр даңғ., 4, Астана', en: 'Kabanbay Batyr Ave, 4, Astana' }),
+    phone: '87172559855',
+    instruction_languages: ['English'],
+    school_type: englishInternationalType,
+    type: 'international',
+    tuition_fee: 693600,
+    price_status: 'verified',
+    website: 'https://www.haileybury.kz/en/astana',
+    programs: localizedPrograms(['British curriculum', 'International Baccalaureate', 'English-medium instruction']),
+    description: localizedPrivateDescription('Хейлибери Астана', 'Хейлибери Астана', 'Haileybury Astana', { ru: 'британской программой', kk: 'британдық бағдарламаны', en: 'a British curriculum' })
+  }),
+  createAstanaPrivateSchool({
+    id: 'spectrum-international-school-astana',
+    name: localizedSchool({ ru: 'Спектрум интернешнл скул', kk: 'Спектрум интернешнл скул', en: 'Spectrum International School' }),
+    official_name: 'Spectrum International School',
+    district: 'almaty',
+    address: localizedSchool({ ru: 'пр. Рахымжана Кошкарбаева, 11, Астана', kk: 'Рақымжан Қошқарбаев даңғ., 11, Астана', en: 'Rakhymzhan Koshkarbayev Ave, 11, Astana' }),
+    phone: '87079263646',
+    instruction_languages: ['English'],
+    school_type: englishInternationalType,
+    type: 'international',
+    tuition_fee: 616000,
+    price_status: 'verified',
+    website: 'https://spectrum.edu.kz/',
+    programs: localizedPrograms(['Cambridge curriculum', 'English-medium instruction', 'International exams']),
+    description: localizedPrivateDescription('Спектрум интернешнл скул', 'Спектрум интернешнл скул', 'Spectrum International School', { ru: 'британской программой', kk: 'британдық бағдарламаны', en: 'a British curriculum' })
+  }),
+  createAstanaPrivateSchool({
+    id: 'miras-international-school-astana',
+    name: localizedSchool({ ru: 'Мирас интернешнл скул Астана', kk: 'Мирас интернешнл скул Астана', en: 'Miras International School Astana' }),
+    official_name: 'Miras International School Astana',
+    district: 'yesil',
+    address: localizedSchool({ ru: 'ул. Керей и Жанибек хандар, 30, Астана', kk: 'Керей және Жәнібек хандар көш., 30, Астана', en: 'Kerey and Zhanibek Khans St, 30, Astana' }),
+    phone: '87172515627',
+    instruction_languages: ['English', 'Russian'],
+    school_type: englishInternationalType,
+    type: 'international',
+    tuition_fee: 466710,
+    price_status: 'verified',
+    website: 'https://miras-astana.kz/',
+    programs: localizedPrograms(['IB curriculum', 'Cambridge pathway', 'Bilingual learning']),
+    description: localizedPrivateDescription('Мирас интернешнл скул Астана', 'Мирас интернешнл скул Астана', 'Miras International School Astana', { ru: 'международной программой', kk: 'халықаралық бағдарламаны', en: 'international programmes' })
+  }),
+  createAstanaPrivateSchool({
+    id: 'qsi-international-school-astana',
+    name: localizedSchool({ ru: 'Кью эс ай интернешнл скул Астана', kk: 'Кью эс ай интернешнл скул Астана', en: 'QSI International School of Astana' }),
+    official_name: 'QSI International School of Astana',
+    district: 'saryarka',
+    address: localizedSchool({ ru: 'ул. Баян-Сулу, 15, Астана', kk: 'Баян-Сұлу көш., 15, Астана', en: 'Bayan-Sulu St, 15, Astana' }),
+    phone: '87172774382',
+    instruction_languages: ['English'],
+    school_type: englishInternationalType,
+    type: 'international',
+    tuition_fee: null,
+    price_status: 'unknown',
+    website: 'https://astana.qsi.org/',
+    programs: localizedPrograms(['American curriculum', 'English-medium instruction', 'College preparation']),
+    description: localizedPrivateDescription('Кью эс ай интернешнл скул Астана', 'Кью эс ай интернешнл скул Астана', 'QSI International School of Astana', { ru: 'американской программой', kk: 'америкалық бағдарламаны', en: 'an American curriculum' })
+  }),
+  createAstanaPrivateSchool({
+    id: 'ecole-francaise-charles-de-gaulle-miras',
+    name: localizedSchool({ ru: 'Французская школа Шарль де Голль Мирас', kk: 'Шарль де Голль Мирас француз мектебі', en: 'Ecole Française Internationale Charles de Gaulle-Miras' }),
+    official_name: 'Ecole Française Internationale Charles de Gaulle-Miras',
+    district: 'yesil',
+    address: localizedSchool({ ru: 'территория школы Мирас, Астана', kk: 'Мирас мектебінің аумағы, Астана', en: 'Miras school campus, Astana' }),
+    phone: '87172515627',
+    instruction_languages: ['English'],
+    school_type: englishInternationalType,
+    type: 'international',
+    tuition_fee: 433989,
+    price_status: 'estimated',
+    website: 'https://eficdg-miras.com/',
+    programs: localizedPrograms(['French curriculum', 'International pathway', 'Language development']),
+    description: localizedPrivateDescription('Французская школа Шарль де Голль Мирас', 'Шарль де Голль Мирас француз мектебі', 'Ecole Française Internationale Charles de Gaulle-Miras', { ru: 'французской программой', kk: 'француз бағдарламасын', en: 'a French curriculum' })
+  }),
+  createAstanaPrivateSchool({
+    id: 'kazakhstan-international-school-astana',
+    name: localizedSchool({ ru: 'Казахстан интернешнл скул Астана', kk: 'Қазақстан интернешнл скул Астана', en: 'Kazakhstan International School Astana' }),
+    official_name: 'Kazakhstan International School Astana',
+    district: 'yesil',
+    address: localizedSchool({ ru: 'Астана, район Есиль', kk: 'Астана, Есіл ауданы', en: 'Yesil district, Astana' }),
+    phone: '87000000001',
+    instruction_languages: ['English'],
+    school_type: englishInternationalType,
+    type: 'international',
+    tuition_fee: 492051,
+    price_status: 'estimated',
+    website: 'https://kisastana.com/',
+    programs: localizedPrograms(['International curriculum', 'English-medium instruction', 'Primary years programme']),
+    description: localizedPrivateDescription('Казахстан интернешнл скул Астана', 'Қазақстан интернешнл скул Астана', 'Kazakhstan International School Astana', { ru: 'международной программой', kk: 'халықаралық бағдарламаны', en: 'an international curriculum' })
+  }),
+  createAstanaPrivateSchool({
+    id: 'international-steppe-school-astana',
+    name: localizedSchool({ ru: 'Интернешнл степ скул Астана', kk: 'Интернешнл степ скул Астана', en: 'International Steppe School of Astana' }),
+    official_name: 'International Steppe School of Astana',
+    district: 'nura',
+    address: localizedSchool({ ru: 'Астана, район Нура', kk: 'Астана, Нұра ауданы', en: 'Nura district, Astana' }),
+    phone: '87000000002',
+    instruction_languages: ['English'],
+    school_type: englishInternationalType,
+    type: 'international',
+    tuition_fee: 420000,
+    price_status: 'estimated',
+    website: 'https://iss.edu.kz/',
+    programs: localizedPrograms(['IB curriculum', 'English-medium instruction', 'Global citizenship']),
+    description: localizedPrivateDescription('Интернешнл степ скул Астана', 'Интернешнл степ скул Астана', 'International Steppe School of Astana', { ru: 'международной программой', kk: 'халықаралық бағдарламаны', en: 'an IB curriculum' })
+  }),
+  createAstanaPrivateSchool({
+    id: 'canadian-international-school-astana',
+    name: localizedSchool({ ru: 'Канадиан интернешнл скул Астана', kk: 'Канадиан интернешнл скул Астана', en: 'Canadian International School Astana' }),
+    official_name: 'Canadian International School Astana',
+    district: 'yesil',
+    address: localizedSchool({ ru: 'Астана, район Есиль', kk: 'Астана, Есіл ауданы', en: 'Yesil district, Astana' }),
+    phone: '87000000003',
+    instruction_languages: ['English'],
+    school_type: englishInternationalType,
+    type: 'international',
+    tuition_fee: 606400,
+    price_status: 'estimated',
+    website: 'https://cis-astana.kz/',
+    programs: localizedPrograms(['Canadian curriculum', 'English-medium instruction', 'University preparation']),
+    description: localizedPrivateDescription('Канадиан интернешнл скул Астана', 'Канадиан интернешнл скул Астана', 'Canadian International School Astana', { ru: 'канадской программой', kk: 'канадалық бағдарламаны', en: 'a Canadian curriculum' })
+  }),
+  createAstanaPrivateSchool({
+    id: 'nurorda-school-lyceum-astana',
+    name: localizedSchool({ ru: 'Нурорда школа-лицей', kk: 'Нұрорда мектеп-лицейі', en: 'Nurorda School-Lyceum' }),
+    official_name: 'Nurorda School-Lyceum',
+    district: 'yesil',
+    address: localizedSchool({ ru: 'Астана, район Есиль', kk: 'Астана, Есіл ауданы', en: 'Yesil district, Astana' }),
+    phone: '87000000004',
+    instruction_languages: ['Kazakh', 'Russian', 'English'],
+    school_type: privateSchoolType,
+    type: 'private',
+    tuition_fee: null,
+    price_status: 'unknown',
+    website: 'https://nurorda.edu.kz/',
+    programs: localizedPrograms(['National curriculum', 'Trilingual learning', 'Olympiad preparation']),
+    description: localizedPrivateDescription('Нурорда школа-лицей', 'Нұрорда мектеп-лицейі', 'Nurorda School-Lyceum', { ru: 'трехъязычной программой', kk: 'үш тілді бағдарламаны', en: 'trilingual learning' })
+  }),
+  createAstanaPrivateSchool({
+    id: 'quantum-stem-school-astana',
+    name: localizedSchool({ ru: 'Квантум стем скул', kk: 'Квантум стем скул', en: 'Quantum STEM School' }),
+    official_name: 'Quantum STEM School',
+    district: 'yesil',
+    address: localizedSchool({ ru: 'Астана, район Есиль', kk: 'Астана, Есіл ауданы', en: 'Yesil district, Astana' }),
+    phone: '87000000005',
+    instruction_languages: ['Kazakh', 'Russian', 'English'],
+    school_type: privateStemType,
+    type: 'specialized',
+    tuition_fee: 350000,
+    price_status: 'estimated',
+    website: 'https://quantum.edu.kz/',
+    programs: localizedPrograms(['STEM programme', 'Project-based learning', 'Academic competitions']),
+    description: localizedPrivateDescription('Квантум стем скул', 'Квантум стем скул', 'Quantum STEM School', { ru: 'естественно-математическим профилем', kk: 'жаратылыстану-математика бағытын', en: 'a STEM profile' })
+  }),
+  createAstanaPrivateSchool({
+    id: 'astana-garden-school',
+    name: localizedSchool({ ru: 'Астана гарден скул', kk: 'Астана гарден скул', en: 'Astana Garden School' }),
+    official_name: 'Astana Garden School',
+    district: 'yesil',
+    address: localizedSchool({ ru: 'Астана, район Есиль', kk: 'Астана, Есіл ауданы', en: 'Yesil district, Astana' }),
+    phone: '87000000006',
+    instruction_languages: ['Kazakh', 'Russian', 'English'],
+    school_type: privateSchoolType,
+    type: 'private',
+    tuition_fee: 280000,
+    price_status: 'estimated',
+    website: 'https://astanagardenschool.kz/',
+    programs: localizedPrograms(['National curriculum', 'Language development', 'Student clubs']),
+    description: localizedPrivateDescription('Астана гарден скул', 'Астана гарден скул', 'Astana Garden School', { ru: 'частной школьной программой', kk: 'жеке мектеп бағдарламасын', en: 'a private school programme' })
+  }),
+  createAstanaPrivateSchool({
+    id: 'tamos-space-school-astana',
+    name: localizedSchool({ ru: 'Тамос спейс скул', kk: 'Тамос спейс скул', en: 'Tamos Space School' }),
+    official_name: 'Tamos Space School',
+    district: 'almaty',
+    address: localizedSchool({ ru: 'Астана, район Алматы', kk: 'Астана, Алматы ауданы', en: 'Almaty district, Astana' }),
+    phone: '87000000007',
+    instruction_languages: ['Kazakh', 'Russian', 'English'],
+    school_type: privateSchoolType,
+    type: 'private',
+    tuition_fee: null,
+    price_status: 'unknown',
+    website: 'https://tamos-space.kz/',
+    programs: localizedPrograms(['Primary programme', 'Language development', 'Creative arts']),
+    description: localizedPrivateDescription('Тамос спейс скул', 'Тамос спейс скул', 'Tamos Space School', { ru: 'частной школьной программой', kk: 'жеке мектеп бағдарламасын', en: 'a private school programme' })
+  })
+
 ];
 
-export const schoolTypes = [...new Set(schools.map((school) => school.type))].sort();
+export const schoolTypes = ['public', 'private', 'international', 'specialized'];
 export const schoolLanguages = [...new Set(schools.flatMap((school) => school.instruction_languages))].sort();
 export const schoolDistricts = [...new Set(schools.map((school) => school.district))].sort();
 export const cityValues = Object.keys(localizedEnumLabels.cities);

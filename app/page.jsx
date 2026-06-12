@@ -48,13 +48,15 @@ const translations = {
     type: 'Тип',
     language: 'Язык',
     district: 'Район',
-    maxMonthlyPrice: 'Максимальная цена в месяц',
+    maxMonthlyPrice: 'Стоимость обучения',
     priceOptions: {
       all: 'Все',
-      '0': 'Бесплатные государственные школы',
-      '400000': 'До 400 000 ₸',
-      '700000': 'До 700 000 ₸',
-      '1000000': 'До 1 000 000 ₸'
+      free: 'Только бесплатные',
+      paid: 'Только платные',
+      '0-200000': 'До 200 000 ₸',
+      '200000-400000': '200 000–400 000 ₸',
+      '400000-800000': '400 000–800 000 ₸',
+      '800000+': '800 000+ ₸'
     },
     schoolsMatch: (count) => `${count} ${pluralizeRu(count, ['школа подходит', 'школы подходят', 'школ подходят'])} под фильтры`,
     resetFilters: 'Сбросить фильтры',
@@ -87,6 +89,7 @@ const translations = {
     },
     notYetRated: 'Пока нет оценки',
     freePublicSchool: 'Бесплатная государственная школа',
+    priceUnknown: 'Стоимость уточняется',
     perMonth: 'в месяц',
     feedback: {
       kicker: 'Помогите улучшить сайт',
@@ -160,6 +163,7 @@ const translations = {
     },
     notYetRated: 'Әзірге баға жоқ',
     freePublicSchool: 'Тегін мемлекеттік мектеп',
+    priceUnknown: 'Құны нақтыланады',
     perMonth: 'айына',
     feedback: {
       kicker: 'Сайтты жақсартуға көмектесіңіз',
@@ -194,13 +198,15 @@ const translations = {
     type: 'Type',
     language: 'Language',
     district: 'District',
-    maxMonthlyPrice: 'Max monthly price',
+    maxMonthlyPrice: 'Tuition fee',
     priceOptions: {
       all: 'All',
-      '0': 'Free public schools',
-      '400000': 'Up to 400,000 KZT',
-      '700000': 'Up to 700,000 KZT',
-      '1000000': 'Up to 1,000,000 KZT'
+      free: 'Free only',
+      paid: 'Paid only',
+      '0-200000': 'Up to 200,000 KZT',
+      '200000-400000': '200,000–400,000 KZT',
+      '400000-800000': '400,000–800,000 KZT',
+      '800000+': '800,000+ KZT'
     },
     schoolsMatch: (count) => `${count} ${count === 1 ? 'school matches' : 'schools match'} your filters`,
     resetFilters: 'Reset filters',
@@ -233,6 +239,7 @@ const translations = {
     },
     notYetRated: 'Not yet rated',
     freePublicSchool: 'Free public school',
+    priceUnknown: 'Tuition to be confirmed',
     perMonth: 'month',
     feedback: {
       kicker: 'Help improve this website',
@@ -256,7 +263,7 @@ const translations = {
   }
 };
 
-const priceOptionValues = ['all', '0', '400000', '700000', '1000000'];
+const priceOptionValues = ['all', 'free', 'paid', '0-200000', '200000-400000', '400000-800000', '800000+'];
 const schoolsPerPage = 20;
 
 function pluralizeRu(count, forms) {
@@ -290,6 +297,35 @@ const getStoredFeedback = () => {
 
 const getEnumOptionLabels = (dictionaryName, options, language) =>
   Object.fromEntries(options.map((option) => [option, getLocalizedEnumLabel(dictionaryName, option, language)]));
+
+const doesSchoolMatchPriceFilter = (school, selectedPrice) => {
+  const price = school.monthly_price;
+
+  if (price === null || price === undefined) {
+    return selectedPrice === 'all';
+  }
+
+  if (selectedPrice === 'all') {
+    return true;
+  }
+
+  if (selectedPrice === 'free') {
+    return price === 0;
+  }
+
+  if (selectedPrice === 'paid') {
+    return price > 0;
+  }
+
+  if (selectedPrice === '800000+') {
+    return price >= 800000;
+  }
+
+  const [minPrice, maxPrice] = selectedPrice.split('-').map(Number);
+
+  return price > 0 && price > minPrice && price <= maxPrice;
+};
+
 const formatPhoneLink = (phone) => phone.replace(/[^+\d]/g, '');
 
 function LanguageSwitcher({ currentLanguage, onLanguageChange, t }) {
@@ -343,50 +379,34 @@ function PriceFilter({ value, onChange, t }) {
 
 function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
   const localizedName = getLocalizedSchoolValue(school.name, currentLanguage);
-  const localizedDescription = getLocalizedSchoolValue(school.description, currentLanguage);
-  const localizedPrograms = getLocalizedSchoolValue(school.programs, currentLanguage);
-  const localizedAdmissionRequirements = getLocalizedSchoolValue(school.admission_requirements, currentLanguage);
   const localizedSchoolType = getLocalizedSchoolValue(school.school_type, currentLanguage);
   const localizedLanguages = getLocalizedSchoolValue(school.languages, currentLanguage);
-  const localizedClassSize = getLocalizedSchoolValue(school.class_size, currentLanguage);
-  const localizedAddress = getLocalizedSchoolValue(school.address, currentLanguage);
-  const localizedOfficialName = currentLanguage === 'en' ? school.official_name : localizedName;
-  const localizedCity = getLocalizedEnumLabel('cities', school.city, currentLanguage);
   const localizedDistrict = getLocalizedEnumLabel('districts', school.district, currentLanguage);
-  const formatPrice = (price) => (price === 0 ? t.freePublicSchool : `${moneyFormatter.format(price)} / ${t.perMonth}`);
-  const formatStatusValue = (value) => getLocalizedEnumLabel('yesNoUnknown', value, currentLanguage);
-  const formatRating = (rating) => (rating > 0 ? `${rating.toFixed(1)} / 5` : t.notYetRated);
+  const formatPrice = (price) => {
+    if (price === null || price === undefined) {
+      return t.priceUnknown;
+    }
+
+    return price === 0 ? t.freePublicSchool : `${moneyFormatter.format(price)} / ${t.perMonth}`;
+  };
 
   return (
-    <article className="school-card">
+    <article className="school-card school-card--compact">
       <div className="school-card__header">
         <div>
-          <p className="school-card__eyebrow">
-            {localizedCity} • {localizedDistrict}
-          </p>
+          <p className="school-card__eyebrow">{localizedDistrict}</p>
           <h2>{localizedName}</h2>
         </div>
         <span className={`badge badge--${school.type}`}>{getLocalizedEnumLabel('schoolTypes', school.type, currentLanguage)}</span>
       </div>
 
-      <p className="school-card__description">{localizedDescription}</p>
-
-      <dl className="school-card__facts">
+      <dl className="school-card__facts school-card__facts--compact">
         {[
-          [t.schoolCard.officialName, localizedOfficialName],
+          [t.district, localizedDistrict],
           [t.schoolCard.schoolType, localizedSchoolType],
           [t.schoolCard.language, localizedLanguages],
-          [t.schoolCard.verification, getLocalizedEnumLabel('verificationStatuses', school.verification_status, currentLanguage)],
           [t.schoolCard.tuitionFee, formatPrice(school.tuition_fee)],
-          [t.schoolCard.priceStatus, getLocalizedEnumLabel('priceStatuses', school.price_status, currentLanguage)],
-          [t.schoolCard.dataStatus, getLocalizedEnumLabel('dataStatuses', school.data_status, currentLanguage)],
-          [t.schoolCard.afterSchoolProgram, formatStatusValue(school.after_school_program)],
-          [t.schoolCard.schoolBus, formatStatusValue(school.school_bus)],
-          [t.schoolCard.admissionTest, formatStatusValue(school.admission_test)],
-          [t.schoolCard.classSize, localizedClassSize],
-          [t.schoolCard.admissionRequirements, localizedAdmissionRequirements],
-          [t.schoolCard.rating, formatRating(school.rating)],
-          [t.schoolCard.address, localizedAddress]
+          [t.schoolCard.dataStatus, getLocalizedEnumLabel('dataStatuses', school.data_status, currentLanguage)]
         ].map(([term, detail]) => (
           <div key={term}>
             <dt>{term}</dt>
@@ -395,18 +415,8 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage }) {
         ))}
       </dl>
 
-      <div className="program-list" aria-label={t.schoolCard.programsAria(localizedName)}>
-        {localizedPrograms.map((program) => (
-          <span key={program}>{program}</span>
-        ))}
-      </div>
-
-      <div className="school-card__contact">
-        <a href={school.website} target="_blank" rel="noreferrer">
-          {t.schoolCard.website}
-        </a>
-        <a href={`tel:${formatPhoneLink(school.phone)}`}>{school.phone}</a>
-        <a href={`/schools/${school.id}?lang=${currentLanguage}`}>{t.schoolCard.details}</a>
+      <div className="school-card__contact school-card__contact--details-only">
+        <a className="button-link" href={`/schools/${school.id}?lang=${currentLanguage}`}>{t.schoolCard.details}</a>
       </div>
     </article>
   );
@@ -612,7 +622,7 @@ export default function Home() {
         const matchesLanguage =
           filters.language === 'all' || school.instruction_languages.includes(filters.language);
         const matchesDistrict = filters.district === 'all' || school.district === filters.district;
-        const matchesPrice = filters.maxPrice === 'all' || school.monthly_price <= Number(filters.maxPrice);
+        const matchesPrice = doesSchoolMatchPriceFilter(school, filters.maxPrice);
 
         return matchesType && matchesLanguage && matchesDistrict && matchesPrice;
       }),
