@@ -684,3 +684,75 @@ button:focus {
     flex-direction: column;
   }
 }
+
+.school-detail__topbar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.school-detail__topbar .back-link {
+  margin-bottom: 0;
+}
+
+.language-switcher a {
+  text-decoration: none;
+}
+
+.school-detail__hero-copy {
+  min-width: 0;
+}
+
+.school-detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.school-detail__media {
+  display: grid;
+  flex: 0 0 min(34vw, 340px);
+  min-height: 240px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px dashed rgba(10, 124, 143, 0.42);
+  border-radius: 24px;
+  color: #12365d;
+  background:
+    radial-gradient(circle at 24% 20%, rgba(169, 233, 242, 0.9), transparent 30%),
+    linear-gradient(135deg, #e9f4ff, #f8fbff 55%, #dff8ef);
+  text-align: center;
+}
+
+.school-detail__media span {
+  max-width: 180px;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.school-detail__text {
+  max-width: 860px;
+  margin: 0;
+  color: #4f5e73;
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .school-detail__media {
+    flex-basis: auto;
+    min-height: 200px;
+  }
+}
+
+@media (max-width: 560px) {
+  .school-detail__topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
