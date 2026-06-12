@@ -9,7 +9,8 @@ import {
   schools,
   schoolTypes
 } from '../src/data/schools.js';
-import { doesSchoolMatchPriceFilter, priceOptionValues } from '../src/lib/priceFilters.js';
+import { doesSchoolMatchCatalogFilters } from '../src/lib/schoolFilters.js';
+import { priceOptionValues } from '../src/lib/priceFilters.js';
 
 const initialFilters = {
   type: 'all',
@@ -45,6 +46,7 @@ const translations = {
     heroTitle: 'Изучите школы Астаны в удобном формате',
     heroDescription:
       'Сравнивайте школы Астаны по району, языку обучения, типу школы, статусу проверки и ключевым программам на основе единой модели данных.',
+    heroCta: 'Подобрать школу',
     astanaSchools: 'школ Астаны',
     filtersAria: 'Фильтры школ',
     all: 'Все',
@@ -132,6 +134,7 @@ const translations = {
     heroTitle: 'Астана мектептерін ыңғайлы форматта зерттеңіз',
     heroDescription:
       'Астана мектептерін аудан, оқыту тілі, мектеп түрі, тексеру мәртебесі және негізгі бағдарламалар бойынша бірыңғай деректер моделі арқылы салыстырыңыз.',
+    heroCta: 'Мектеп таңдау',
     astanaSchools: 'Астана мектебі',
     filtersAria: 'Мектеп сүзгілері',
     all: 'Барлығы',
@@ -219,6 +222,7 @@ const translations = {
     heroTitle: 'Explore structured Astana school options',
     heroDescription:
       'Compare Astana schools by district, instruction language, school type, verification status, and signature programs using a reusable Kazakhstan school data model.',
+    heroCta: 'Find a school',
     astanaSchools: 'Astana schools',
     filtersAria: 'School filters',
     all: 'All',
@@ -696,16 +700,7 @@ export default function Home() {
   );
 
   const filteredSchools = useMemo(
-    () =>
-      schools.filter((school) => {
-        const matchesType = filters.type === 'all' || school.type === filters.type;
-        const matchesLanguage =
-          filters.language === 'all' || school.instruction_languages.includes(filters.language);
-        const matchesDistrict = filters.district === 'all' || school.district === filters.district;
-        const matchesPrice = doesSchoolMatchPriceFilter(school, filters.maxPrice);
-
-        return matchesType && matchesLanguage && matchesDistrict && matchesPrice;
-      }),
+    () => schools.filter((school) => doesSchoolMatchCatalogFilters(school, filters)),
     [filters]
   );
 
@@ -785,6 +780,7 @@ export default function Home() {
           <p className="hero__kicker">{t.heroKicker}</p>
           <h1>{t.heroTitle}</h1>
           <p>{t.heroDescription}</p>
+          <a className="hero__cta" href={`/quiz?lang=${currentLanguage}`}>{t.heroCta}</a>
         </div>
         <div className="hero__stat">
           <strong>{schools.length}</strong>
