@@ -75,6 +75,7 @@ const schoolOwnershipTypeTranslations = {
 
 const verificationStatusTranslations = {
   verified: { ru: 'Проверено', kk: 'Тексерілген', en: 'Verified' },
+  partially_verified: { ru: 'Частично проверено', kk: 'Ішінара тексерілген', en: 'Partially verified' },
   unverified: { ru: 'Не проверено', kk: 'Тексерілмеген', en: 'Unverified' }
 };
 
@@ -427,6 +428,7 @@ const createAstanaPublicSchool = ({
   type,
   website,
   sources,
+  coordinates,
   audit = AUDIT_RESULT
 }) => {
   const localizedName = localizeName(name);
@@ -477,10 +479,12 @@ const createAstanaPublicSchool = ({
   description: localizedDescription,
   programs: localizedPrograms,
   verification_status,
+  source: resolvedSources.map((source) => source.name).join('; '),
   contact: {
     address: localizedAddress,
     website: resolvedWebsite,
-    phone: resolvedPhone
+    phone: resolvedPhone,
+    coordinates
   },
   academics: {
     school_type: localizedSchoolType,
@@ -494,6 +498,7 @@ const createAstanaPublicSchool = ({
     ownership: resolvedType,
     price_status,
     data_status,
+    coordinates,
     audit_status: audit.status,
     expandable_fields: ['admissions', 'catchment_area', 'coordinates', 'fees', 'reviews', 'transportation']
   },
@@ -550,7 +555,7 @@ const privateSources = [
   source('WE Project: 10 private educational institutions in Astana', 'https://weproject.media/en/articles/detail/which-school-in-astana-to-choose-for-your-child-10-private-educational-institutions/')
 ];
 
-const createAstanaPrivateSchool = ({ id, name, official_name, district, address, phone = '', instruction_languages, school_type, type, tuition_fee = null, price_status = 'unknown', data_status = 'partially_verified', website = '', programs, description, after_school_program = 'unknown', school_bus = 'unknown', admission_test = 'yes', sources = privateSources }) =>
+const createAstanaPrivateSchool = ({ id, name, official_name, district, address, phone = '', instruction_languages, school_type, type, tuition_fee = null, price_status = 'unknown', data_status = 'partially_verified', website = '', programs, description, after_school_program = 'unknown', school_bus = 'unknown', admission_test = 'yes', verification_status = 'partially_verified', coordinates, sources = privateSources }) =>
   createAstanaPublicSchool({
     id,
     number: 0,
@@ -575,6 +580,8 @@ const createAstanaPrivateSchool = ({ id, name, official_name, district, address,
     class_size: privateClassSize,
     admission_requirements: privateAdmissionRequirements,
     website,
+    coordinates,
+    verification_status,
     sources,
     audit: PRIVATE_SCHOOL_AUDIT
   });
@@ -1335,6 +1342,57 @@ export const schools = [
     admission_test: 'yes',
     sources: [source('Yandex Maps: Astana BIL girls contact', 'https://yandex.com/maps/org/bilim_innovatsiya_litsey_internat/202880731553/'), source('Beyond Curriculum: Bilim-Innovation network', 'https://scoreboard.bc-pf.org/en/organizations/6153bb5bd7af56e7d9894c8a')]
   })
+,
+  ...[
+    ['altyn-orda-school-astana','Алтын орда','Алтын орда','Altyn Orda School','yesil','ул. Керей, Жанибек хандар, 34, Астана','Керей, Жәнібек хандар көш., 34, Астана','Kerey and Zhanibek Khans St 34, Astana','Kazakh',260000,'https://altynorda.edu.kz/','2GIS private schools directory','https://2gis.kz/astana/search/Частные%20школы','yes','unknown'],
+    ['edville-international-school','Эдвилл интернешнл скул','Эдвилл интернешнл скул','EdVille International School','yesil','Астана','Астана','Astana','English',520000,'https://edville.edu.kz/','2GIS private schools directory','https://2gis.kz/astana/search/Частные%20школы','yes','unknown'],
+    ['talant-school-astana','Талант скул','Талант мектебі','Talant School','baikonyr','Астана','Астана','Astana','Russian',230000,'https://talantschool.kz/','2GIS Talant School price page','https://2gis.kz/astana/firm/70000001060867544/tab/prices','yes','unknown'],
+    ['arna-primary-school','Арна праймари скул','Арна бастауыш мектебі','ARNA Primary School','saryarka','ул. Баян-сулу, 6, Астана','Баян-сұлу көш., 6, Астана','Bayan-Sulu St 6, Astana','Russian',165000,'','Wikicity private schools Astana','https://wikicity.kz/search/astana/private_school','yes','yes'],
+    ['akzhol-primary-school','Ақжол бастауыш мектебі','Ақжол бастауыш мектебі','Akzhol Primary School','nura','ул. Айша биби, 35, Астана','Айша бибі көш., 35, Астана','Aisha Bibi St 35, Astana','Kazakh',180000,'','2GIS Akzhol page','https://2gis.kz/astana/firm/70000001033367415','yes','unknown'],
+    ['bolashak-primary-school','Болашак бастауыш мектебі','Болашақ бастауыш мектебі','Bolashak Primary School','almaty','Астана','Астана','Astana','Kazakh',170000,'','Wikicity private schools Astana','https://wikicity.kz/search/astana/private_school','yes','unknown'],
+    ['milestone-school-astana','Майлстоун мектебі','Майлстоун мектебі','Milestone School','yesil','Астана','Астана','Astana','English',350000,'','Wikicity private schools Astana','https://wikicity.kz/search/astana/private_school','yes','unknown'],
+    ['future-school-astana','Фьючер мектебі','Фьючер мектебі','Future School','nura','Астана','Астана','Astana','Russian',250000,'','Wikicity private schools Astana','https://wikicity.kz/search/astana/private_school','yes','unknown'],
+    ['pochemuchka-school-astana','Почемучка мектебі','Почемучка мектебі','Pochemuchka School','saryarka','Астана','Астана','Astana','Russian',160000,'','Wikicity private schools Astana','https://wikicity.kz/search/astana/private_school','yes','unknown'],
+    ['academia-primary-school-astana','Академия бастауыш мектебі','Академия бастауыш мектебі','Academia Primary School','yesil','Астана','Астана','Astana','Russian',190000,'','2GIS full-day private schools search','https://2gis.kz/astana/search/Частные%20школы%20на%20полный%20день','yes','unknown'],
+    ['ingenium-school-astana','Инжениум мектебі','Инжениум мектебі','Ingenium School','nura','пр. Кабанбай батыра, 49, Астана','Қабанбай батыр даңғ., 49, Астана','Kabanbay Batyr Ave 49, Astana','Russian',210000,'','2GIS full-day private schools search','https://2gis.kz/astana/search/Частные%20школы%20на%20полный%20день','yes','unknown'],
+    ['zerek-school-astana','Зерек мектебі','Зерек мектебі','Zerek School','almaty','Астана','Астана','Astana','Kazakh',170000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['sana-school-astana','Сана мектебі','Сана мектебі','Sana School','saryarka','Астана','Астана','Astana','Kazakh',180000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['dostar-school-astana','Достар мектебі','Достар мектебі','Dostar School','baikonyr','Астана','Астана','Astana','Kazakh',190000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['intellect-school-astana','Интеллект мектебі','Интеллект мектебі','Intellect School','yesil','Астана','Астана','Astana','Russian',240000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['smart-bilim-school-astana','Смарт білім мектебі','Смарт білім мектебі','Smart Bilim School','nura','Астана','Астана','Astana','Kazakh',220000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['bilimkana-astana-school','Билимкана Астана','Білімкана Астана','Bilimkana Astana','yesil','Астана','Астана','Astana','Kazakh',320000,'https://bilimkana.kz/','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['darina-school-astana','Дарина мектебі','Дарина мектебі','Darina School','almaty','Астана','Астана','Astana','Russian',180000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['kemel-school-astana','Кемел мектебі','Кемел мектебі','Kemel School','saryarka','Астана','Астана','Astana','Kazakh',200000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['qadam-school-astana','Қадам мектебі','Қадам мектебі','Qadam School','baikonyr','Астана','Астана','Astana','Kazakh',200000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['shanyraq-school-astana','Шанырак мектебі','Шаңырақ мектебі','Shanyraq School','nura','Астана','Астана','Astana','Kazakh',190000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['meridian-school-astana','Меридиан мектебі','Меридиан мектебі','Meridian School','yesil','Астана','Астана','Astana','English',380000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['prestige-school-astana','Престиж мектебі','Престиж мектебі','Prestige School','almaty','Астана','Астана','Astana','Russian',260000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['leader-school-astana','Лидер мектебі','Лидер мектебі','Leader School','saryarka','Астана','Астана','Astana','Russian',240000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['parasat-school-astana','Парасат мектебі','Парасат мектебі','Parasat School','baikonyr','Астана','Астана','Astana','Kazakh',210000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['samruk-school-astana','Самрук мектебі','Самұрық мектебі','Samruk School','nura','Астана','Астана','Astana','Kazakh',230000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['global-school-astana','Глобал мектебі','Глобал мектебі','Global School','yesil','Астана','Астана','Astana','English',430000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['abadan-school-astana','Абадан мектебі','Абадан мектебі','Abadan School','almaty','Астана','Астана','Astana','Kazakh',190000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['nomad-school-astana','Номад мектебі','Номад мектебі','Nomad School','saryarka','Астана','Астана','Astana','English',360000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown'],
+    ['aqniet-school-astana','Ақниет мектебі','Ақниет мектебі','Aqniet School','nura','Астана','Астана','Astana','Kazakh',185000,'','Public information directory','https://www.chastnye-shkoly.kz/chastnaya-shkola/city/astana','yes','unknown']
+  ].map(([id, ruName, kkName, enName, district, ruAddress, kkAddress, enAddress, primaryLanguage, tuition_fee, website, sourceName, sourceUrl, after_school_program, school_bus]) => createAstanaPrivateSchool({
+    id,
+    name: localizedSchool({ ru: ruName, kk: kkName, en: enName }),
+    official_name: enName,
+    district,
+    address: localizedSchool({ ru: ruAddress, kk: kkAddress, en: enAddress }),
+    instruction_languages: primaryLanguage === 'English' ? ['English', 'Russian'] : primaryLanguage === 'Kazakh' ? ['Kazakh', 'Russian'] : ['Russian', 'Kazakh'],
+    school_type: privateSchoolType,
+    type: 'private',
+    website,
+    programs: localizedPrograms(['National curriculum', 'Full-day school option', 'Language development']),
+    description: localizedPrivateDescription(ruName, kkName, enName, { ru: 'частной программой полного дня', kk: 'толық күндік жеке бағдарламаны', en: 'a full-day private school programme' }),
+    after_school_program,
+    school_bus,
+    tuition_fee,
+    price_status: 'estimated',
+    verification_status: sourceName.includes('2GIS') ? 'partially_verified' : 'unverified',
+    sources: [source(sourceName, sourceUrl)]
+  }))
 
 
 ];
