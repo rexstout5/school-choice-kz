@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getLocalizedEnumLabel, getLocalizedSchoolValue, schools } from '../../../src/data/schools.js';
 import FavoriteButton from '../../../src/components/FavoriteButton.jsx';
+import SchoolReviews from '../../../src/components/SchoolReviews.jsx';
 
 const defaultLanguage = 'ru';
 
@@ -39,7 +40,29 @@ const translations = {
     },
     freePublicSchool: 'Бесплатная государственная школа',
     priceUnknown: 'Стоимость уточняется',
-    perMonth: 'в месяц'
+    perMonth: 'в месяц',
+    reviews: {
+      kicker: 'Отзывы родителей',
+      title: 'Отзывы о школе',
+      description: 'Отзывы временно сохраняются только в localStorage этого браузера.',
+      averageRating: 'Средняя оценка',
+      notYetRated: 'Нет оценки',
+      reviewCount: (count) => `${count} ${count === 1 ? 'отзыв' : count > 1 && count < 5 ? 'отзыва' : 'отзывов'}`,
+      parentName: 'Имя родителя',
+      rating: 'Оценка',
+      ratingOption: (rating) => `${rating} из 5`,
+      childGrade: 'Класс ребенка',
+      childGradePlaceholder: 'Например: 3 класс',
+      reviewText: 'Текст отзыва',
+      reviewTextPlaceholder: 'Поделитесь опытом обучения, коммуникации и атмосферы.',
+      submit: 'Сохранить отзыв',
+      success: 'Спасибо — отзыв сохранен в этом браузере.',
+      error: 'Не удалось сохранить отзыв в этом браузере.',
+      latestTitle: 'Последние отзывы',
+      empty: 'Пока нет отзывов. Будьте первым родителем, который поделится опытом.',
+      reviewRating: (rating) => `${rating}/5`,
+      gradeLabel: (grade) => `Класс ребенка: ${grade}`
+    }
   },
   kz: {
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
@@ -75,7 +98,29 @@ const translations = {
     },
     freePublicSchool: 'Тегін мемлекеттік мектеп',
     priceUnknown: 'Құны нақтыланады',
-    perMonth: 'айына'
+    perMonth: 'айына',
+    reviews: {
+      kicker: 'Ата-аналар пікірі',
+      title: 'Мектеп туралы пікірлер',
+      description: 'Пікірлер әзірге тек осы браузердің localStorage қоймасында сақталады.',
+      averageRating: 'Орташа баға',
+      notYetRated: 'Баға жоқ',
+      reviewCount: (count) => `${count} пікір`,
+      parentName: 'Ата-ананың аты',
+      rating: 'Баға',
+      ratingOption: (rating) => `${rating}/5`,
+      childGrade: 'Баланың сыныбы',
+      childGradePlaceholder: 'Мысалы: 3-сынып',
+      reviewText: 'Пікір мәтіні',
+      reviewTextPlaceholder: 'Оқу, байланыс және мектеп атмосферасы туралы тәжірибеңізбен бөлісіңіз.',
+      submit: 'Пікірді сақтау',
+      success: 'Рақмет — пікір осы браузерде сақталды.',
+      error: 'Бұл браузерде пікірді сақтау мүмкін болмады.',
+      latestTitle: 'Соңғы пікірлер',
+      empty: 'Әзірге пікір жоқ. Тәжірибеңізбен бөліскен алғашқы ата-ана болыңыз.',
+      reviewRating: (rating) => `${rating}/5`,
+      gradeLabel: (grade) => `Баланың сыныбы: ${grade}`
+    }
   },
   en: {
     languageSwitcherLabel: 'Choose interface language',
@@ -111,7 +156,29 @@ const translations = {
     },
     freePublicSchool: 'Free public school',
     priceUnknown: 'Tuition to be confirmed',
-    perMonth: 'month'
+    perMonth: 'month',
+    reviews: {
+      kicker: 'Parent reviews',
+      title: 'School reviews',
+      description: 'Reviews are saved in this browser localStorage for now.',
+      averageRating: 'Average rating',
+      notYetRated: 'No rating yet',
+      reviewCount: (count) => `${count} ${count === 1 ? 'review' : 'reviews'}`,
+      parentName: 'Parent name',
+      rating: 'Rating',
+      ratingOption: (rating) => `${rating} of 5`,
+      childGrade: 'Child grade',
+      childGradePlaceholder: 'Example: Grade 3',
+      reviewText: 'Review text',
+      reviewTextPlaceholder: 'Share your experience with learning, communication, and atmosphere.',
+      submit: 'Save review',
+      success: 'Thank you — your review was saved in this browser.',
+      error: 'This browser could not save the review.',
+      latestTitle: 'Latest reviews',
+      empty: 'No reviews yet. Be the first parent to share your experience.',
+      reviewRating: (rating) => `${rating}/5`,
+      gradeLabel: (grade) => `Child grade: ${grade}`
+    }
   }
 };
 
@@ -273,6 +340,8 @@ export default async function SchoolDetailPage({ params, searchParams }) {
           <h2 id="admission-title">{t.fields.admissionRequirements}</h2>
           <p className="school-detail__text">{localizedAdmissionRequirements}</p>
         </section>
+
+        <SchoolReviews schoolId={school.id} labels={t.reviews} />
 
         <section className="school-detail__section" aria-labelledby="contacts-title">
           <h2 id="contacts-title">{t.contactsTitle}</h2>
