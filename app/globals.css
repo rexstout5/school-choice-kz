@@ -1485,3 +1485,47 @@ button:focus {
     font-size: 0.8rem;
   }
 }
+
+.school-card__image {
+  height: 150px;
+  overflow: hidden;
+  border: 1px solid #dce6f2;
+  border-radius: 18px;
+  background: #e9f4ff;
+}
+
+.school-card__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.school-card__image--placeholder img {
+  object-fit: cover;
+}
+
+.image-source-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 18px 0 0;
+}
+
+.image-source-list div {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: #f4f7fb;
+}
+
+.image-source-list dt {
+  color: #67758a;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.image-source-list dd {
+  margin: 4px 0 0;
+  font-weight: 800;
+}

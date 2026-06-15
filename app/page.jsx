@@ -34,6 +34,15 @@ const comparisonStorageKey = 'school-choice-kz-comparison';
 const maxComparedSchools = 3;
 const defaultLanguage = 'ru';
 
+
+const escapeSvgText = (value) => String(value).replace(/[&<>\"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[character]);
+const createSchoolCardPlaceholder = (schoolName) => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220"><defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#e9f4ff"/><stop offset="1" stop-color="#dff8ef"/></linearGradient></defs><rect width="320" height="220" fill="url(#g)"/><path d="M50 178h220V94L160 42 50 94z" fill="#0a7c8f"/><path d="M75 178v-68h170v68z" fill="#fff" opacity=".94"/><rect x="138" y="134" width="44" height="44" rx="8" fill="#12365d"/><text x="160" y="205" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="800" fill="#12365d">${escapeSvgText(schoolName)}</text></svg>`;
+
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+};
+const getSchoolCardImage = (school, schoolName) => school.main_image_url || school.main_image?.src || createSchoolCardPlaceholder(schoolName);
+
 const languageOptions = [
   { code: 'ru', label: 'RU' },
   { code: 'kz', label: 'KZ' },
@@ -435,6 +444,8 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage, averageRating,
   const localizedSchoolType = getLocalizedSchoolValue(school.school_type, currentLanguage);
   const localizedLanguages = getLocalizedSchoolValue(school.languages, currentLanguage);
   const localizedDistrict = getLocalizedEnumLabel('districts', school.district, currentLanguage);
+  const cardImage = getSchoolCardImage(school, localizedName);
+  const hasSchoolImage = Boolean(school.main_image_url || school.main_image?.src);
   const formatPrice = (price) => {
     if (price === null || price === undefined) {
       return t.priceUnknown;
@@ -445,6 +456,9 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage, averageRating,
 
   return (
     <article className="school-card school-card--compact">
+      <div className={hasSchoolImage ? 'school-card__image' : 'school-card__image school-card__image--placeholder'}>
+        <img src={cardImage} alt={localizedName} loading="lazy" decoding="async" />
+      </div>
       <div className="school-card__header">
         <div>
           <p className="school-card__eyebrow">{localizedDistrict}</p>
