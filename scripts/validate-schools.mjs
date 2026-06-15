@@ -40,6 +40,7 @@ const requiredFields = [
   'description',
   'programs',
   'verification_status',
+  'source',
   'contact',
   'academics',
   'metadata',
@@ -342,6 +343,10 @@ schools.forEach((school, index) => {
     school.audit.source_names.length === 0
   ) {
     errors.push(`${school.id} must include merged audit results with localized notes and source names`);
+  }
+
+  if (typeof school.source !== 'string' || school.source.length === 0) {
+    errors.push(`${school.id} must include a source field`);
   }
 
   if (!Array.isArray(school.sources) || school.sources.length === 0) {
