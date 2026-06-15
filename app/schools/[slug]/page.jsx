@@ -47,10 +47,10 @@ const translations = {
       description: 'Отзывы временно сохраняются только в localStorage этого браузера.',
       averageRating: 'Средняя оценка',
       notYetRated: 'Нет оценки',
-      reviewCount: (count) => `${count} ${count === 1 ? 'отзыв' : count > 1 && count < 5 ? 'отзыва' : 'отзывов'}`,
+      reviewCount: { one: 'отзыв', few: 'отзыва', many: 'отзывов' },
       parentName: 'Имя родителя',
       rating: 'Оценка',
-      ratingOption: (rating) => `${rating} из 5`,
+      ratingOption: '{rating} из 5',
       childGrade: 'Класс ребенка',
       childGradePlaceholder: 'Например: 3 класс',
       reviewText: 'Текст отзыва',
@@ -60,9 +60,9 @@ const translations = {
       error: 'Не удалось сохранить отзыв в этом браузере.',
       latestTitle: 'Последние отзывы',
       empty: 'Пока нет отзывов. Будьте первым родителем, который поделится опытом.',
-      reviewRating: (rating) => `${rating}/5`,
-      gradeLabel: (grade) => `Класс ребенка: ${grade}`,
-      submittedAt: (date) => `добавлен ${date}`
+      reviewRating: '{rating}/5',
+      gradeLabel: 'Класс ребенка: {grade}',
+      submittedAt: 'добавлен {date}'
     }
   },
   kz: {
@@ -106,10 +106,10 @@ const translations = {
       description: 'Пікірлер әзірге тек осы браузердің localStorage қоймасында сақталады.',
       averageRating: 'Орташа баға',
       notYetRated: 'Баға жоқ',
-      reviewCount: (count) => `${count} пікір`,
+      reviewCount: { one: 'пікір', many: 'пікір' },
       parentName: 'Ата-ананың аты',
       rating: 'Баға',
-      ratingOption: (rating) => `${rating}/5`,
+      ratingOption: '{rating}/5',
       childGrade: 'Баланың сыныбы',
       childGradePlaceholder: 'Мысалы: 3-сынып',
       reviewText: 'Пікір мәтіні',
@@ -119,9 +119,9 @@ const translations = {
       error: 'Бұл браузерде пікірді сақтау мүмкін болмады.',
       latestTitle: 'Соңғы пікірлер',
       empty: 'Әзірге пікір жоқ. Тәжірибеңізбен бөліскен алғашқы ата-ана болыңыз.',
-      reviewRating: (rating) => `${rating}/5`,
-      gradeLabel: (grade) => `Баланың сыныбы: ${grade}`,
-      submittedAt: (date) => `${date} қосылды`
+      reviewRating: '{rating}/5',
+      gradeLabel: 'Баланың сыныбы: {grade}',
+      submittedAt: '{date} қосылды'
     }
   },
   en: {
@@ -165,10 +165,10 @@ const translations = {
       description: 'Reviews are saved in this browser localStorage for now.',
       averageRating: 'Average rating',
       notYetRated: 'No rating yet',
-      reviewCount: (count) => `${count} ${count === 1 ? 'review' : 'reviews'}`,
+      reviewCount: { one: 'review', many: 'reviews' },
       parentName: 'Parent name',
       rating: 'Rating',
-      ratingOption: (rating) => `${rating} of 5`,
+      ratingOption: '{rating} of 5',
       childGrade: 'Child grade',
       childGradePlaceholder: 'Example: Grade 3',
       reviewText: 'Review text',
@@ -178,9 +178,9 @@ const translations = {
       error: 'This browser could not save the review.',
       latestTitle: 'Latest reviews',
       empty: 'No reviews yet. Be the first parent to share your experience.',
-      reviewRating: (rating) => `${rating}/5`,
-      gradeLabel: (grade) => `Child grade: ${grade}`,
-      submittedAt: (date) => `added ${date}`
+      reviewRating: '{rating}/5',
+      gradeLabel: 'Child grade: {grade}',
+      submittedAt: 'added {date}'
     }
   }
 };

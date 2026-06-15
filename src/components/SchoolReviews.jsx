@@ -18,6 +18,22 @@ const initialReview = {
   text: ''
 };
 
+
+const formatTemplate = (template, values) =>
+  Object.entries(values).reduce((formattedValue, [key, value]) => formattedValue.replaceAll(`{${key}}`, String(value)), template);
+
+const getReviewCountLabel = (count, label) => {
+  if (typeof label === 'string') {
+    return formatTemplate(label, { count });
+  }
+
+  if (label?.few && count > 1 && count < 5) {
+    return `${count} ${label.few}`;
+  }
+
+  return `${count} ${count === 1 ? label?.one : label?.many}`;
+};
+
 const formatSubmittedAt = (submittedAt, locale) => {
   const submittedDate = new Date(submittedAt);
 
@@ -89,7 +105,7 @@ export default function SchoolReviews({ schoolId, labels, locale }) {
         <div className="reviews__summary" aria-live="polite">
           <strong>{averageRating === null ? labels.notYetRated : formatAverageRating(averageRating)}</strong>
           <span>{labels.averageRating}</span>
-          <small>{labels.reviewCount(reviews.length)}</small>
+          <small>{getReviewCountLabel(reviews.length, labels.reviewCount)}</small>
         </div>
       </div>
 
@@ -103,7 +119,7 @@ export default function SchoolReviews({ schoolId, labels, locale }) {
           <span>{labels.rating}</span>
           <select id="review-rating" name="rating" value={review.rating} onChange={(event) => updateReview('rating', event.target.value)} required>
             {[5, 4, 3, 2, 1].map((rating) => (
-              <option key={rating} value={rating}>{labels.ratingOption(rating)}</option>
+              <option key={rating} value={rating}>{formatTemplate(labels.ratingOption, { rating })}</option>
             ))}
           </select>
         </label>
@@ -132,12 +148,12 @@ export default function SchoolReviews({ schoolId, labels, locale }) {
               <li key={item.id} className="reviews__item">
                 <div className="reviews__item-header">
                   <strong>{item.parentName}</strong>
-                  <span>{labels.reviewRating(item.rating)}</span>
+                  <span>{formatTemplate(labels.reviewRating, { rating: item.rating })}</span>
                 </div>
                 <p>{item.text}</p>
                 <small>
-                  {labels.gradeLabel(item.childGrade)}
-                  {formatSubmittedAt(item.submittedAt, locale) ? ` · ${labels.submittedAt(formatSubmittedAt(item.submittedAt, locale))}` : ''}
+                  {formatTemplate(labels.gradeLabel, { grade: item.childGrade })}
+                  {formatSubmittedAt(item.submittedAt, locale) ? ` · ${formatTemplate(labels.submittedAt, { date: formatSubmittedAt(item.submittedAt, locale) })}` : ''}
                 </small>
               </li>
             ))}
