@@ -9,23 +9,32 @@ export const priceOptionValues = [
   'unknown_price'
 ];
 
+export const budgetAnyValue = 'any';
+
+const priceFilterAliases = {
+  [budgetAnyValue]: 'all'
+};
+
 const getMonthlyTuitionFee = (school) => school.tuition_fee;
 
+export const normalizePriceFilterValue = (selectedPrice) => priceFilterAliases[selectedPrice] ?? selectedPrice;
+
 export const doesSchoolMatchBudgetFilter = (school, selectedBudget) =>
-  selectedBudget === 'any' || doesSchoolMatchPriceFilter(school, selectedBudget);
+  doesSchoolMatchPriceFilter(school, normalizePriceFilterValue(selectedBudget));
 
 export const doesSchoolMatchPriceFilter = (school, selectedPrice) => {
+  const normalizedSelectedPrice = normalizePriceFilterValue(selectedPrice);
   const price = getMonthlyTuitionFee(school);
 
-  if (selectedPrice === 'all') {
+  if (normalizedSelectedPrice === 'all') {
     return true;
   }
 
-  if (selectedPrice === 'unknown_price') {
+  if (normalizedSelectedPrice === 'unknown_price') {
     return price === null || school.price_status === 'unknown';
   }
 
-  if (selectedPrice === 'free') {
+  if (normalizedSelectedPrice === 'free') {
     return price === 0;
   }
 
@@ -33,23 +42,23 @@ export const doesSchoolMatchPriceFilter = (school, selectedPrice) => {
     return false;
   }
 
-  if (selectedPrice === 'paid_only') {
+  if (normalizedSelectedPrice === 'paid_only') {
     return price > 0;
   }
 
-  if (selectedPrice === 'up_to_200000') {
+  if (normalizedSelectedPrice === 'up_to_200000') {
     return price > 0 && price <= 200000;
   }
 
-  if (selectedPrice === 'range_200000_400000') {
+  if (normalizedSelectedPrice === 'range_200000_400000') {
     return price >= 200000 && price <= 400000;
   }
 
-  if (selectedPrice === 'range_400000_800000') {
+  if (normalizedSelectedPrice === 'range_400000_800000') {
     return price >= 400000 && price <= 800000;
   }
 
-  if (selectedPrice === 'range_800000_plus') {
+  if (normalizedSelectedPrice === 'range_800000_plus') {
     return price >= 800000;
   }
 
