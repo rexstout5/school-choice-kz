@@ -1,6 +1,7 @@
 import {
   cityValues,
   dataStatuses,
+  imageStatusValues,
   getLocalizedEnumLabel,
   getLocalizedSchoolValue,
   instructionLanguageValues,
@@ -39,6 +40,10 @@ const requiredFields = [
   'phone',
   'main_image',
   'gallery',
+  'main_image_url',
+  'gallery_images',
+  'image_source',
+  'image_status',
   'description',
   'programs',
   'verification_status',
@@ -243,6 +248,18 @@ schools.forEach((school, index) => {
 
   if (!dataStatuses.includes(school.data_status)) {
     errors.push(`${school.id} has invalid data_status ${school.data_status}`);
+  }
+
+  if (!imageStatusValues.includes(school.image_status)) {
+    errors.push(`${school.id} has invalid image_status ${school.image_status}`);
+  }
+
+  if (typeof school.main_image_url !== 'string') {
+    errors.push(`${school.id} main_image_url must be a string`);
+  }
+
+  if (!Array.isArray(school.gallery_images)) {
+    errors.push(`${school.id} gallery_images must be an array`);
   }
 
   ['after_school_program', 'school_bus', 'admission_test'].forEach((field) => {

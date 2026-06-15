@@ -13,6 +13,8 @@ const translations = {
     imagePlaceholder: 'Фото школы скоро появится',
     galleryTitle: 'Фотогалерея',
     galleryDescription: 'Фотографии школы и учебной среды.',
+    imageSource: 'Источник изображения',
+    imageStatus: 'Статус изображения',
     fallbackImageAlt: 'Иллюстрация здания школы',
     detailsTitle: 'Ключевые сведения',
     programsTitle: 'Программы',
@@ -78,6 +80,8 @@ const translations = {
     imagePlaceholder: 'Мектеп фотосы жақында қосылады',
     galleryTitle: 'Фотогалерея',
     galleryDescription: 'Мектеп пен оқу ортасының фотолары.',
+    imageSource: 'Сурет дереккөзі',
+    imageStatus: 'Сурет мәртебесі',
     fallbackImageAlt: 'Мектеп ғимаратының иллюстрациясы',
     detailsTitle: 'Негізгі мәліметтер',
     programsTitle: 'Бағдарламалар',
@@ -143,6 +147,8 @@ const translations = {
     imagePlaceholder: 'School photo coming soon',
     galleryTitle: 'Photo gallery',
     galleryDescription: 'Photos of the school and learning environment.',
+    imageSource: 'Image source',
+    imageStatus: 'Image status',
     fallbackImageAlt: 'Illustration of a school building',
     detailsTitle: 'Key details',
     programsTitle: 'Programs',
@@ -265,7 +271,9 @@ const createFallbackImage = (schoolName, t) => {
   };
 };
 const getSchoolImages = (school, schoolName, t) => {
-  const photos = [school.main_image, ...(Array.isArray(school.gallery) ? school.gallery : [])].filter(Boolean);
+  const normalizedMainImage = school.main_image_url ? { ...(school.main_image ?? {}), src: school.main_image_url } : school.main_image;
+  const galleryImages = Array.isArray(school.gallery_images) ? school.gallery_images : school.gallery;
+  const photos = [normalizedMainImage, ...(Array.isArray(galleryImages) ? galleryImages : [])].filter(Boolean);
 
   return photos.length > 0 ? photos : [createFallbackImage(schoolName, t)];
 };
@@ -323,6 +331,8 @@ export default async function SchoolDetailPage({ params, searchParams }) {
   const localizedSchoolType = getLocalizedEnumLabel('schoolTypes', school.type, language);
   const schoolImages = getSchoolImages(school, localizedName, t);
   const heroImage = schoolImages[0];
+  const imageSource = school.image_source;
+  const imageSourceName = getLocalizedSchoolValue(imageSource?.localized_name, language) || imageSource?.name;
   const detailRows = [
     [t.fields.schoolName, localizedName],
     [t.fields.district, localizedDistrict],
@@ -390,6 +400,26 @@ export default async function SchoolDetailPage({ params, searchParams }) {
               </figure>
             ))}
           </div>
+          <dl className="image-source-list">
+            <div>
+              <dt>{t.imageStatus}</dt>
+              <dd>{getLocalizedEnumLabel('imageStatuses', school.image_status, language)}</dd>
+            </div>
+            {imageSourceName ? (
+              <div>
+                <dt>{t.imageSource}</dt>
+                <dd>
+                  {imageSource?.url ? (
+                    <a href={imageSource.url} target="_blank" rel="noreferrer">
+                      {imageSourceName}
+                    </a>
+                  ) : (
+                    imageSourceName
+                  )}
+                </dd>
+              </div>
+            ) : null}
+          </dl>
         </section>
 
         <section className="school-detail__section" aria-labelledby="details-title">

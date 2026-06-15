@@ -57,6 +57,8 @@ const formatPhone = (phone) => {
 };
 const schoolWebsite = (schoolNumber) => `https://${schoolNumber}.astana-bilim.kz`;
 
+const imageStatusValues = ['verified', 'needs_review', 'missing'];
+
 const createWebsiteScreenshotImage = (website, schoolName) => {
   if (!website) {
     return null;
@@ -92,6 +94,12 @@ const instructionLanguageTranslations = {
   Russian: { ru: 'Русский', kk: 'Орыс тілі', en: 'Russian' },
   English: { ru: 'Английский', kk: 'Ағылшын тілі', en: 'English' },
   French: { ru: 'Французский', kk: 'Француз тілі', en: 'French' }
+};
+
+const imageStatusTranslations = {
+  verified: { ru: 'Фото проверено', kk: 'Фото тексерілген', en: 'Image verified' },
+  needs_review: { ru: 'Фото требует проверки', kk: 'Фотоны тексеру қажет', en: 'Image needs review' },
+  missing: { ru: 'Фото отсутствует', kk: 'Фото жоқ', en: 'Image missing' }
 };
 
 const schoolOwnershipTypeTranslations = {
@@ -290,6 +298,7 @@ export const localizedEnumLabels = {
   verificationStatuses: verificationStatusTranslations,
   priceStatuses: priceStatusTranslations,
   dataStatuses: dataStatusTranslations,
+  imageStatuses: imageStatusTranslations,
   yesNoUnknown: yesNoUnknownTranslations
 };
 
@@ -459,6 +468,10 @@ const createAstanaPublicSchool = ({
   coordinates,
   main_image = null,
   gallery = [],
+  main_image_url = null,
+  gallery_images = null,
+  image_source = null,
+  image_status,
   audit = AUDIT_RESULT
 }) => {
   const localizedName = localizeName(name);
@@ -480,7 +493,18 @@ const createAstanaPublicSchool = ({
   const resolvedPhone = formatPhone(phone);
   const resolvedSources = sources ?? [ASTANA_PUBLIC_SCHOOL_SOURCE, WEBSITE_SOURCE];
   const resolvedMainImage = main_image ?? createWebsiteScreenshotImage(resolvedWebsite, localizedName);
-  const resolvedGallery = gallery;
+  const resolvedGallery = Array.isArray(gallery_images) ? gallery_images : gallery;
+  const resolvedMainImageUrl = main_image_url ?? resolvedMainImage?.src ?? '';
+  const resolvedImageSource = image_source ?? resolvedMainImage?.source ?? (resolvedMainImageUrl ? {
+    name: 'School image source pending review',
+    localized_name: {
+      ru: 'Источник изображения школы ожидает проверки',
+      kk: 'Мектеп суретінің дереккөзі тексеруді күтеді',
+      en: 'School image source pending review'
+    },
+    url: resolvedMainImageUrl
+  } : null);
+  const resolvedImageStatus = image_status ?? (resolvedMainImageUrl ? 'needs_review' : 'missing');
 
   return ({
   id,
@@ -510,6 +534,10 @@ const createAstanaPublicSchool = ({
   phone: resolvedPhone,
   main_image: resolvedMainImage,
   gallery: resolvedGallery,
+  main_image_url: resolvedMainImageUrl,
+  gallery_images: resolvedGallery,
+  image_source: resolvedImageSource,
+  image_status: resolvedImageStatus,
   description: localizedDescription,
   programs: localizedPrograms,
   verification_status,
@@ -520,7 +548,11 @@ const createAstanaPublicSchool = ({
     phone: resolvedPhone,
     coordinates,
     main_image: resolvedMainImage,
-    gallery: resolvedGallery
+    gallery: resolvedGallery,
+    main_image_url: resolvedMainImageUrl,
+    gallery_images: resolvedGallery,
+    image_source: resolvedImageSource,
+    image_status: resolvedImageStatus
   },
   academics: {
     school_type: localizedSchoolType,
@@ -537,6 +569,10 @@ const createAstanaPublicSchool = ({
     coordinates,
     main_image: resolvedMainImage,
     gallery: resolvedGallery,
+    main_image_url: resolvedMainImageUrl,
+    gallery_images: resolvedGallery,
+    image_source: resolvedImageSource,
+    image_status: resolvedImageStatus,
     audit_status: audit.status,
     expandable_fields: ['admissions', 'catchment_area', 'coordinates', 'fees', 'reviews', 'transportation']
   },
@@ -593,7 +629,7 @@ const privateSources = [
   source('WE Project: 10 private educational institutions in Astana', 'https://weproject.media/en/articles/detail/which-school-in-astana-to-choose-for-your-child-10-private-educational-institutions/')
 ];
 
-const createAstanaPrivateSchool = ({ id, name, official_name, district, address, phone = '', instruction_languages, school_type, type, tuition_fee = null, price_status = 'unknown', data_status = 'partially_verified', website = '', programs, description, after_school_program = 'unknown', school_bus = 'unknown', admission_test = 'yes', verification_status = 'partially_verified', coordinates, main_image = null, gallery = [], sources = privateSources }) =>
+const createAstanaPrivateSchool = ({ id, name, official_name, district, address, phone = '', instruction_languages, school_type, type, tuition_fee = null, price_status = 'unknown', data_status = 'partially_verified', website = '', programs, description, after_school_program = 'unknown', school_bus = 'unknown', admission_test = 'yes', verification_status = 'partially_verified', coordinates, main_image = null, gallery = [], main_image_url = null, gallery_images = null, image_source = null, image_status, sources = privateSources }) =>
   createAstanaPublicSchool({
     id,
     number: 0,
@@ -621,6 +657,10 @@ const createAstanaPrivateSchool = ({ id, name, official_name, district, address,
     coordinates,
     main_image,
     gallery,
+    main_image_url,
+    gallery_images,
+    image_source,
+    image_status,
     verification_status,
     sources,
     audit: PRIVATE_SCHOOL_AUDIT
@@ -1452,4 +1492,5 @@ export const instructionLanguageValues = Object.keys(localizedEnumLabels.instruc
 export const verificationStatuses = Object.keys(localizedEnumLabels.verificationStatuses);
 export const priceStatuses = Object.keys(localizedEnumLabels.priceStatuses);
 export const dataStatuses = Object.keys(localizedEnumLabels.dataStatuses);
+export { imageStatusValues };
 export const yesNoUnknownStatuses = Object.keys(localizedEnumLabels.yesNoUnknown);
