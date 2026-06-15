@@ -348,6 +348,12 @@ button:disabled {
   text-decoration: none !important;
 }
 
+.school-detail__contact-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
 @media (max-width: 900px) {
   .hero,
   .filters,
