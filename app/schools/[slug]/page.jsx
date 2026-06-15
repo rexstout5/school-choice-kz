@@ -61,7 +61,8 @@ const translations = {
       latestTitle: 'Последние отзывы',
       empty: 'Пока нет отзывов. Будьте первым родителем, который поделится опытом.',
       reviewRating: (rating) => `${rating}/5`,
-      gradeLabel: (grade) => `Класс ребенка: ${grade}`
+      gradeLabel: (grade) => `Класс ребенка: ${grade}`,
+      submittedAt: (date) => `добавлен ${date}`
     }
   },
   kz: {
@@ -119,7 +120,8 @@ const translations = {
       latestTitle: 'Соңғы пікірлер',
       empty: 'Әзірге пікір жоқ. Тәжірибеңізбен бөліскен алғашқы ата-ана болыңыз.',
       reviewRating: (rating) => `${rating}/5`,
-      gradeLabel: (grade) => `Баланың сыныбы: ${grade}`
+      gradeLabel: (grade) => `Баланың сыныбы: ${grade}`,
+      submittedAt: (date) => `${date} қосылды`
     }
   },
   en: {
@@ -177,7 +179,8 @@ const translations = {
       latestTitle: 'Latest reviews',
       empty: 'No reviews yet. Be the first parent to share your experience.',
       reviewRating: (rating) => `${rating}/5`,
-      gradeLabel: (grade) => `Child grade: ${grade}`
+      gradeLabel: (grade) => `Child grade: ${grade}`,
+      submittedAt: (date) => `added ${date}`
     }
   }
 };
@@ -341,7 +344,7 @@ export default async function SchoolDetailPage({ params, searchParams }) {
           <p className="school-detail__text">{localizedAdmissionRequirements}</p>
         </section>
 
-        <SchoolReviews schoolId={school.id} labels={t.reviews} />
+        <SchoolReviews schoolId={school.id} labels={t.reviews} locale={language === 'kz' ? 'kk-KZ' : language === 'en' ? 'en-US' : 'ru-RU'} />
 
         <section className="school-detail__section" aria-labelledby="contacts-title">
           <h2 id="contacts-title">{t.contactsTitle}</h2>
