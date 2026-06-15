@@ -12,6 +12,7 @@ import {
 import { doesSchoolMatchCatalogFilters } from '../src/lib/schoolFilters.js';
 import { priceOptionValues } from '../src/lib/priceFilters.js';
 import FavoriteButton from '../src/components/FavoriteButton.jsx';
+import { formatAverageRating, getAverageRating, getSchoolReviews, getStoredReviewsBySchool } from '../src/lib/reviews.js';
 
 const initialFilters = {
   type: 'all',
@@ -429,7 +430,7 @@ function PriceFilter({ value, onChange, t }) {
   );
 }
 
-function SchoolCard({ school, moneyFormatter, t, currentLanguage, isCompared, isCompareDisabled, onCompareToggle }) {
+function SchoolCard({ school, moneyFormatter, t, currentLanguage, averageRating, isCompared, isCompareDisabled, onCompareToggle }) {
   const localizedName = getLocalizedSchoolValue(school.name, currentLanguage);
   const localizedSchoolType = getLocalizedSchoolValue(school.school_type, currentLanguage);
   const localizedLanguages = getLocalizedSchoolValue(school.languages, currentLanguage);
@@ -461,6 +462,7 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage, isCompared, is
           [t.schoolCard.schoolType, localizedSchoolType],
           [t.schoolCard.language, localizedLanguages],
           [t.schoolCard.tuitionFee, formatPrice(school.tuition_fee)],
+          [t.schoolCard.rating, averageRating === null ? t.notYetRated : `${formatAverageRating(averageRating)} / 5`],
           [t.schoolCard.dataStatus, getLocalizedEnumLabel('dataStatuses', school.data_status, currentLanguage)]
         ].map(([term, detail]) => (
           <div key={term}>
@@ -685,9 +687,11 @@ export default function Home() {
   const [currentLanguage, setCurrentLanguage] = useState(defaultLanguage);
   const [currentPage, setCurrentPage] = useState(1);
   const [comparedSchoolIds, setComparedSchoolIds] = useState([]);
+  const [reviewsBySchool, setReviewsBySchool] = useState({});
 
   useEffect(() => {
     setComparedSchoolIds(getStoredComparedSchoolIds());
+    setReviewsBySchool(getStoredReviewsBySchool());
   }, []);
 
   useEffect(() => {
@@ -858,6 +862,7 @@ export default function Home() {
                 moneyFormatter={moneyFormatter}
                 t={t}
                 currentLanguage={currentLanguage}
+                averageRating={getAverageRating(getSchoolReviews(reviewsBySchool, school.id))}
                 isCompared={comparedSchoolIds.includes(school.id)}
                 isCompareDisabled={comparedSchoolIds.length >= maxComparedSchools && !comparedSchoolIds.includes(school.id)}
                 onCompareToggle={toggleComparedSchool}
