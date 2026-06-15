@@ -9,7 +9,7 @@ import {
   schools
 } from '../../src/data/schools.js';
 import { doesSchoolMatchCatalogFilters } from '../../src/lib/schoolFilters.js';
-import { doesSchoolMatchBudgetFilter, doesSchoolMatchPriceFilter } from '../../src/lib/priceFilters.js';
+import { doesSchoolMatchBudgetFilter, normalizePriceFilterValue } from '../../src/lib/priceFilters.js';
 
 const defaultLanguage = 'ru';
 const languageStorageKey = 'school-choice-kz-language';
@@ -36,7 +36,7 @@ const languageOptions = [
 
 const childAgeOptions = ['5', '6', '7'];
 const schoolTypeOptions = ['public', 'private', 'international', 'any'];
-const budgetOptions = ['free', 'paid_only', 'up_to_200000', 'range_200000_400000', 'range_400000_800000', 'range_800000_plus', 'any'];
+const budgetOptions = ['free', 'paid_only', 'up_to_200000', 'range_200000_400000', 'range_400000_800000', 'range_800000_plus', 'unknown_price', 'any'];
 const preferenceOptions = ['yes', 'no', 'not_important'];
 
 const translations = {
@@ -75,6 +75,7 @@ const translations = {
       range_200000_400000: '200 000–400 000 ₸',
       range_400000_800000: '400 000–800 000 ₸',
       range_800000_plus: '800 000+ ₸',
+      unknown_price: 'Стоимость неизвестна',
       any: 'Любой'
     },
     resultsTitle: (count) => `${count} рекомендаций по совпадению`,
@@ -152,6 +153,7 @@ const translations = {
       range_200000_400000: '200 000–400 000 ₸',
       range_400000_800000: '400 000–800 000 ₸',
       range_800000_plus: '800 000+ ₸',
+      unknown_price: 'Бағасы белгісіз',
       any: 'Кез келген'
     },
     resultsTitle: (count) => `${count} сәйкестік бойынша ұсыныс`,
@@ -229,6 +231,7 @@ const translations = {
       range_200000_400000: '200,000–400,000 ₸',
       range_400000_800000: '400,000–800,000 ₸',
       range_800000_plus: '800,000+ ₸',
+      unknown_price: 'Unknown price',
       any: 'Any'
     },
     resultsTitle: (count) => `${count} recommendations ranked by match`,
@@ -340,7 +343,7 @@ const scoreSchool = ({ school, answers, language, moneyFormatter, t }) => {
     type: answers.schoolType === 'any' ? 'all' : answers.schoolType,
     language: answers.instructionLanguage === 'any' ? 'all' : answers.instructionLanguage,
     district: answers.district === 'any' ? 'all' : answers.district,
-    maxPrice: answers.budget === 'any' ? 'all' : answers.budget
+    maxPrice: normalizePriceFilterValue(answers.budget)
   });
 
   if (answers.district === 'any') {
@@ -366,7 +369,7 @@ const scoreSchool = ({ school, answers, language, moneyFormatter, t }) => {
   if (answers.budget === 'any') {
     score += 14;
     why.push(t.reasons.flexibleBudget);
-  } else if (doesSchoolMatchPriceFilter(school, answers.budget)) {
+  } else if (doesSchoolMatchBudgetFilter(school, answers.budget)) {
     score += 20;
     why.push(t.reasons.budget(localizedPrice));
   } else {

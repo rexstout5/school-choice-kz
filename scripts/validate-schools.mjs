@@ -10,7 +10,8 @@ import {
   verificationStatuses,
   yesNoUnknownStatuses
 } from '../src/data/schools.js';
-import { doesSchoolMatchBudgetFilter, doesSchoolMatchPriceFilter } from '../src/lib/priceFilters.js';
+import { doesSchoolMatchCatalogFilters } from '../src/lib/schoolFilters.js';
+import { doesSchoolMatchBudgetFilter, doesSchoolMatchPriceFilter, normalizePriceFilterValue } from '../src/lib/priceFilters.js';
 
 const requiredFields = [
   'id',
@@ -135,7 +136,8 @@ const expectedRecommendationBudgetMatches = {
   up_to_200000: ['fixture-low-paid', 'fixture-200000-boundary'],
   range_200000_400000: ['fixture-200000-boundary', 'fixture-400000-boundary', 'fixture-unknown-status'],
   range_400000_800000: ['fixture-400000-boundary', 'fixture-800000-boundary'],
-  range_800000_plus: ['fixture-800000-boundary', 'fixture-above-800000']
+  range_800000_plus: ['fixture-800000-boundary', 'fixture-above-800000'],
+  unknown_price: ['fixture-unknown-null', 'fixture-unknown-status']
 };
 
 Object.entries(expectedRecommendationBudgetMatches).forEach(([filterValue, expectedIds]) => {
@@ -148,6 +150,22 @@ Object.entries(expectedRecommendationBudgetMatches).forEach(([filterValue, expec
       `${filterValue} recommendation budget expected [${expectedIds.join(', ')}], received [${actualIds.join(', ')}]`
     );
   }
+});
+
+Object.keys(expectedRecommendationBudgetMatches).forEach((filterValue) => {
+  tuitionFilterFixtures.forEach((school) => {
+    const catalogBudgetMatch = doesSchoolMatchCatalogFilters(school, {
+      type: 'all',
+      language: 'all',
+      district: 'all',
+      maxPrice: normalizePriceFilterValue(filterValue)
+    });
+    const recommendationBudgetMatch = doesSchoolMatchBudgetFilter(school, filterValue);
+
+    if (catalogBudgetMatch !== recommendationBudgetMatch) {
+      errors.push(`${filterValue} budget must match catalog price logic for ${school.id}`);
+    }
+  });
 });
 
 if (paidSchools.length < 10) {
