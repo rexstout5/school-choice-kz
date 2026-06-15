@@ -1370,3 +1370,118 @@ button:focus {
     grid-column: auto;
   }
 }
+
+.school-detail__section-heading {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.school-detail__section-heading h2,
+.school-detail__section-heading p {
+  margin: 0;
+}
+
+.school-detail__section-heading p {
+  color: #4f5e73;
+  font-weight: 700;
+}
+
+.school-detail__media {
+  display: block;
+  flex: 0 0 min(34vw, 380px);
+  min-height: 240px;
+  overflow: hidden;
+  border: 1px solid #dce6f2;
+  border-radius: 24px;
+  background: #e9f4ff;
+}
+
+.school-detail__media img,
+.school-gallery__item img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.school-detail__media figcaption,
+.school-gallery__item figcaption {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  width: fit-content;
+  max-width: calc(100% - 28px);
+  border-radius: 999px;
+  padding: 10px 14px;
+  color: #12365d;
+  background: rgba(255, 255, 255, 0.84);
+  font-size: 0.86rem;
+  font-weight: 900;
+  box-shadow: 0 10px 24px rgba(18, 54, 93, 0.12);
+}
+
+.school-detail__media,
+.school-gallery__item {
+  position: relative;
+  margin: 0;
+}
+
+.school-detail__media--fallback img,
+.school-gallery__item--fallback img {
+  object-fit: cover;
+}
+
+.school-gallery {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.school-gallery__item {
+  min-height: 220px;
+  overflow: hidden;
+  border-radius: 22px;
+  background: #e9f4ff;
+}
+
+.school-gallery__item:first-child {
+  min-height: 320px;
+}
+
+@media (max-width: 900px) {
+  .school-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .school-gallery__item,
+  .school-gallery__item:first-child {
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 560px) {
+  .school-detail__hero,
+  .school-detail__section {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .school-detail__media,
+  .school-gallery__item,
+  .school-gallery__item:first-child {
+    min-height: 190px;
+    border-radius: 18px;
+  }
+
+  .school-detail__media figcaption,
+  .school-gallery__item figcaption {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    max-width: calc(100% - 20px);
+    border-radius: 16px;
+    font-size: 0.8rem;
+  }
+}

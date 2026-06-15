@@ -37,6 +37,8 @@ const requiredFields = [
   'address',
   'website',
   'phone',
+  'main_image',
+  'gallery',
   'description',
   'programs',
   'verification_status',
@@ -343,6 +345,18 @@ schools.forEach((school, index) => {
     school.audit.source_names.length === 0
   ) {
     errors.push(`${school.id} must include merged audit results with localized notes and source names`);
+  }
+
+  if (!(school.main_image === null || (typeof school.main_image === 'object' && typeof school.main_image.src === 'string'))) {
+    errors.push(`${school.id} main_image must be null or an image object with a src`);
+  }
+
+  if (!Array.isArray(school.gallery)) {
+    errors.push(`${school.id} gallery must be an array`);
+  }
+
+  if (school.metadata?.main_image !== school.main_image || school.metadata?.gallery !== school.gallery) {
+    errors.push(`${school.id} metadata image fields must mirror top-level image fields`);
   }
 
   if (typeof school.source !== 'string' || school.source.length === 0) {

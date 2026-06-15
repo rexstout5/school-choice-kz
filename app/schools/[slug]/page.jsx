@@ -11,6 +11,9 @@ const translations = {
     backToCatalog: 'Назад к каталогу',
     pageKicker: 'Профиль школы',
     imagePlaceholder: 'Фото школы скоро появится',
+    galleryTitle: 'Фотогалерея',
+    galleryDescription: 'Фотографии школы и учебной среды.',
+    fallbackImageAlt: 'Иллюстрация здания школы',
     detailsTitle: 'Ключевые сведения',
     programsTitle: 'Программы',
     contactsTitle: 'Контакты',
@@ -73,6 +76,9 @@ const translations = {
     backToCatalog: 'Каталогқа оралу',
     pageKicker: 'Мектеп профилі',
     imagePlaceholder: 'Мектеп фотосы жақында қосылады',
+    galleryTitle: 'Фотогалерея',
+    galleryDescription: 'Мектеп пен оқу ортасының фотолары.',
+    fallbackImageAlt: 'Мектеп ғимаратының иллюстрациясы',
     detailsTitle: 'Негізгі мәліметтер',
     programsTitle: 'Бағдарламалар',
     contactsTitle: 'Байланыс',
@@ -135,6 +141,9 @@ const translations = {
     backToCatalog: 'Back to catalog',
     pageKicker: 'School profile',
     imagePlaceholder: 'School photo coming soon',
+    galleryTitle: 'Photo gallery',
+    galleryDescription: 'Photos of the school and learning environment.',
+    fallbackImageAlt: 'Illustration of a school building',
     detailsTitle: 'Key details',
     programsTitle: 'Programs',
     contactsTitle: 'Contacts',
@@ -243,6 +252,24 @@ const formatPrice = (price, formatter, t) => {
   return price === 0 ? t.freePublicSchool : `${formatter.format(price)} / ${t.perMonth}`;
 };
 
+
+const getImageAlt = (image, fallback, language) => getLocalizedSchoolValue(image?.alt, language) || fallback;
+const escapeSvgText = (value) => String(value).replace(/[&<>\"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[character]);
+const createFallbackImage = (schoolName, t) => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="${t.fallbackImageAlt}"><defs><linearGradient id="sky" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#e9f4ff"/><stop offset="0.55" stop-color="#f8fbff"/><stop offset="1" stop-color="#dff8ef"/></linearGradient><linearGradient id="front" x1="0" x2="1"><stop stop-color="#12365d"/><stop offset="1" stop-color="#0a7c8f"/></linearGradient></defs><rect width="1200" height="800" fill="url(#sky)"/><circle cx="980" cy="130" r="92" fill="#a9e9f2" opacity="0.7"/><path d="M170 670h860V365L600 170 170 365z" fill="url(#front)"/><path d="M255 670V405h690v265z" fill="#ffffff" opacity="0.94"/><path d="M600 170 120 390h960z" fill="#0a7c8f"/><rect x="520" y="500" width="160" height="170" rx="18" fill="#12365d"/><g fill="#a9e9f2"><rect x="310" y="445" width="95" height="85" rx="14"/><rect x="455" y="445" width="95" height="85" rx="14"/><rect x="650" y="445" width="95" height="85" rx="14"/><rect x="795" y="445" width="95" height="85" rx="14"/></g><text x="600" y="735" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800" fill="#12365d">${escapeSvgText(schoolName)}</text></svg>`;
+
+  return {
+    src: `data:image/svg+xml,${encodeURIComponent(svg)}`,
+    alt: t.fallbackImageAlt,
+    isFallback: true
+  };
+};
+const getSchoolImages = (school, schoolName, t) => {
+  const photos = [school.main_image, ...(Array.isArray(school.gallery) ? school.gallery : [])].filter(Boolean);
+
+  return photos.length > 0 ? photos : [createFallbackImage(schoolName, t)];
+};
+
 const getReportMailto = (schoolName, slug, language) => {
   const subject = encodeURIComponent(`School Choice KZ: incorrect information for ${schoolName}`);
   const body = encodeURIComponent(`School: ${schoolName}\nURL: /schools/${slug}?lang=${language}\n\nPlease describe the incorrect information:\n`);
@@ -294,6 +321,8 @@ export default async function SchoolDetailPage({ params, searchParams }) {
   const twoGisUrl = getTwoGisUrl(school, localizedAddress, localizedName);
   const localizedDistrict = getLocalizedEnumLabel('districts', school.district, language);
   const localizedSchoolType = getLocalizedEnumLabel('schoolTypes', school.type, language);
+  const schoolImages = getSchoolImages(school, localizedName, t);
+  const heroImage = schoolImages[0];
   const detailRows = [
     [t.fields.schoolName, localizedName],
     [t.fields.district, localizedDistrict],
@@ -342,10 +371,26 @@ export default async function SchoolDetailPage({ params, searchParams }) {
               </a>
             </div>
           </div>
-          <div className="school-detail__media" aria-label={t.imagePlaceholder}>
-            <span>{t.imagePlaceholder}</span>
-          </div>
+          <figure className={heroImage.isFallback ? 'school-detail__media school-detail__media--fallback' : 'school-detail__media'}>
+            <img src={heroImage.src} alt={getImageAlt(heroImage, t.fallbackImageAlt, language)} loading="eager" decoding="async" />
+            {heroImage.isFallback ? <figcaption>{t.imagePlaceholder}</figcaption> : null}
+          </figure>
         </header>
+
+        <section className="school-detail__section" aria-labelledby="gallery-title">
+          <div className="school-detail__section-heading">
+            <h2 id="gallery-title">{t.galleryTitle}</h2>
+            <p>{t.galleryDescription}</p>
+          </div>
+          <div className="school-gallery">
+            {schoolImages.map((image, index) => (
+              <figure key={`${image.src}-${index}`} className={image.isFallback ? 'school-gallery__item school-gallery__item--fallback' : 'school-gallery__item'}>
+                <img src={image.src} alt={getImageAlt(image, t.fallbackImageAlt, language)} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
+                {image.caption ? <figcaption>{getLocalizedSchoolValue(image.caption, language)}</figcaption> : null}
+              </figure>
+            ))}
+          </div>
+        </section>
 
         <section className="school-detail__section" aria-labelledby="details-title">
           <h2 id="details-title">{t.detailsTitle}</h2>
