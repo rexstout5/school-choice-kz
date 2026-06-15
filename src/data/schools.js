@@ -57,6 +57,34 @@ const formatPhone = (phone) => {
 };
 const schoolWebsite = (schoolNumber) => `https://${schoolNumber}.astana-bilim.kz`;
 
+const createWebsiteScreenshotImage = (website, schoolName) => {
+  if (!website) {
+    return null;
+  }
+
+  const screenshotUrl = `https://image.thum.io/get/width/1200/crop/800/noanimate/${encodeURIComponent(website)}`;
+  const caption = {
+    ru: 'Снимок официального сайта школы',
+    kk: 'Мектептің ресми сайтының суреті',
+    en: 'Screenshot of the school official website'
+  };
+  const alt = {
+    ru: `${getLocalizedSchoolValue(schoolName, 'ru')} — официальный сайт`,
+    kk: `${getLocalizedSchoolValue(schoolName, 'kk')} — ресми сайт`,
+    en: `${getLocalizedSchoolValue(schoolName, 'en')} official website`
+  };
+
+  return {
+    src: screenshotUrl,
+    alt,
+    caption,
+    source: {
+      name: 'Official school website screenshot via Thum.io',
+      url: website
+    }
+  };
+};
+
 const fallbackLanguageOrder = ['ru', 'en', 'kk'];
 
 const instructionLanguageTranslations = {
@@ -451,6 +479,8 @@ const createAstanaPublicSchool = ({
   const resolvedWebsite = website ?? schoolWebsite(number);
   const resolvedPhone = formatPhone(phone);
   const resolvedSources = sources ?? [ASTANA_PUBLIC_SCHOOL_SOURCE, WEBSITE_SOURCE];
+  const resolvedMainImage = main_image ?? createWebsiteScreenshotImage(resolvedWebsite, localizedName);
+  const resolvedGallery = gallery;
 
   return ({
   id,
@@ -478,8 +508,8 @@ const createAstanaPublicSchool = ({
   address: localizedAddress,
   website: resolvedWebsite,
   phone: resolvedPhone,
-  main_image,
-  gallery,
+  main_image: resolvedMainImage,
+  gallery: resolvedGallery,
   description: localizedDescription,
   programs: localizedPrograms,
   verification_status,
@@ -489,8 +519,8 @@ const createAstanaPublicSchool = ({
     website: resolvedWebsite,
     phone: resolvedPhone,
     coordinates,
-    main_image,
-    gallery
+    main_image: resolvedMainImage,
+    gallery: resolvedGallery
   },
   academics: {
     school_type: localizedSchoolType,
@@ -505,8 +535,8 @@ const createAstanaPublicSchool = ({
     price_status,
     data_status,
     coordinates,
-    main_image,
-    gallery,
+    main_image: resolvedMainImage,
+    gallery: resolvedGallery,
     audit_status: audit.status,
     expandable_fields: ['admissions', 'catchment_area', 'coordinates', 'fees', 'reviews', 'transportation']
   },
