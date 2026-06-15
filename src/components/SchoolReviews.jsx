@@ -18,7 +18,21 @@ const initialReview = {
   text: ''
 };
 
-export default function SchoolReviews({ schoolId, labels }) {
+const formatSubmittedAt = (submittedAt, locale) => {
+  const submittedDate = new Date(submittedAt);
+
+  if (Number.isNaN(submittedDate.getTime())) {
+    return '';
+  }
+
+  return new Intl.DateTimeFormat(locale, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  }).format(submittedDate);
+};
+
+export default function SchoolReviews({ schoolId, labels, locale }) {
   const [review, setReview] = useState(initialReview);
   const [reviews, setReviews] = useState([]);
   const [statusMessage, setStatusMessage] = useState('');
@@ -121,7 +135,10 @@ export default function SchoolReviews({ schoolId, labels }) {
                   <span>{labels.reviewRating(item.rating)}</span>
                 </div>
                 <p>{item.text}</p>
-                <small>{labels.gradeLabel(item.childGrade)}</small>
+                <small>
+                  {labels.gradeLabel(item.childGrade)}
+                  {formatSubmittedAt(item.submittedAt, locale) ? ` · ${labels.submittedAt(formatSubmittedAt(item.submittedAt, locale))}` : ''}
+                </small>
               </li>
             ))}
           </ul>
