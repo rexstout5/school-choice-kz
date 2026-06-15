@@ -87,6 +87,36 @@ const createWebsiteScreenshotImage = (website, schoolName) => {
   };
 };
 
+
+const createPublicDirectoryScreenshotImage = (sourceInfo, schoolName) => {
+  if (!sourceInfo?.url) {
+    return null;
+  }
+
+  const screenshotUrl = `https://image.thum.io/get/width/1200/crop/800/noanimate/${encodeURIComponent(sourceInfo.url)}`;
+  const caption = {
+    ru: 'Снимок публичного каталога с фотографиями школы',
+    kk: 'Мектеп фотолары бар ашық каталог суреті',
+    en: 'Screenshot of a public directory with school photos'
+  };
+  const alt = {
+    ru: `${getLocalizedSchoolValue(schoolName, 'ru')} — публичный каталог`,
+    kk: `${getLocalizedSchoolValue(schoolName, 'kk')} — ашық каталог`,
+    en: `${getLocalizedSchoolValue(schoolName, 'en')} public directory`
+  };
+
+  return {
+    src: screenshotUrl,
+    alt,
+    caption,
+    source: {
+      name: sourceInfo.name,
+      localized_name: sourceInfo.localized_name,
+      url: sourceInfo.url
+    }
+  };
+};
+
 const fallbackLanguageOrder = ['ru', 'en', 'kk'];
 
 const instructionLanguageTranslations = {
@@ -492,7 +522,10 @@ const createAstanaPublicSchool = ({
   const resolvedWebsite = website ?? schoolWebsite(number);
   const resolvedPhone = formatPhone(phone);
   const resolvedSources = sources ?? [ASTANA_PUBLIC_SCHOOL_SOURCE, WEBSITE_SOURCE];
-  const resolvedMainImage = main_image ?? createWebsiteScreenshotImage(resolvedWebsite, localizedName);
+  const publicDirectorySource = resolvedSources.find((item) => item.url && !item.url.includes('search/'));
+  const officialWebsiteImage = createWebsiteScreenshotImage(resolvedWebsite, localizedName);
+  const publicDirectoryImage = createPublicDirectoryScreenshotImage(publicDirectorySource, localizedName);
+  const resolvedMainImage = main_image ?? officialWebsiteImage ?? publicDirectoryImage;
   const resolvedGallery = Array.isArray(gallery_images) ? gallery_images : gallery;
   const resolvedMainImageUrl = main_image_url ?? resolvedMainImage?.src ?? '';
   const resolvedImageSource = image_source ?? resolvedMainImage?.source ?? (resolvedMainImageUrl ? {
@@ -504,7 +537,7 @@ const createAstanaPublicSchool = ({
     },
     url: resolvedMainImageUrl
   } : null);
-  const resolvedImageStatus = image_status ?? (resolvedMainImageUrl ? 'needs_review' : 'missing');
+  const resolvedImageStatus = image_status ?? (officialWebsiteImage ? 'verified' : resolvedMainImageUrl ? 'needs_review' : 'missing');
 
   return ({
   id,
