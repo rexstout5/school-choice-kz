@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getLocalizedEnumLabel, getLocalizedSchoolValue, schools } from '../../../src/data/schools.js';
+import FavoriteButton from '../../../src/components/FavoriteButton.jsx';
 
 const defaultLanguage = 'ru';
 
@@ -14,6 +15,10 @@ const translations = {
     contactsTitle: 'Контакты',
     sourcesTitle: 'Источники данных',
     reportIncorrectInfo: 'Сообщить об ошибке',
+    favorite: {
+      add: 'Добавить в избранное',
+      remove: 'В избранном'
+    },
     fields: {
       schoolName: 'Название школы',
       district: 'Район',
@@ -46,6 +51,10 @@ const translations = {
     contactsTitle: 'Байланыс',
     sourcesTitle: 'Дерек көздері',
     reportIncorrectInfo: 'Қате ақпарат туралы хабарлау',
+    favorite: {
+      add: 'Таңдаулыға қосу',
+      remove: 'Таңдаулыда'
+    },
     fields: {
       schoolName: 'Мектеп атауы',
       district: 'Аудан',
@@ -78,6 +87,10 @@ const translations = {
     contactsTitle: 'Contacts',
     sourcesTitle: 'Data sources',
     reportIncorrectInfo: 'Report incorrect information',
+    favorite: {
+      add: 'Add to favorites',
+      remove: 'Saved to favorites'
+    },
     fields: {
       schoolName: 'School name',
       district: 'District',
@@ -219,6 +232,7 @@ export default async function SchoolDetailPage({ params, searchParams }) {
             <h1>{localizedName}</h1>
             <p>{localizedDescription}</p>
             <div className="school-detail__actions">
+              <FavoriteButton schoolId={school.id} labels={t.favorite} className="favorite-button--detail" />
               <a className="button-link" href={getReportMailto(localizedName, slug, language)}>
                 {t.reportIncorrectInfo}
               </a>

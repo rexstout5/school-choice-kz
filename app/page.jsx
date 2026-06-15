@@ -11,6 +11,7 @@ import {
 } from '../src/data/schools.js';
 import { doesSchoolMatchCatalogFilters } from '../src/lib/schoolFilters.js';
 import { priceOptionValues } from '../src/lib/priceFilters.js';
+import FavoriteButton from '../src/components/FavoriteButton.jsx';
 
 const initialFilters = {
   type: 'all',
@@ -42,6 +43,11 @@ const translations = {
   ru: {
     pageTitle: 'Выбор школы в Казахстане',
     languageSwitcherLabel: 'Выберите язык интерфейса',
+    favoritesLink: 'Избранное',
+    favorite: {
+      add: 'Добавить в избранное',
+      remove: 'В избранном'
+    },
     heroKicker: 'Выбор школы в Казахстане',
     heroTitle: 'Изучите школы Астаны в удобном формате',
     heroDescription:
@@ -130,6 +136,11 @@ const translations = {
   kz: {
     pageTitle: 'Қазақстандағы мектеп таңдауы',
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
+    favoritesLink: 'Таңдаулылар',
+    favorite: {
+      add: 'Таңдаулыға қосу',
+      remove: 'Таңдаулыда'
+    },
     heroKicker: 'Қазақстандағы мектеп таңдауы',
     heroTitle: 'Астана мектептерін ыңғайлы форматта зерттеңіз',
     heroDescription:
@@ -218,6 +229,11 @@ const translations = {
   en: {
     pageTitle: 'School Choice Kazakhstan',
     languageSwitcherLabel: 'Choose interface language',
+    favoritesLink: 'Favorites',
+    favorite: {
+      add: 'Add to favorites',
+      remove: 'Saved to favorites'
+    },
     heroKicker: 'School Choice Kazakhstan',
     heroTitle: 'Explore structured Astana school options',
     heroDescription:
@@ -433,7 +449,10 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage, isCompared, is
           <p className="school-card__eyebrow">{localizedDistrict}</p>
           <h2>{localizedName}</h2>
         </div>
-        <span className={`badge badge--${school.type}`}>{getLocalizedEnumLabel('schoolTypes', school.type, currentLanguage)}</span>
+        <div className="school-card__header-actions">
+          <FavoriteButton schoolId={school.id} labels={t.favorite} />
+          <span className={`badge badge--${school.type}`}>{getLocalizedEnumLabel('schoolTypes', school.type, currentLanguage)}</span>
+        </div>
       </div>
 
       <dl className="school-card__facts school-card__facts--compact">
@@ -772,7 +791,10 @@ export default function Home() {
         <a className="site-header__brand" href="#top" aria-label={t.pageTitle}>
           {t.pageTitle}
         </a>
-        <LanguageSwitcher currentLanguage={currentLanguage} onLanguageChange={updateLanguage} t={t} />
+        <div className="site-header__actions">
+          <a className="site-header__link" href={`/favorites?lang=${currentLanguage}`}>♡ {t.favoritesLink}</a>
+          <LanguageSwitcher currentLanguage={currentLanguage} onLanguageChange={updateLanguage} t={t} />
+        </div>
       </header>
 
       <section className="hero" id="top">
