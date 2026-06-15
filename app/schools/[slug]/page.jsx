@@ -14,6 +14,8 @@ const translations = {
     detailsTitle: 'Ключевые сведения',
     programsTitle: 'Программы',
     contactsTitle: 'Контакты',
+    openIn2Gis: 'Открыть в 2GIS',
+    missingValue: 'Не указано',
     sourcesTitle: 'Источники данных',
     reportIncorrectInfo: 'Сообщить об ошибке',
     favorite: {
@@ -36,6 +38,7 @@ const translations = {
       address: 'Адрес',
       phone: 'Телефон',
       website: 'Сайт',
+      email: 'Email',
       description: 'Описание'
     },
     freePublicSchool: 'Бесплатная государственная школа',
@@ -73,6 +76,8 @@ const translations = {
     detailsTitle: 'Негізгі мәліметтер',
     programsTitle: 'Бағдарламалар',
     contactsTitle: 'Байланыс',
+    openIn2Gis: '2GIS-та ашу',
+    missingValue: 'Көрсетілмеген',
     sourcesTitle: 'Дерек көздері',
     reportIncorrectInfo: 'Қате ақпарат туралы хабарлау',
     favorite: {
@@ -95,6 +100,7 @@ const translations = {
       address: 'Мекенжай',
       phone: 'Телефон',
       website: 'Сайт',
+      email: 'Email',
       description: 'Сипаттама'
     },
     freePublicSchool: 'Тегін мемлекеттік мектеп',
@@ -132,6 +138,8 @@ const translations = {
     detailsTitle: 'Key details',
     programsTitle: 'Programs',
     contactsTitle: 'Contacts',
+    openIn2Gis: 'Open in 2GIS',
+    missingValue: 'Not specified',
     sourcesTitle: 'Data sources',
     reportIncorrectInfo: 'Report incorrect information',
     favorite: {
@@ -154,6 +162,7 @@ const translations = {
       address: 'Address',
       phone: 'Phone',
       website: 'Website',
+      email: 'Email',
       description: 'Description'
     },
     freePublicSchool: 'Free public school',
@@ -194,6 +203,29 @@ const languageOptions = [
 const getLanguage = (lang) => (lang && translations[lang] ? lang : defaultLanguage);
 const getSchoolSlug = (school) => school.slug ?? school.id;
 const formatPhoneLink = (phone) => phone.replace(/[^+\d]/g, '');
+const hasValue = (value) => {
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+
+  return value !== null && value !== undefined && String(value).trim() !== '';
+};
+const getSchoolEmail = (school) => school.email ?? school.contact?.email ?? '';
+const getTwoGisUrl = (school, address, name) => {
+  const coordinates = school.contact?.coordinates ?? school.metadata?.coordinates ?? school.coordinates;
+
+  if (Array.isArray(coordinates) && coordinates.length >= 2) {
+    const [longitude, latitude] = coordinates;
+
+    if (longitude && latitude) {
+      return `https://2gis.kz/astana/geo/${longitude},${latitude}`;
+    }
+  }
+
+  const query = encodeURIComponent([name, address, 'Астана'].filter(hasValue).join(' '));
+
+  return `https://2gis.kz/astana/search/${query}`;
+};
 
 const getMoneyFormatter = (language) =>
   new Intl.NumberFormat(language === 'en' ? 'en-US' : language === 'kz' ? 'kk-KZ' : 'ru-RU', {
@@ -258,6 +290,8 @@ export default async function SchoolDetailPage({ params, searchParams }) {
   const localizedLanguages = getLocalizedSchoolValue(school.languages, language);
   const localizedClassSize = getLocalizedSchoolValue(school.class_size, language);
   const localizedAddress = getLocalizedSchoolValue(school.address, language);
+  const schoolEmail = getSchoolEmail(school);
+  const twoGisUrl = getTwoGisUrl(school, localizedAddress, localizedName);
   const localizedDistrict = getLocalizedEnumLabel('districts', school.district, language);
   const localizedSchoolType = getLocalizedEnumLabel('schoolTypes', school.type, language);
   const detailRows = [
@@ -351,23 +385,36 @@ export default async function SchoolDetailPage({ params, searchParams }) {
           <dl className="school-card__facts school-detail__facts">
             <div>
               <dt>{t.fields.address}</dt>
-              <dd>{localizedAddress}</dd>
+              <dd>{hasValue(localizedAddress) ? localizedAddress : t.missingValue}</dd>
             </div>
             <div>
               <dt>{t.fields.phone}</dt>
               <dd>
-                <a href={`tel:${formatPhoneLink(school.phone)}`}>{school.phone}</a>
+                {hasValue(school.phone) ? <a href={`tel:${formatPhoneLink(school.phone)}`}>{school.phone}</a> : t.missingValue}
               </dd>
+            </div>
+            <div>
+              <dt>{t.fields.email}</dt>
+              <dd>{hasValue(schoolEmail) ? <a href={`mailto:${schoolEmail}`}>{schoolEmail}</a> : t.missingValue}</dd>
             </div>
             <div>
               <dt>{t.fields.website}</dt>
               <dd>
-                <a href={school.website} target="_blank" rel="noreferrer">
-                  {school.website}
-                </a>
+                {hasValue(school.website) ? (
+                  <a href={school.website} target="_blank" rel="noreferrer">
+                    {school.website}
+                  </a>
+                ) : (
+                  t.missingValue
+                )}
               </dd>
             </div>
           </dl>
+          <div className="school-detail__contact-actions">
+            <a className="button-link" href={twoGisUrl} target="_blank" rel="noreferrer">
+              {t.openIn2Gis}
+            </a>
+          </div>
         </section>
 
         <section className="school-detail__section" aria-labelledby="sources-title">
