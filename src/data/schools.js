@@ -429,6 +429,8 @@ const createAstanaPublicSchool = ({
   website,
   sources,
   coordinates,
+  main_image = null,
+  gallery = [],
   audit = AUDIT_RESULT
 }) => {
   const localizedName = localizeName(name);
@@ -476,6 +478,8 @@ const createAstanaPublicSchool = ({
   address: localizedAddress,
   website: resolvedWebsite,
   phone: resolvedPhone,
+  main_image,
+  gallery,
   description: localizedDescription,
   programs: localizedPrograms,
   verification_status,
@@ -484,7 +488,9 @@ const createAstanaPublicSchool = ({
     address: localizedAddress,
     website: resolvedWebsite,
     phone: resolvedPhone,
-    coordinates
+    coordinates,
+    main_image,
+    gallery
   },
   academics: {
     school_type: localizedSchoolType,
@@ -499,6 +505,8 @@ const createAstanaPublicSchool = ({
     price_status,
     data_status,
     coordinates,
+    main_image,
+    gallery,
     audit_status: audit.status,
     expandable_fields: ['admissions', 'catchment_area', 'coordinates', 'fees', 'reviews', 'transportation']
   },
@@ -555,7 +563,7 @@ const privateSources = [
   source('WE Project: 10 private educational institutions in Astana', 'https://weproject.media/en/articles/detail/which-school-in-astana-to-choose-for-your-child-10-private-educational-institutions/')
 ];
 
-const createAstanaPrivateSchool = ({ id, name, official_name, district, address, phone = '', instruction_languages, school_type, type, tuition_fee = null, price_status = 'unknown', data_status = 'partially_verified', website = '', programs, description, after_school_program = 'unknown', school_bus = 'unknown', admission_test = 'yes', verification_status = 'partially_verified', coordinates, sources = privateSources }) =>
+const createAstanaPrivateSchool = ({ id, name, official_name, district, address, phone = '', instruction_languages, school_type, type, tuition_fee = null, price_status = 'unknown', data_status = 'partially_verified', website = '', programs, description, after_school_program = 'unknown', school_bus = 'unknown', admission_test = 'yes', verification_status = 'partially_verified', coordinates, main_image = null, gallery = [], sources = privateSources }) =>
   createAstanaPublicSchool({
     id,
     number: 0,
@@ -581,6 +589,8 @@ const createAstanaPrivateSchool = ({ id, name, official_name, district, address,
     admission_requirements: privateAdmissionRequirements,
     website,
     coordinates,
+    main_image,
+    gallery,
     verification_status,
     sources,
     audit: PRIVATE_SCHOOL_AUDIT
