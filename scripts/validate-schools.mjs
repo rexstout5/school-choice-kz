@@ -20,6 +20,7 @@ const requiredFields = [
   'name',
   'official_name',
   'preserve_brand_name',
+  'official_name_language',
   'city',
   'district',
   'type',
@@ -96,8 +97,9 @@ const auditedLocalizedFields = [
   'programs'
 ];
 const nonLocalizedContentPattern = /[A-Za-z]{2,}/;
-const isEnglishBrandNamePreserved = (school) => school.official_name_language === 'en' || school.preserve_brand_name === true;
+const isEnglishBrandNamePreserved = (school) => school.preserve_brand_name === true;
 const languages = ['ru', 'kk', 'en'];
+const officialNameLanguages = ['ru', 'kk', 'en'];
 
 const isLocalizedObject = (value) =>
   value &&
@@ -265,6 +267,14 @@ schools.forEach((school, index) => {
 
   if (!verificationStatuses.includes(school.verification_status)) {
     errors.push(`${school.id} has invalid verification status ${school.verification_status}`);
+  }
+
+  if (!officialNameLanguages.includes(school.official_name_language)) {
+    errors.push(`${school.id} has invalid official_name_language ${school.official_name_language}`);
+  }
+
+  if ((school.type === 'international' || school.type === 'private') && school.preserve_brand_name !== true) {
+    errors.push(`${school.id} international/private brand must set preserve_brand_name true`);
   }
 
   if (isEnglishBrandNamePreserved(school)) {
