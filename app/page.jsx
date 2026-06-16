@@ -22,7 +22,7 @@ const homepageTranslations = {
   ru: {
     pageTitle: 'Выбор школы в Казахстане',
     languageSwitcherLabel: 'Выберите язык интерфейса',
-    catalogLink: 'Каталог',
+    catalogLink: 'Каталог школ',
     mapLink: 'Карта',
     quizLink: 'Подбор школы',
     rankingsLink: 'Рейтинг школ',
@@ -38,7 +38,7 @@ const homepageTranslations = {
     topTitle: 'Популярные школы',
     tabs: { all: 'Все', public: 'Государственные', private: 'Частные' },
     toolsTitle: 'Полезные инструменты',
-    tools: [['📍', 'Карта школ', '/map'], ['⚖', 'Сравнение школ', '/compare'], ['⭐', 'Рейтинг школ', '/rankings'], ['❤️', 'Избранное', '/favorites']],
+    tools: [['map', 'Карта школ', '/map'], ['compare', 'Сравнение школ', '/compare'], ['star', 'Рейтинг школ', '/rankings'], ['heart', 'Избранное', '/favorites']],
     howTitle: 'Как это работает',
     howSteps: ['Ответьте на несколько вопросов', 'Получите список подходящих школ', 'Сравните и сохраните лучшие варианты'],
     district: 'Район',
@@ -48,12 +48,19 @@ const homepageTranslations = {
     notYetRated: 'Пока нет оценки',
     freePublicSchool: 'Бесплатно',
     priceUnknown: 'Уточняется',
-    perMonth: 'в месяц'
+    perMonth: 'в месяц',
+    language: 'Язык',
+    footerDescription: 'Сервис выбора образовательных возможностей для детей в Казахстане.',
+    footerColumns: [
+      ['Навигация', [['Каталог школ', '/catalog'], ['Карта школ', '/map'], ['Подбор школы', '/quiz'], ['Рейтинг школ', '/rankings']]],
+      ['Для родителей', [['Как выбрать школу', '/how-to-choose-school'], ['Вопросы и ответы', '/school-readiness'], ['Полезные статьи', '/how-to-choose-school']]],
+      ['О проекте', [['О нас', '#top'], ['Добавить школу', '/contribute'], ['Контакты', '/contribute']]]
+    ]
   },
   kz: {
     pageTitle: 'Қазақстандағы мектеп таңдауы',
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
-    catalogLink: 'Каталог',
+    catalogLink: 'Мектептер каталогы',
     mapLink: 'Карта',
     quizLink: 'Мектеп таңдау',
     rankingsLink: 'Мектеп рейтингі',
@@ -69,7 +76,7 @@ const homepageTranslations = {
     topTitle: 'Танымал мектептер',
     tabs: { all: 'Барлығы', public: 'Мемлекеттік', private: 'Жеке' },
     toolsTitle: 'Пайдалы құралдар',
-    tools: [['📍', 'Мектептер картасы', '/map'], ['⚖', 'Мектептерді салыстыру', '/compare'], ['⭐', 'Мектеп рейтингі', '/rankings'], ['❤️', 'Таңдаулылар', '/favorites']],
+    tools: [['map', 'Мектептер картасы', '/map'], ['compare', 'Мектептерді салыстыру', '/compare'], ['star', 'Мектеп рейтингі', '/rankings'], ['heart', 'Таңдаулылар', '/favorites']],
     howTitle: 'Бұл қалай жұмыс істейді',
     howSteps: ['Бірнеше сұраққа жауап беріңіз', 'Сәйкес мектептер тізімін алыңыз', 'Ең жақсы нұсқаларды салыстырып сақтаңыз'],
     district: 'Аудан',
@@ -79,7 +86,14 @@ const homepageTranslations = {
     notYetRated: 'Әзірге баға жоқ',
     freePublicSchool: 'Тегін',
     priceUnknown: 'Нақтыланады',
-    perMonth: 'айына'
+    perMonth: 'айына',
+    language: 'Тіл',
+    footerDescription: 'Қазақстандағы балаларға арналған білім беру мүмкіндіктерін таңдау сервисі.',
+    footerColumns: [
+      ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектептер картасы', '/map'], ['Мектеп таңдау', '/quiz'], ['Мектеп рейтингі', '/rankings']]],
+      ['Ата-аналарға', [['Мектепті қалай таңдау керек', '/how-to-choose-school'], ['Сұрақтар мен жауаптар', '/school-readiness'], ['Пайдалы мақалалар', '/how-to-choose-school']]],
+      ['Жоба туралы', [['Біз туралы', '#top'], ['Мектеп қосу', '/contribute'], ['Байланыс', '/contribute']]]
+    ]
   },
   en: {
     pageTitle: 'School Choice Kazakhstan',
@@ -100,7 +114,7 @@ const homepageTranslations = {
     topTitle: 'Popular schools',
     tabs: { all: 'All', public: 'Public', private: 'Private' },
     toolsTitle: 'Helpful tools',
-    tools: [['📍', 'School map', '/map'], ['⚖', 'School comparison', '/compare'], ['⭐', 'School rankings', '/rankings'], ['❤️', 'Favorites', '/favorites']],
+    tools: [['map', 'School map', '/map'], ['compare', 'School comparison', '/compare'], ['star', 'School rankings', '/rankings'], ['heart', 'Favorites', '/favorites']],
     howTitle: 'How it works',
     howSteps: ['Answer a few questions', 'Get a list of suitable schools', 'Compare and save the best options'],
     district: 'District',
@@ -110,14 +124,41 @@ const homepageTranslations = {
     notYetRated: 'Not yet rated',
     freePublicSchool: 'Free',
     priceUnknown: 'To be confirmed',
-    perMonth: 'month'
+    perMonth: 'month',
+    language: 'Language',
+    footerDescription: 'A service for choosing educational opportunities for children in Kazakhstan.',
+    footerColumns: [
+      ['Navigation', [['School catalog', '/catalog'], ['School map', '/map'], ['School matcher', '/quiz'], ['School rankings', '/rankings']]],
+      ['For parents', [['How to choose a school', '/how-to-choose-school'], ['Questions and answers', '/school-readiness'], ['Helpful articles', '/how-to-choose-school']]],
+      ['About', [['About us', '#top'], ['Add a school', '/contribute'], ['Contacts', '/contribute']]]
+    ]
   }
 };
 
 const getSchoolCardImage = (school, schoolName) => school.main_image_url || school.main_image?.src || createSchoolImagePlaceholder(schoolName, 'card');
 
+const getLocalizedInstructionLanguages = (languageValue, currentLanguage) => String(languageValue || '')
+  .split(',')
+  .map((value) => getLocalizedEnumLabel('instructionLanguages', value.trim(), currentLanguage))
+  .join(', ');
+
 function withLanguage(href, language) {
   return `${href}${href.includes('?') ? '&' : '?'}lang=${language}`;
+}
+
+
+function ToolIcon({ name }) {
+  const common = { width: '32', height: '32', viewBox: '0 0 32 32', fill: 'none', 'aria-hidden': 'true' };
+  if (name === 'map') {
+    return <svg {...common}><path d="M12 5 4 8v19l8-3 8 3 8-3V5l-8 3-8-3Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/><path d="M12 5v19M20 8v19" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>;
+  }
+  if (name === 'compare') {
+    return <svg {...common}><path d="M8 7v18M24 7v18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><path d="M12 11h12l-4-4M20 25H8l4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+  }
+  if (name === 'star') {
+    return <svg {...common}><path d="m16 4 3.5 7.1 7.8 1.1-5.6 5.5 1.3 7.7-7-3.7-7 3.7 1.3-7.7-5.6-5.5 7.8-1.1L16 4Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>;
+  }
+  return <svg {...common}><path d="M16 26s-10-5.8-10-14a5.5 5.5 0 0 1 10-3.1A5.5 5.5 0 0 1 26 12c0 8.2-10 14-10 14Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>;
 }
 
 function LanguageSwitcher({ currentLanguage, onLanguageChange, t }) {
@@ -132,7 +173,7 @@ function LanguageSwitcher({ currentLanguage, onLanguageChange, t }) {
   );
 }
 
-function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStats }) {
+function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStats, rank }) {
   const localizedName = getLocalizedSchoolValue(school.name, currentLanguage);
   const localizedDistrict = getLocalizedEnumLabel('districts', school.district, currentLanguage);
   const cardImage = getSchoolCardImage(school, localizedName);
@@ -141,17 +182,20 @@ function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStat
     : school.tuition_fee === 0
       ? t.freePublicSchool
       : `${moneyFormatter.format(school.tuition_fee)} / ${t.perMonth}`;
-  const rating = ratingStats.averageRating === null ? t.notYetRated : `⭐ ${formatAverageRating(ratingStats.averageRating)} / 5`;
+  const rating = ratingStats.averageRating === null ? t.notYetRated : `${formatAverageRating(ratingStats.averageRating)} / 5`;
+  const language = getLocalizedInstructionLanguages(school.language, currentLanguage);
 
   return (
     <article className="top-school-card">
       <div className="top-school-card__image">
+        <span className="top-school-card__rank">#{rank}</span>
         <SchoolImageWithFallback src={cardImage} alt={localizedName} schoolName={localizedName} loading="lazy" decoding="async" size="card" />
       </div>
       <div className="top-school-card__body">
         <h3>{localizedName}</h3>
         <dl>
           <div><dt>{t.district}</dt><dd>{localizedDistrict}</dd></div>
+          <div><dt>{t.language}</dt><dd>{language}</dd></div>
           <div><dt>{t.rating}</dt><dd>{rating}</dd></div>
           <div><dt>{t.tuition}</dt><dd>{tuition}</dd></div>
         </dl>
@@ -177,8 +221,8 @@ function PopularSchools({ groups, moneyFormatter, t, currentLanguage, reviewsByS
         </div>
       </div>
       <div className="top-school-grid">
-        {groups[activeTab].map((school) => (
-          <HomeSchoolCard key={school.id} school={school} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} ratingStats={getSchoolRatingStats(school, getSchoolReviews(reviewsBySchool, school.id))} />
+        {groups[activeTab].map((school, index) => (
+          <HomeSchoolCard key={school.id} rank={index + 1} school={school} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} ratingStats={getSchoolRatingStats(school, getSchoolReviews(reviewsBySchool, school.id))} />
         ))}
       </div>
     </section>
@@ -244,25 +288,19 @@ export default function Home() {
     }
   };
 
-  const footerLinks = [
-    [t.catalogLink, '/catalog'],
-    [t.mapLink, '/map'],
-    [t.quizLink, '/quiz'],
-    [t.rankingsLink, '/rankings'],
-    [t.addSchoolLink, '/contribute'],
-    [t.aboutLink, '#top']
-  ];
-
   return (
     <main>
       <header className="site-header">
-        <a className="site-header__brand" href="#top" aria-label={t.pageTitle}>{t.pageTitle}</a>
-        <div className="site-header__actions">
+        <a className="site-header__brand" href="#top" aria-label={t.pageTitle}>BilimChoice</a>
+        <nav className="site-header__nav" aria-label={t.footerLabel}>
           <a className="site-header__link" href={withLanguage('/catalog', currentLanguage)}>{t.catalogLink}</a>
           <a className="site-header__link" href={withLanguage('/map', currentLanguage)}>{t.mapLink}</a>
+          <a className="site-header__link" href={withLanguage('/quiz', currentLanguage)}>{t.quizLink}</a>
           <a className="site-header__link" href={withLanguage('/rankings', currentLanguage)}>{t.rankingsLink}</a>
-          <a className="site-header__link" href={withLanguage('/contribute', currentLanguage)}>{t.addSchoolLink}</a>
-          <a className="site-header__link" href={withLanguage('/favorites', currentLanguage)}>♡ {t.favoritesLink} ({favoriteCount})</a>
+          <a className="site-header__link" href="#footer">{t.aboutLink}</a>
+        </nav>
+        <div className="site-header__actions">
+          <a className="site-header__link site-header__link--favorite" href={withLanguage('/favorites', currentLanguage)}>♡ {t.favoritesLink} ({favoriteCount})</a>
           <LanguageSwitcher currentLanguage={currentLanguage} onLanguageChange={updateLanguage} t={t} />
         </div>
       </header>
@@ -276,6 +314,7 @@ export default function Home() {
             <a className="hero__cta hero__cta--secondary" href={withLanguage('/catalog', currentLanguage)}>{t.heroSecondaryCta}</a>
           </div>
         </div>
+        <div className="hero__visual" aria-hidden="true"><div className="hero__visual-card"><span /><strong>BilimChoice</strong><p>Astana school selection</p></div></div>
         <div className="hero-stat-grid" aria-label={t.heroStats.join(', ')}>
           {t.heroStats.map((stat) => <strong key={stat}>{stat}</strong>)}
         </div>
@@ -287,7 +326,7 @@ export default function Home() {
         <div className="section-heading"><h2 id="tools-title">{t.toolsTitle}</h2></div>
         <div className="tool-card-grid">
           {t.tools.map(([icon, title, href]) => (
-            <a className="tool-card tool-card--large" key={title} href={withLanguage(href, currentLanguage)}><span>{icon}</span><strong>{title}</strong></a>
+            <a className="tool-card tool-card--large" key={title} href={withLanguage(href, currentLanguage)}><span><ToolIcon name={icon} /></span><strong>{title}</strong><em>→</em></a>
           ))}
         </div>
       </section>
@@ -304,12 +343,16 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="site-footer site-footer--simple">
-        <nav className="footer-links" aria-label={t.footerLabel}>
-          {footerLinks.map(([label, href]) => (
-            <a key={label} href={href.startsWith('#') ? href : withLanguage(href, currentLanguage)}>{label}</a>
-          ))}
-        </nav>
+      <footer className="site-footer site-footer--simple" id="footer">
+        <div className="site-footer__brand"><strong>BilimChoice</strong><p>{t.footerDescription}</p></div>
+        {t.footerColumns.map(([title, links]) => (
+          <nav className="footer-links" key={title} aria-label={title}>
+            <h3>{title}</h3>
+            {links.map(([label, href]) => (
+              <a key={label} href={href.startsWith('#') ? href : withLanguage(href, currentLanguage)}>{label}</a>
+            ))}
+          </nav>
+        ))}
       </footer>
     </main>
   );
