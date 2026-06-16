@@ -2,7 +2,8 @@ import { notFound } from 'next/navigation';
 import { getLocalizedEnumLabel, getLocalizedSchoolValue, schools } from '../../../src/data/schools.js';
 import FavoriteButton from '../../../src/components/FavoriteButton.jsx';
 import SchoolReviews from '../../../src/components/SchoolReviews.jsx';
-import SchoolImageWithFallback, { createSchoolImagePlaceholder } from '../../../src/components/SchoolImageWithFallback.jsx';
+import SchoolImageWithFallback from '../../../src/components/SchoolImageWithFallback.jsx';
+import { createSchoolImagePlaceholder, isUsableImageUrl, normalizeImageRecord } from '../../../src/utils/schoolImages.js';
 
 const defaultLanguage = 'ru';
 
@@ -267,12 +268,20 @@ const createFallbackImage = (schoolName, t) => ({
   isFallback: true
 });
 const getSchoolImages = (school, schoolName, t) => {
-  const normalizedMainImage = school.main_image_url ? { ...(school.main_image ?? {}), src: school.main_image_url } : school.main_image;
-  const galleryImages = Array.isArray(school.gallery_images) ? school.gallery_images : school.gallery;
-  const photos = [normalizedMainImage, ...(Array.isArray(galleryImages) ? galleryImages : [])].filter(Boolean);
+  const mainImageUrl = isUsableImageUrl(school.main_image_url) ? school.main_image_url.trim() : '';
+  const normalizedMainImage = mainImageUrl
+    ? { ...(normalizeImageRecord(school.main_image) ?? {}), src: mainImageUrl }
+    : normalizeImageRecord(school.main_image);
+  const galleryImages = Array.isArray(school.gallery_images) ? school.gallery_images : [];
+  const photos = [normalizedMainImage, ...galleryImages.map(normalizeImageRecord)].filter(Boolean);
 
   return photos.length > 0 ? photos : [createFallbackImage(schoolName, t)];
 };
+
+const getSchoolImageMetadata = (school) => ({
+  imageSource: school.image_source && typeof school.image_source === 'object' && !Array.isArray(school.image_source) ? school.image_source : '',
+  imageStatus: typeof school.image_status === 'string' && school.image_status.trim().length > 0 ? school.image_status : 'missing'
+});
 
 const getReportMailto = (schoolName, slug, language) => {
   const subject = encodeURIComponent(`School Choice KZ: incorrect information for ${schoolName}`);
@@ -327,7 +336,7 @@ export default async function SchoolDetailPage({ params, searchParams }) {
   const localizedSchoolType = getLocalizedEnumLabel('schoolTypes', school.type, language);
   const schoolImages = getSchoolImages(school, localizedName, t);
   const heroImage = schoolImages[0];
-  const imageSource = school.image_source;
+  const { imageSource, imageStatus } = getSchoolImageMetadata(school);
   const imageSourceName = getLocalizedSchoolValue(imageSource?.localized_name, language) || imageSource?.name;
   const detailRows = [
     [t.fields.schoolName, localizedName],
@@ -399,7 +408,7 @@ export default async function SchoolDetailPage({ params, searchParams }) {
           <dl className="image-source-list">
             <div>
               <dt>{t.imageStatus}</dt>
-              <dd>{getLocalizedEnumLabel('imageStatuses', school.image_status, language)}</dd>
+              <dd>{getLocalizedEnumLabel('imageStatuses', imageStatus, language)}</dd>
             </div>
             {imageSourceName ? (
               <div>
