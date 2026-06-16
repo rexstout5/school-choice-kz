@@ -1,32 +1,9 @@
 import { getLocalizedSchoolValue } from '../data/schools.js';
-import { getAverageRating } from './reviews.js';
+import { getReviewSummary } from './reviews.js';
 
 export const sortOptionValues = ['highest_rated', 'lowest_tuition', 'highest_tuition', 'most_reviewed', 'alphabetical_az'];
 
-export const getSchoolBaseReviewCount = (school) => school.review_count ?? school.reviews_count ?? (school.rating > 0 ? 12 + (school.id.length % 29) : 0);
-
-export const getSchoolRatingStats = (school, reviews = []) => {
-  const storedAverage = getAverageRating(reviews);
-  const baseReviewCount = getSchoolBaseReviewCount(school);
-  const baseRating = Number(school.rating) || 0;
-
-  if (storedAverage === null) {
-    return {
-      averageRating: baseRating > 0 ? baseRating : null,
-      reviewCount: baseReviewCount
-    };
-  }
-
-  const totalReviews = baseReviewCount + reviews.length;
-  const weightedAverage = totalReviews > 0
-    ? ((baseRating * baseReviewCount) + (storedAverage * reviews.length)) / totalReviews
-    : storedAverage;
-
-  return {
-    averageRating: weightedAverage,
-    reviewCount: totalReviews
-  };
-};
+export const getSchoolRatingStats = (school, reviews = []) => getReviewSummary([...(Array.isArray(school.reviews) ? school.reviews : []), ...reviews]);
 
 export const getRatingSummaryKey = (averageRating) => {
   if (averageRating === null || averageRating === undefined) return 'average';

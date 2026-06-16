@@ -68,6 +68,9 @@ const translations = {
       averageRating: 'Средняя оценка',
       notYetRated: 'Нет оценки',
       reviewCount: { one: 'отзыв', few: 'отзыва', many: 'отзывов' },
+      categorySummaryTitle: 'Средние оценки по категориям',
+      categoryRatings: 'Оценки по категориям',
+      categories: { academics: 'Академика', teachers: 'Учителя', safety: 'Безопасность', parentCommunication: 'Связь с родителями', extracurricular: 'Внеурочные занятия' },
       parentName: 'Имя родителя',
       rating: 'Оценка',
       ratingOption: '{rating} из 5',
@@ -143,6 +146,9 @@ const translations = {
       averageRating: 'Орташа баға',
       notYetRated: 'Баға жоқ',
       reviewCount: { one: 'пікір', many: 'пікір' },
+      categorySummaryTitle: 'Санаттар бойынша орташа бағалар',
+      categoryRatings: 'Санаттар бойынша бағалар',
+      categories: { academics: 'Академиялық деңгей', teachers: 'Мұғалімдер', safety: 'Қауіпсіздік', parentCommunication: 'Ата-анамен байланыс', extracurricular: 'Қосымша іс-шаралар' },
       parentName: 'Ата-ананың аты',
       rating: 'Баға',
       ratingOption: '{rating}/5',
@@ -218,6 +224,9 @@ const translations = {
       averageRating: 'Average rating',
       notYetRated: 'No rating yet',
       reviewCount: { one: 'review', many: 'reviews' },
+      categorySummaryTitle: 'Average ratings by category',
+      categoryRatings: 'Category ratings',
+      categories: { academics: 'Academics', teachers: 'Teachers', safety: 'Safety', parentCommunication: 'Communication with parents', extracurricular: 'Extracurricular activities' },
       parentName: 'Parent name',
       rating: 'Rating',
       ratingOption: '{rating} of 5',
@@ -497,7 +506,7 @@ export default async function SchoolDetailPage({ params, searchParams }) {
           <p className="school-detail__text">{localizedAdmissionRequirements}</p>
         </section>
 
-        <SchoolReviews schoolId={school.id} labels={t.reviews} locale={language === 'kz' ? 'kk-KZ' : language === 'en' ? 'en-US' : 'ru-RU'} />
+        <SchoolReviews school={school} schoolId={school.id} labels={t.reviews} language={language} locale={language === 'kz' ? 'kk-KZ' : language === 'en' ? 'en-US' : 'ru-RU'} />
 
         <section className="school-detail__section" aria-labelledby="contacts-title">
           <h2 id="contacts-title">{t.contactsTitle}</h2>
