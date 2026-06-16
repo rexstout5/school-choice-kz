@@ -1,5 +1,65 @@
 const escapeSvgText = (value) => String(value ?? '').replace(/[&<>"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[character]);
 
+export const schoolPlaceholderImages = {
+  public: '/images/placeholders/public-school.jpg',
+  private: '/images/placeholders/private-school.jpg',
+  international: '/images/placeholders/international-school.jpg',
+  stem: '/images/placeholders/stem-school.jpg'
+};
+
+const getLocalizedText = (value) => {
+  if (typeof value === 'string') return value;
+  if (value && typeof value === 'object') return [value.en, value.ru, value.kk].filter(Boolean).join(' ');
+  return '';
+};
+
+const getSearchableSchoolText = (school) => [
+  school?.type,
+  getLocalizedText(school?.school_type),
+  getLocalizedText(school?.name),
+  ...(Array.isArray(school?.programs) ? school.programs : []),
+  ...(Array.isArray(school?.academics?.programs) ? school.academics.programs : [])
+].map(getLocalizedText).join(' ').toLowerCase();
+
+export const getSchoolPlaceholderType = (school) => {
+  const searchableText = getSearchableSchoolText(school);
+
+  if (searchableText.includes('stem') || searchableText.includes('science') || searchableText.includes('mathematics') || searchableText.includes('робот')) {
+    return 'stem';
+  }
+
+  if (school?.type === 'international' || searchableText.includes('international') || searchableText.includes('халықаралық') || searchableText.includes('международ')) {
+    return 'international';
+  }
+
+  if (school?.type === 'private' || searchableText.includes('private') || searchableText.includes('частн') || searchableText.includes('жеке')) {
+    return 'private';
+  }
+
+  return 'public';
+};
+
+export const getSchoolPlaceholderImage = (school) => schoolPlaceholderImages[getSchoolPlaceholderType(school)] ?? schoolPlaceholderImages.public;
+
+const getImageSrc = (image) => {
+  if (typeof image === 'string') return image;
+  if (image && typeof image === 'object') return image.src ?? image.url ?? '';
+  return '';
+};
+
+export const getSchoolCoverImage = (school) => {
+  const candidates = [
+    getImageSrc(school?.cover_image),
+    getImageSrc(Array.isArray(school?.images) ? school.images[0] : null),
+    getImageSrc(school?.main_image_url),
+    getImageSrc(school?.main_image),
+    getImageSrc(Array.isArray(school?.gallery_images) ? school.gallery_images[0] : null),
+    getImageSrc(Array.isArray(school?.gallery) ? school.gallery[0] : null)
+  ];
+
+  return candidates.find(isUsableImageUrl) || getSchoolPlaceholderImage(school);
+};
+
 export const createSchoolImagePlaceholder = (schoolName, size = 'large') => {
   const safeSchoolName = schoolName || 'School image placeholder';
   const viewBox = size === 'card' ? '0 0 640 360' : '0 0 1200 800';

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="PRIVATE school placeholder">
+<defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#fff0d6"/><stop offset="1" stop-color="#fdf7ed"/></linearGradient><filter id="s"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#12365d" flood-opacity=".14"/></filter></defs>
+<rect width="640" height="360" fill="url(#g)"/>
+<circle cx="115" cy="64" r="64" fill="#fff" opacity=".42"/>
+<circle cx="524" cy="100" r="86" fill="#b36b00" opacity=".10"/>
+<g filter="url(#s)" transform="translate(147 75)">
+<path d="M0 115h345v79H0z" fill="#fff" opacity=".94"/>
+<path d="M32 115V64l140-39 140 39v50z" fill="#b36b00"/>
+<rect x="51" y="133" width="51" height="25" rx="10" fill="#eaf2f8"/>
+<rect x="140" y="133" width="51" height="25" rx="10" fill="#eaf2f8"/>
+<rect x="243" y="122" width="64" height="72" rx="12" fill="#12365d" opacity=".88"/>
+</g>
+<text x="50%" y="88%" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="24" font-weight="800" fill="#12365d" opacity=".72">PRIVATE</text>
+</svg>
