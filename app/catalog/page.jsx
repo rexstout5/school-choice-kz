@@ -8,16 +8,16 @@ import {
   schoolLanguages,
   schools,
   schoolTypes
-} from '../src/data/schools.js';
-import { doesSchoolMatchCatalogFilters } from '../src/lib/schoolFilters.js';
-import { priceOptionValues } from '../src/lib/priceFilters.js';
-import FavoriteButton from '../src/components/FavoriteButton.jsx';
-import SchoolImageWithFallback from '../src/components/SchoolImageWithFallback.jsx';
-import { createSchoolImagePlaceholder } from '../src/utils/schoolImages.js';
-import { formatAverageRating, getSchoolReviews, getStoredReviewsBySchool } from '../src/lib/reviews.js';
-import { getRatingSummaryKey, getSchoolRatingStats, sortOptionValues, sortSchools } from '../src/lib/schoolDiscovery.js';
-import { favoritesChangedEventName, getStoredFavoriteSchoolIds } from '../src/lib/favorites.js';
-import { seoFooterLinks } from '../src/data/seoPages.js';
+} from '../../src/data/schools.js';
+import { doesSchoolMatchCatalogFilters } from '../../src/lib/schoolFilters.js';
+import { priceOptionValues } from '../../src/lib/priceFilters.js';
+import FavoriteButton from '../../src/components/FavoriteButton.jsx';
+import SchoolImageWithFallback from '../../src/components/SchoolImageWithFallback.jsx';
+import { createSchoolImagePlaceholder } from '../../src/utils/schoolImages.js';
+import { formatAverageRating, getSchoolReviews, getStoredReviewsBySchool } from '../../src/lib/reviews.js';
+import { getRatingSummaryKey, getSchoolRatingStats, sortOptionValues, sortSchools } from '../../src/lib/schoolDiscovery.js';
+import { favoritesChangedEventName, getStoredFavoriteSchoolIds } from '../../src/lib/favorites.js';
+import { seoFooterLinks } from '../../src/data/seoPages.js';
 
 const initialFilters = {
   type: 'all',
@@ -294,37 +294,6 @@ const translations = {
     mapLink: 'Map',
     rankingsLink: 'Rankings',
     addSchoolLink: 'Add school',
-
-    catalogLink: 'Catalog',
-    howItWorks: {
-      kicker: 'Start here',
-      title: 'How it works',
-      steps: [
-        ['Take the quiz', 'Answer a few parent-focused questions about location, budget, language, and priorities.'],
-        ['Review a short list', 'See the strongest public and private options first instead of scanning every school.'],
-        ['Compare and decide', 'Save favorites, compare up to three schools, read reviews, and open details when ready.']
-      ]
-    },
-    schoolTools: {
-      kicker: 'School tools',
-      title: 'Everything you need after the shortlist',
-      description: 'Keep the full discovery workflow available without overwhelming the homepage.',
-      tools: [
-        ['Catalog', 'Filter every school by type, language, district, tuition, and rating.', '/catalog'],
-        ['Map', 'Explore school locations around home, work, and commute routes.', '/map'],
-        ['Quiz', 'Get a guided recommendation path for your family priorities.', '/quiz'],
-        ['Compare', 'Compare saved schools side by side before contacting admissions.', '/compare'],
-        ['Favorites', 'Return to schools you saved while researching.', '/favorites']
-      ]
-    },
-    featuredSchools: {
-      kicker: 'Featured schools',
-      title: 'Start with the strongest options',
-      description: 'A focused preview of the top 5 public and top 5 private schools keeps the homepage easy to scan.',
-      publicTitle: 'Top 5 public schools',
-      privateTitle: 'Top 5 private schools',
-      browseAll: 'Browse full catalog'
-    },
     favorite: {
       add: 'Add to favorites',
       remove: 'Saved to favorites'
@@ -847,7 +816,7 @@ function FeedbackForm({ t, currentLanguage }) {
   );
 }
 
-export default function Home() {
+export default function CatalogPage() {
   const [filters, setFilters] = useState(initialFilters);
   const [currentLanguage, setCurrentLanguage] = useState(defaultLanguage);
   const [currentPage, setCurrentPage] = useState(1);
@@ -883,7 +852,7 @@ export default function Home() {
     }
   }, []);
 
-  const t = { ...translations.en, ...translations[currentLanguage], howItWorks: translations[currentLanguage].howItWorks ?? translations.en.howItWorks, schoolTools: translations[currentLanguage].schoolTools ?? translations.en.schoolTools, featuredSchools: translations[currentLanguage].featuredSchools ?? translations.en.featuredSchools, catalogLink: translations[currentLanguage].catalogLink ?? translations.en.catalogLink };
+  const t = translations[currentLanguage];
   const districtOptionLabels = useMemo(() => getEnumOptionLabels('districts', schoolDistricts, currentLanguage), [currentLanguage]);
 
   const moneyFormatter = useMemo(
@@ -904,8 +873,6 @@ export default function Home() {
 
   const totalPages = Math.max(1, Math.ceil(filteredSchools.length / schoolsPerPage));
   const visibleSchools = filteredSchools.slice((currentPage - 1) * schoolsPerPage, currentPage * schoolsPerPage);
-  const featuredPublicSchools = useMemo(() => sortSchools(schools.filter((school) => school.type === 'public'), initialSort, currentLanguage, reviewsBySchool).slice(0, 5), [currentLanguage, reviewsBySchool]);
-  const featuredPrivateSchools = useMemo(() => sortSchools(schools.filter((school) => school.type === 'private'), initialSort, currentLanguage, reviewsBySchool).slice(0, 5), [currentLanguage, reviewsBySchool]);
   const selectedSchools = comparedSchoolIds
     .map((schoolId) => schools.find((school) => school.id === schoolId))
     .filter(Boolean);
@@ -973,7 +940,6 @@ export default function Home() {
           {t.pageTitle}
         </a>
         <div className="site-header__actions">
-          <a className="site-header__link" href={`/catalog?lang=${currentLanguage}`}>{t.catalogLink}</a>
           <a className="site-header__link" href={`/map?lang=${currentLanguage}`}>{t.mapLink}</a>
           <a className="site-header__link" href={`/rankings?lang=${currentLanguage}`}>{t.rankingsLink}</a>
           <a className="site-header__link" href={`/contribute?lang=${currentLanguage}`}>{t.addSchoolLink}</a>
@@ -989,7 +955,7 @@ export default function Home() {
           <p>{t.heroDescription}</p>
           <div className="hero__actions">
             <a className="hero__cta" href={`/quiz?lang=${currentLanguage}`}>{t.heroCta}</a>
-            <a className="hero__cta hero__cta--secondary" href={`/catalog?lang=${currentLanguage}`}>{t.heroSecondaryCta}</a>
+            <a className="hero__cta hero__cta--secondary" href="#catalog">{t.heroSecondaryCta}</a>
           </div>
           <p className="hero__note">{t.heroNote}</p>
         </div>
@@ -1006,75 +972,75 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="how-it-works" aria-labelledby="how-it-works-title">
-        <div className="section-heading">
-          <p className="section-kicker">{t.howItWorks.kicker}</p>
-          <h2 id="how-it-works-title">{t.howItWorks.title}</h2>
-        </div>
-        <div className="steps-grid">
-          {t.howItWorks.steps.map(([title, description], index) => (
-            <article className="step-card" key={title}>
-              <span>{index + 1}</span>
-              <h3>{title}</h3>
-              <p>{description}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="school-tools" aria-labelledby="school-tools-title">
-        <div className="section-heading">
-          <p className="section-kicker">{t.schoolTools.kicker}</p>
-          <h2 id="school-tools-title">{t.schoolTools.title}</h2>
-          <p>{t.schoolTools.description}</p>
-        </div>
-        <div className="tools-grid">
-          {t.schoolTools.tools.map(([title, description, href]) => (
-            <a className="tool-card" key={title} href={`${href}?lang=${currentLanguage}`}>
-              <strong>{title}</strong>
-              <span>{description}</span>
-            </a>
-          ))}
-        </div>
-      </section>
-
       <StatsSection t={t} favoriteCount={favoriteCount} />
 
-      <section className="featured-schools" aria-labelledby="featured-schools-title">
-        <div className="section-heading section-heading--split">
-          <div>
-            <p className="section-kicker">{t.featuredSchools.kicker}</p>
-            <h2 id="featured-schools-title">{t.featuredSchools.title}</h2>
-            <p>{t.featuredSchools.description}</p>
-          </div>
-          <a className="button-link" href={`/catalog?lang=${currentLanguage}`}>{t.featuredSchools.browseAll}</a>
-        </div>
-        <div className="featured-school-lists">
-          {[
-            [t.featuredSchools.publicTitle, featuredPublicSchools],
-            [t.featuredSchools.privateTitle, featuredPrivateSchools]
-          ].map(([title, featuredSchools]) => (
-            <section className="featured-school-list" key={title} aria-label={title}>
-              <h3>{title}</h3>
-              <div className="school-grid school-grid--featured">
-                {featuredSchools.map((school) => (
-                  <SchoolCard
-                    key={school.id}
-                    school={school}
-                    moneyFormatter={moneyFormatter}
-                    t={t}
-                    currentLanguage={currentLanguage}
-                    ratingStats={getSchoolRatingStats(school, getSchoolReviews(reviewsBySchool, school.id))}
-                    isCompared={comparedSchoolIds.includes(school.id)}
-                    isCompareDisabled={comparedSchoolIds.length >= maxComparedSchools && !comparedSchoolIds.includes(school.id)}
-                    onCompareToggle={toggleComparedSchool}
-                  />
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
+      <section className="filters" id="catalog" aria-label={t.filtersAria}>
+        <FilterControl
+          id="type"
+          label={t.type}
+          value={filters.type}
+          options={schoolTypes}
+          allLabel={t.all}
+          optionLabels={getEnumOptionLabels('schoolTypes', schoolTypes, currentLanguage)}
+          onChange={(value) => updateFilter('type', value)}
+        />
+        <FilterControl
+          id="language"
+          label={t.language}
+          value={filters.language}
+          options={schoolLanguages}
+          allLabel={t.all}
+          optionLabels={getEnumOptionLabels('instructionLanguages', schoolLanguages, currentLanguage)}
+          onChange={(value) => updateFilter('language', value)}
+        />
+        <FilterControl
+          id="district"
+          label={t.district}
+          value={filters.district}
+          options={schoolDistricts}
+          allLabel={t.all}
+          optionLabels={districtOptionLabels}
+          onChange={(value) => updateFilter('district', value)}
+        />
+        <PriceFilter value={filters.maxPrice} onChange={(value) => updateFilter('maxPrice', value)} t={t} />
+        <SortControl value={sortBy} onChange={(value) => { setSortBy(value); setCurrentPage(1); }} t={t} />
       </section>
+
+      <section className="results-heading" aria-live="polite">
+        <h2>{t.schoolsMatch(filteredSchools.length)}</h2>
+        <button type="button" onClick={resetFilters}>
+          {t.resetFilters}
+        </button>
+      </section>
+
+      {filteredSchools.length > 0 ? (
+        <>
+          <section className="school-grid" aria-label={t.filteredSchoolsAria}>
+            {visibleSchools.map((school) => (
+              <SchoolCard
+                key={school.id}
+                school={school}
+                moneyFormatter={moneyFormatter}
+                t={t}
+                currentLanguage={currentLanguage}
+                ratingStats={getSchoolRatingStats(school, getSchoolReviews(reviewsBySchool, school.id))}
+                isCompared={comparedSchoolIds.includes(school.id)}
+                isCompareDisabled={comparedSchoolIds.length >= maxComparedSchools && !comparedSchoolIds.includes(school.id)}
+                onCompareToggle={toggleComparedSchool}
+              />
+            ))}
+          </section>
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={updatePage} t={t} />
+        </>
+      ) : (
+        <section className="empty-state" aria-live="polite">
+          <h2>{t.noResultsTitle}</h2>
+          <p>{t.noResultsDescription}</p>
+          <button type="button" onClick={resetFilters}>
+            {t.resetFilters}
+          </button>
+        </section>
+      )}
 
       <ComparisonBar
         selectedSchools={selectedSchools}
