@@ -93,28 +93,29 @@ const translations = {
     perMonth: 'в месяц',
     unavailableAge: 'Проверьте у школы прием и наличие мест для возраста',
     reasons: {
-      district: (value) => `Район совпадает: ${value}`,
-      schoolType: (value) => `Тип школы совпадает: ${value}`,
-      budget: (value) => `Стоимость соответствует бюджету: ${value}`,
-      language: (value) => `Есть выбранный язык обучения: ${value}`,
-      afterSchoolProgram: 'Продленка соответствует вашему ответу',
-      schoolBus: 'Школьный автобус соответствует вашему ответу',
-      admissionTest: 'Условия вступительного теста соответствуют вашему ответу',
-      flexibleType: 'Тип школы не ограничен',
-      flexibleBudget: 'Бюджет не ограничен',
-      flexibleDistrict: 'Район не ограничен',
-      flexibleLanguage: 'Язык обучения не ограничен',
+      district: (value) => `✓ Район совпадает: ${value}`,
+      schoolType: (value) => `✓ Тип школы совпадает: ${value}`,
+      budget: (value) => `✓ Стоимость соответствует бюджету: ${value}`,
+      language: (value) => `✓ Есть выбранный язык обучения: ${value}`,
+      afterSchoolProgram: '✓ Есть подходящая продленка',
+      schoolBus: '✓ Школьный автобус соответствует вашему ответу',
+      admissionTest: '✓ Условия поступления соответствуют вашему ответу',
+      flexibleType: '✓ Тип школы не ограничен',
+      flexibleBudget: '✓ Бюджет не ограничен',
+      flexibleDistrict: '✓ Район не ограничен',
+      flexibleLanguage: '✓ Язык обучения не ограничен',
       partialMatch: 'Школа включена в рейтинг для сравнения компромиссов'
     },
     concerns: {
-      district: (value) => `Другой район: ${value}`,
-      schoolType: (value) => `Другой тип школы: ${value}`,
-      budget: (value) => `Стоимость не попадает в выбранный бюджет: ${value}`,
-      language: (value) => `Нет выбранного языка; доступно: ${value}`,
-      afterSchoolProgram: (value) => `Продленка: ${value}`,
-      schoolBus: (value) => `Школьный автобус: ${value}`,
-      admissionTest: 'Возможен вступительный тест',
-      noAdmissionTest: 'В базе не указан вступительный тест',
+      district: (value) => `⚠ Другой район: ${value}`,
+      schoolType: (value) => `⚠ Другой тип школы: ${value}`,
+      budget: (value) => `⚠ Стоимость не попадает в выбранный бюджет: ${value}`,
+      language: (value) => `⚠ Нет выбранного языка; доступно: ${value}`,
+      afterSchoolProgram: (value) => `⚠ Продленка: ${value}`,
+      schoolBus: (value) => `⚠ Школьный автобус: ${value}`,
+      admissionTest: '⚠ Возможен конкурсный вступительный тест',
+      noAdmissionTest: '⚠ В базе не указан вступительный тест',
+      classSize: (value) => `⚠ Проверьте наполняемость классов: ${value}`,
       noMajorConcerns: 'Существенных расхождений по выбранным критериям нет'
     }
   },
@@ -171,28 +172,29 @@ const translations = {
     perMonth: 'айына',
     unavailableAge: 'Мектептен осы жасқа қабылдау мен бос орындарды нақтылаңыз',
     reasons: {
-      district: (value) => `Аудан сәйкес: ${value}`,
-      schoolType: (value) => `Мектеп түрі сәйкес: ${value}`,
-      budget: (value) => `Құны бюджетке сәйкес: ${value}`,
-      language: (value) => `Таңдалған оқыту тілі бар: ${value}`,
-      afterSchoolProgram: 'Сабақтан кейінгі бағдарлама жауабыңызға сәйкес',
-      schoolBus: 'Мектеп автобусы жауабыңызға сәйкес',
-      admissionTest: 'Қабылдау тесті шарты жауабыңызға сәйкес',
-      flexibleType: 'Мектеп түрі шектелмеген',
-      flexibleBudget: 'Бюджет шектелмеген',
-      flexibleDistrict: 'Аудан шектелмеген',
-      flexibleLanguage: 'Оқыту тілі шектелмеген',
+      district: (value) => `✓ Аудан сәйкес: ${value}`,
+      schoolType: (value) => `✓ Мектеп түрі сәйкес: ${value}`,
+      budget: (value) => `✓ Құны бюджетке сәйкес: ${value}`,
+      language: (value) => `✓ Таңдалған оқыту тілі бар: ${value}`,
+      afterSchoolProgram: '✓ Сабақтан кейінгі бағдарлама бар',
+      schoolBus: '✓ Мектеп автобусы жауабыңызға сәйкес',
+      admissionTest: '✓ Қабылдау шарттары жауабыңызға сәйкес',
+      flexibleType: '✓ Мектеп түрі шектелмеген',
+      flexibleBudget: '✓ Бюджет шектелмеген',
+      flexibleDistrict: '✓ Аудан шектелмеген',
+      flexibleLanguage: '✓ Оқыту тілі шектелмеген',
       partialMatch: 'Мектеп ымыралы нұсқаларды салыстыру үшін рейтингке қосылды'
     },
     concerns: {
-      district: (value) => `Басқа аудан: ${value}`,
-      schoolType: (value) => `Басқа мектеп түрі: ${value}`,
-      budget: (value) => `Құны таңдалған бюджетке кірмейді: ${value}`,
-      language: (value) => `Таңдалған тіл жоқ; бар тілдер: ${value}`,
-      afterSchoolProgram: (value) => `Сабақтан кейінгі бағдарлама: ${value}`,
-      schoolBus: (value) => `Мектеп автобусы: ${value}`,
-      admissionTest: 'Қабылдау тесті болуы мүмкін',
-      noAdmissionTest: 'Базада қабылдау тесті көрсетілмеген',
+      district: (value) => `⚠ Басқа аудан: ${value}`,
+      schoolType: (value) => `⚠ Басқа мектеп түрі: ${value}`,
+      budget: (value) => `⚠ Құны таңдалған бюджетке кірмейді: ${value}`,
+      language: (value) => `⚠ Таңдалған тіл жоқ; бар тілдер: ${value}`,
+      afterSchoolProgram: (value) => `⚠ Сабақтан кейінгі бағдарлама: ${value}`,
+      schoolBus: (value) => `⚠ Мектеп автобусы: ${value}`,
+      admissionTest: '⚠ Конкурстық қабылдау тесті болуы мүмкін',
+      noAdmissionTest: '⚠ Базада қабылдау тесті көрсетілмеген',
+      classSize: (value) => `⚠ Сынып көлемін нақтылаңыз: ${value}`,
       noMajorConcerns: 'Таңдалған критерийлер бойынша маңызды айырмашылық жоқ'
     }
   },
@@ -249,28 +251,29 @@ const translations = {
     perMonth: 'month',
     unavailableAge: 'Confirm admissions and seats for this age with the school',
     reasons: {
-      district: (value) => `District matches: ${value}`,
-      schoolType: (value) => `School type matches: ${value}`,
-      budget: (value) => `Tuition matches budget: ${value}`,
-      language: (value) => `Selected instruction language is available: ${value}`,
-      afterSchoolProgram: 'After-school program matches your answer',
-      schoolBus: 'School bus matches your answer',
-      admissionTest: 'Admission test conditions match your answer',
-      flexibleType: 'School type is flexible',
-      flexibleBudget: 'Budget is flexible',
-      flexibleDistrict: 'District is flexible',
-      flexibleLanguage: 'Instruction language is flexible',
+      district: (value) => `✓ District matches: ${value}`,
+      schoolType: (value) => `✓ School type matches: ${value}`,
+      budget: (value) => `✓ Tuition matches budget: ${value}`,
+      language: (value) => `✓ Offers selected instruction language: ${value}`,
+      afterSchoolProgram: '✓ Has after-school program',
+      schoolBus: '✓ School bus matches your answer',
+      admissionTest: '✓ Admission requirements match your answer',
+      flexibleType: '✓ School type is flexible',
+      flexibleBudget: '✓ Budget is flexible',
+      flexibleDistrict: '✓ District is flexible',
+      flexibleLanguage: '✓ Instruction language is flexible',
       partialMatch: 'Included in the ranking so you can compare trade-offs'
     },
     concerns: {
-      district: (value) => `Different district: ${value}`,
-      schoolType: (value) => `Different school type: ${value}`,
-      budget: (value) => `Tuition does not fit the selected budget: ${value}`,
-      language: (value) => `Selected language is not listed; available: ${value}`,
-      afterSchoolProgram: (value) => `After-school program: ${value}`,
-      schoolBus: (value) => `School bus: ${value}`,
-      admissionTest: 'Admission test may be required',
-      noAdmissionTest: 'Admission test is not listed in the database',
+      district: (value) => `⚠ Different district: ${value}`,
+      schoolType: (value) => `⚠ Different school type: ${value}`,
+      budget: (value) => `⚠ Tuition does not fit the selected budget: ${value}`,
+      language: (value) => `⚠ Selected language is not listed; available: ${value}`,
+      afterSchoolProgram: (value) => `⚠ After-school program: ${value}`,
+      schoolBus: (value) => `⚠ School bus: ${value}`,
+      admissionTest: '⚠ Competitive admission process may be required',
+      noAdmissionTest: '⚠ Admission test is not listed in the database',
+      classSize: (value) => `⚠ Confirm class size: ${value}`,
       noMajorConcerns: 'No major differences for your selected criteria'
     }
   }
@@ -413,6 +416,11 @@ const scoreSchool = ({ school, answers, language, moneyFormatter, t }) => {
     concerns.push(t.concerns.admissionTest);
   } else {
     concerns.push(t.concerns.noAdmissionTest);
+  }
+
+  const localizedClassSize = getLocalizedSchoolValue(school.class_size, language);
+  if (/25|26|27|28|29|30|large|varies|capacity|мест|орын/i.test(localizedClassSize)) {
+    concerns.push(t.concerns.classSize(localizedClassSize));
   }
 
   concerns.push(`${t.unavailableAge}: ${answers.childAge}`);
