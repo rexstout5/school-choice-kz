@@ -62,11 +62,23 @@ const translations = {
       remove: 'В избранном'
     },
     heroKicker: 'Выбор школы в Казахстане',
-    heroTitle: 'Изучите школы Астаны в удобном формате',
+    heroTitle: 'Найдите школу, которая подходит вашей семье',
     heroDescription:
-      'Сравнивайте школы Астаны по району, языку обучения, типу школы, статусу проверки и ключевым программам на основе единой модели данных.',
-    heroCta: 'Подобрать школу',
-    astanaSchools: 'школ Астаны',
+      'Ответьте на короткие вопросы, сохраните понравившиеся варианты и сравните школы Астаны по самым важным для родителей критериям.',
+    heroCta: 'Пройти квиз подбора',
+    astanaSchools: 'школ в каталоге',
+    heroSecondaryCta: 'Смотреть каталог',
+    heroNote: 'Персональный маршрут выбора: квиз → шорт-лист → сравнение.',
+    assistantSteps: ['Укажите район и бюджет', 'Получите подходящие варианты', 'Сравните и сохраните школы'],
+    stats: {
+      title: 'Каталог, созданный для решения родителей',
+      description: 'Мы показываем меньше шума и больше сигналов: район, язык, стоимость, отзывы и действия для следующего шага.',
+      schools: 'школы',
+      districts: 'районов',
+      languages: 'языка обучения',
+      favorites: 'в избранном'
+    },
+    catalogKicker: 'Каталог школ',
     filtersAria: 'Фильтры школ',
     all: 'Все',
     type: 'Тип',
@@ -167,11 +179,23 @@ const translations = {
       remove: 'Таңдаулыда'
     },
     heroKicker: 'Қазақстандағы мектеп таңдауы',
-    heroTitle: 'Астана мектептерін ыңғайлы форматта зерттеңіз',
+    heroTitle: 'Отбасыңызға сай мектепті табыңыз',
     heroDescription:
-      'Астана мектептерін аудан, оқыту тілі, мектеп түрі, тексеру мәртебесі және негізгі бағдарламалар бойынша бірыңғай деректер моделі арқылы салыстырыңыз.',
-    heroCta: 'Мектеп таңдау',
-    astanaSchools: 'Астана мектебі',
+      'Қысқа сұрақтарға жауап беріңіз, ұнаған нұсқаларды сақтаңыз және Астана мектептерін ата-аналар үшін маңызды өлшемдер бойынша салыстырыңыз.',
+    heroCta: 'Таңдау квизінен өту',
+    astanaSchools: 'каталогтағы мектеп',
+    heroSecondaryCta: 'Каталогты қарау',
+    heroNote: 'Таңдаудың жеке маршруты: квиз → қысқа тізім → салыстыру.',
+    assistantSteps: ['Аудан мен бюджетті белгілеңіз', 'Сәйкес нұсқаларды алыңыз', 'Мектептерді салыстырып сақтаңыз'],
+    stats: {
+      title: 'Ата-ананың шешіміне арналған каталог',
+      description: 'Біз артық ақпаратты азайтып, маңыздысын көрсетеміз: аудан, тіл, баға, пікірлер және келесі қадамдар.',
+      schools: 'мектеп',
+      districts: 'аудан',
+      languages: 'оқыту тілі',
+      favorites: 'таңдаулыда'
+    },
+    catalogKicker: 'Мектептер каталогы',
     filtersAria: 'Мектеп сүзгілері',
     all: 'Барлығы',
     type: 'Түрі',
@@ -272,11 +296,23 @@ const translations = {
       remove: 'Saved to favorites'
     },
     heroKicker: 'School Choice Kazakhstan',
-    heroTitle: 'Explore structured Astana school options',
+    heroTitle: 'Find the school that fits your family',
     heroDescription:
-      'Compare Astana schools by district, instruction language, school type, verification status, and signature programs using a reusable Kazakhstan school data model.',
-    heroCta: 'Find a school',
-    astanaSchools: 'Astana schools',
+      'Answer a short quiz, save promising options, and compare Astana schools by the criteria parents care about most.',
+    heroCta: 'Take the recommendation quiz',
+    astanaSchools: 'schools in the guide',
+    heroSecondaryCta: 'Browse catalog',
+    heroNote: 'A guided path for parents: quiz → shortlist → comparison.',
+    assistantSteps: ['Share district and budget', 'Get focused school options', 'Compare and save choices'],
+    stats: {
+      title: 'A catalog designed around parent decisions',
+      description: 'We reduce noise and surface the signals families need: location, language, tuition, reviews, and clear next steps.',
+      schools: 'schools',
+      districts: 'districts',
+      languages: 'instruction languages',
+      favorites: 'saved favorites'
+    },
+    catalogKicker: 'School catalog',
     filtersAria: 'School filters',
     all: 'All',
     type: 'Type',
@@ -427,6 +463,34 @@ const getEnumOptionLabels = (dictionaryName, options, language) =>
 
 const formatPhoneLink = (phone) => phone.replace(/[^+\d]/g, '');
 
+function StatsSection({ t, favoriteCount }) {
+  const stats = [
+    { value: schools.length, label: t.stats.schools },
+    { value: schoolDistricts.length, label: t.stats.districts },
+    { value: schoolLanguages.length, label: t.stats.languages },
+    { value: favoriteCount, label: t.stats.favorites }
+  ];
+
+  return (
+    <section className="stats-panel" aria-labelledby="stats-title">
+      <div>
+        <p className="section-kicker">{t.catalogKicker}</p>
+        <h2 id="stats-title">{t.stats.title}</h2>
+        <p>{t.stats.description}</p>
+      </div>
+      <div className="stats-grid">
+        {stats.map((stat) => (
+          <div className="stats-card" key={stat.label}>
+            <strong>{stat.value}</strong>
+            <span>{stat.label}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+
 function LanguageSwitcher({ currentLanguage, onLanguageChange, t }) {
   return (
     <div className="language-switcher" aria-label={t.languageSwitcherLabel}>
@@ -521,15 +585,16 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStats, i
         </div>
       </div>
 
+      <div className="school-card__snapshot">
+        <span>{localizedLanguages}</span>
+        <span>{formatPrice(school.tuition_fee)}</span>
+      </div>
+
       <dl className="school-card__facts school-card__facts--compact">
         {[
-          [t.district, localizedDistrict],
-          [t.schoolCard.schoolType, localizedSchoolType],
-          [t.schoolCard.language, localizedLanguages],
-          [t.schoolCard.tuitionFee, formatPrice(school.tuition_fee)],
           [t.schoolCard.rating, ratingStats.averageRating === null ? t.notYetRated : `⭐ ${formatAverageRating(ratingStats.averageRating)} / 5 · ${t.ratingSummary[getRatingSummaryKey(ratingStats.averageRating)]}`],
-          ['📝', t.reviewCount(ratingStats.reviewCount)],
-          [t.schoolCard.dataStatus, getLocalizedEnumLabel('dataStatuses', school.data_status, currentLanguage)]
+          [t.schoolCard.schoolType, localizedSchoolType],
+          ['📝', t.reviewCount(ratingStats.reviewCount)]
         ].map(([term, detail]) => (
           <div key={term}>
             <dt>{term}</dt>
@@ -880,19 +945,32 @@ export default function Home() {
       </header>
 
       <section className="hero" id="top">
-        <div>
+        <div className="hero__copy">
           <p className="hero__kicker">{t.heroKicker}</p>
           <h1>{t.heroTitle}</h1>
           <p>{t.heroDescription}</p>
-          <a className="hero__cta" href={`/quiz?lang=${currentLanguage}`}>{t.heroCta}</a>
+          <div className="hero__actions">
+            <a className="hero__cta" href={`/quiz?lang=${currentLanguage}`}>{t.heroCta}</a>
+            <a className="hero__cta hero__cta--secondary" href="#catalog">{t.heroSecondaryCta}</a>
+          </div>
+          <p className="hero__note">{t.heroNote}</p>
         </div>
-        <div className="hero__stat">
-          <strong>{schools.length}</strong>
-          <span>{t.astanaSchools}</span>
+        <div className="hero__assistant" aria-label={t.heroNote}>
+          <div className="hero__stat">
+            <strong>{schools.length}</strong>
+            <span>{t.astanaSchools}</span>
+          </div>
+          <ol>
+            {t.assistantSteps.map((step) => (
+              <li key={step}>{step}</li>
+            ))}
+          </ol>
         </div>
       </section>
 
-      <section className="filters" aria-label={t.filtersAria}>
+      <StatsSection t={t} favoriteCount={favoriteCount} />
+
+      <section className="filters" id="catalog" aria-label={t.filtersAria}>
         <FilterControl
           id="type"
           label={t.type}
