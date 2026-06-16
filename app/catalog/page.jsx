@@ -18,6 +18,7 @@ import { formatAverageRating, getSchoolReviews, getStoredReviewsBySchool } from 
 import { getRatingSummaryKey, getSchoolRatingStats, sortOptionValues, sortSchools } from '../../src/lib/schoolDiscovery.js';
 import { favoritesChangedEventName, getStoredFavoriteSchoolIds } from '../../src/lib/favorites.js';
 import { seoFooterLinks } from '../../src/data/seoPages.js';
+import { brand } from '../../src/data/brand.js';
 
 const initialFilters = {
   type: 'all',
@@ -52,7 +53,7 @@ const languageOptions = [
 
 const translations = {
   ru: {
-    pageTitle: 'Выбор школы в Казахстане',
+    pageTitle: brand.name,
     languageSwitcherLabel: 'Выберите язык интерфейса',
     favoritesLink: 'Избранное',
     mapLink: 'Карта',
@@ -64,10 +65,10 @@ const translations = {
       add: 'Добавить в избранное',
       remove: 'В избранном'
     },
-    heroKicker: 'Выбор школы в Казахстане',
+    heroKicker: brand.name,
     heroTitle: 'Найдите школу, которая подходит вашей семье',
     heroDescription:
-      'Ответьте на короткие вопросы, сохраните понравившиеся варианты и сравните школы Астаны по самым важным для родителей критериям.',
+      'Изучайте проверенные данные, фильтруйте по ключевым критериям и формируйте экспертный шорт-лист школ Астаны.',
     heroCta: 'Пройти квиз подбора',
     astanaSchools: 'школ в каталоге',
     heroSecondaryCta: 'Смотреть каталог',
@@ -169,10 +170,10 @@ const translations = {
       success: 'Спасибо — ваш отзыв сохранен в этом браузере.',
       error: 'К сожалению, браузер не смог сохранить отзыв локально.'
     },
-    footer: 'Проект помогает семьям сравнивать школы Астаны. Данные можно расширять новыми городами, отзывами и деталями поступления.'
+    footer: 'BilimChoice помогает семьям экспертно сравнивать школы Астаны. Данные можно расширять новыми городами, отзывами и деталями поступления.'
   },
   kz: {
-    pageTitle: 'Қазақстандағы мектеп таңдауы',
+    pageTitle: brand.name,
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
     favoritesLink: 'Таңдаулылар',
     mapLink: 'Карта',
@@ -184,10 +185,10 @@ const translations = {
       add: 'Таңдаулыға қосу',
       remove: 'Таңдаулыда'
     },
-    heroKicker: 'Қазақстандағы мектеп таңдауы',
+    heroKicker: brand.name,
     heroTitle: 'Отбасыңызға сай мектепті табыңыз',
     heroDescription:
-      'Қысқа сұрақтарға жауап беріңіз, ұнаған нұсқаларды сақтаңыз және Астана мектептерін ата-аналар үшін маңызды өлшемдер бойынша салыстырыңыз.',
+      'Тексерілген деректерді қарап, негізгі өлшемдер бойынша сүзгіден өткізіп, Астана мектептерінің сараптамалық қысқа тізімін жасаңыз.',
     heroCta: 'Таңдау квизінен өту',
     astanaSchools: 'каталогтағы мектеп',
     heroSecondaryCta: 'Каталогты қарау',
@@ -289,10 +290,10 @@ const translations = {
       success: 'Рақмет — пікіріңіз осы браузерде сақталды.',
       error: 'Кешіріңіз, браузер пікірді жергілікті сақтай алмады.'
     },
-    footer: 'Бұл жоба отбасыларға Астана мектептерін салыстыруға көмектеседі. Деректерді жаңа қалалармен, пікірлермен және қабылдау мәліметтерімен кеңейтуге болады.'
+    footer: 'BilimChoice отбасыларға Астана мектептерін сараптамалық салыстыруға көмектеседі. Деректерді жаңа қалалармен, пікірлермен және қабылдау мәліметтерімен кеңейтуге болады.'
   },
   en: {
-    pageTitle: 'School Choice Kazakhstan',
+    pageTitle: brand.name,
     languageSwitcherLabel: 'Choose interface language',
     favoritesLink: 'Favorites',
     mapLink: 'Map',
@@ -302,10 +303,10 @@ const translations = {
       add: 'Add to favorites',
       remove: 'Saved to favorites'
     },
-    heroKicker: 'School Choice Kazakhstan',
+    heroKicker: brand.name,
     heroTitle: 'Find the school that fits your family',
     heroDescription:
-      'Answer a short quiz, save promising options, and compare Astana schools by the criteria parents care about most.',
+      'Review verified data, filter by key criteria, and build an expert shortlist of Astana schools.',
     heroCta: 'Take the recommendation quiz',
     astanaSchools: 'schools in the guide',
     heroSecondaryCta: 'Browse catalog',
@@ -407,7 +408,7 @@ const translations = {
       success: 'Thank you — your feedback has been saved in this browser.',
       error: 'Sorry, this browser could not save feedback locally.'
     },
-    footer: 'This project helps families compare Astana schools. The data can expand with new cities, reviews, and admissions details.'
+    footer: 'BilimChoice helps families compare Astana schools with expert structure. The data can expand with new cities, reviews, and admissions details.'
   }
 };
 

@@ -19,9 +19,9 @@ export const seoPages = {
     featuredTypes: ['public', 'private', 'international', 'specialized'],
     h1: { ru: 'Лучшие школы Астаны: как сравнить варианты', kk: 'Астананың үздік мектептері: нұсқаларды салыстыру', en: 'Best schools in Astana: how to compare options' },
     intro: {
-      ru: 'Лучшей школой для семьи становится та, где совпадают район, язык обучения, нагрузка, бюджет, безопасность и ожидания ребенка. School Choice KZ помогает быстро перейти от общего списка к понятному шорт-листу.',
-      kk: 'Отбасы үшін ең жақсы мектеп — аудан, оқу тілі, жүктеме, бюджет, қауіпсіздік және баланың қажеттілігі сәйкес келетін орын. School Choice KZ жалпы тізімнен нақты қысқа тізім жасауға көмектеседі.',
-      en: 'The best school for a family is the one where location, language, workload, budget, safety, and the child’s needs fit together. School Choice KZ helps turn a broad list into a clear shortlist.'
+      ru: 'Лучшей школой для семьи становится та, где совпадают район, язык обучения, нагрузка, бюджет, безопасность и ожидания ребенка. BilimChoice помогает быстро перейти от общего списка к понятному шорт-листу.',
+      kk: 'Отбасы үшін ең жақсы мектеп — аудан, оқу тілі, жүктеме, бюджет, қауіпсіздік және баланың қажеттілігі сәйкес келетін орын. BilimChoice жалпы тізімнен нақты қысқа тізім жасауға көмектеседі.',
+      en: 'The best school for a family is the one where location, language, workload, budget, safety, and the child’s needs fit together. BilimChoice helps turn a broad list into a clear shortlist.'
     },
     sections: [
       { title: { ru: 'Что считать «лучшей» школой', kk: '«Үздік» мектепті қалай түсіну керек', en: 'What “best” should mean' }, body: { ru: 'Смотрите не только на популярность. Проверьте язык обучения, формат школы, отзывы, дорогу до дома, наличие продленки и прозрачность данных о стоимости.', kk: 'Тек танымалдыққа қарамаңыз. Оқу тілін, мектеп форматын, пікірлерді, үйге дейінгі жолды, ұзартылған күнді және баға деректерінің анықтығын тексеріңіз.', en: 'Look beyond popularity. Check instruction language, school format, reviews, commute, after-school options, and how transparent the fee data is.' } },

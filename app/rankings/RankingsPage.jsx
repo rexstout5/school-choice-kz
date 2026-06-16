@@ -6,6 +6,7 @@ import { doesSchoolMatchCatalogFilters } from '../../src/lib/schoolFilters.js';
 import { priceOptionValues } from '../../src/lib/priceFilters.js';
 import { formatAverageRating, getStoredReviewsBySchool } from '../../src/lib/reviews.js';
 import { doesSchoolMatchRankingCategory, rankSchools } from '../../src/lib/rankings.js';
+import { brand } from '../../src/data/brand.js';
 
 const languageStorageKey = 'school-choice-kz-language';
 const defaultLanguage = 'ru';
@@ -72,7 +73,7 @@ export default function RankingsPage({ category = 'all' }) {
 
   return <main>
     <header className="site-header">
-      <a className="site-header__brand" href={`/?lang=${language}`}>School Choice KZ</a>
+      <a className="site-header__brand" href={`/?lang=${language}`}>{brand.name}</a>
       <div className="site-header__actions">
         <a className="site-header__link" href={`/?lang=${language}`}>{t.home}</a>
         {languageOptions.map(({ code, label }) => <button key={code} type="button" className={language === code ? 'language-switcher__button language-switcher__button--active' : 'language-switcher__button'} onClick={() => updateLanguage(code)}>{label}</button>)}

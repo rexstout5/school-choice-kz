@@ -1,4 +1,4 @@
-# School Choice Kazakhstan
+# BilimChoice
 
 A Next.js school-selection website for comparing structured Astana school options by type, district, language, price, rating, and programs.
 
