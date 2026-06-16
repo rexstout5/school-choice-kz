@@ -23,6 +23,10 @@ const translations = {
     detailsTitle: 'Ключевые сведения',
     programsTitle: 'Программы',
     suitableTitle: 'Кому подойдет эта школа?',
+    recommendationTitle: 'Объяснение рекомендации',
+    match: 'совпадение',
+    whyTitle: 'Почему подходит',
+    concernsTitle: 'Возможные вопросы',
     ratingSummary: { excellent: 'Отлично', good: 'Хорошо', average: 'Средне' },
     reviewCount: (count) => `${count} ${count === 1 ? 'отзыв' : count > 1 && count < 5 ? 'отзыва' : 'отзывов'}`,
     insightTags: {
@@ -101,6 +105,10 @@ const translations = {
     detailsTitle: 'Негізгі мәліметтер',
     programsTitle: 'Бағдарламалар',
     suitableTitle: 'Бұл мектеп кімге қолайлы?',
+    recommendationTitle: 'Ұсыныс түсіндірмесі',
+    match: 'сәйкестік',
+    whyTitle: 'Неге сәйкес келеді',
+    concernsTitle: 'Мүмкін сұрақтар',
     ratingSummary: { excellent: 'Өте жақсы', good: 'Жақсы', average: 'Орташа' },
     reviewCount: (count) => `${count} пікір`,
     insightTags: {
@@ -179,6 +187,10 @@ const translations = {
     detailsTitle: 'Key details',
     programsTitle: 'Programs',
     suitableTitle: 'Who is this school suitable for?',
+    recommendationTitle: 'Recommendation explanation',
+    match: 'match',
+    whyTitle: 'Why it matches',
+    concernsTitle: 'Possible concerns',
     ratingSummary: { excellent: 'Excellent', good: 'Good', average: 'Average' },
     reviewCount: (count) => `${count} ${count === 1 ? 'review' : 'reviews'}`,
     insightTags: {
@@ -320,6 +332,70 @@ const getSchoolImageMetadata = (school) => ({
 
 const getReportContributionUrl = (slug, language) => `/contribute?lang=${language}&tab=correction&school=${encodeURIComponent(slug)}`;
 
+
+const hasLargeClassSize = (classSize) => /25|26|27|28|29|30|large|varies|capacity|мест|орын/i.test(String(classSize));
+
+const getSchoolRecommendationExplanation = (school, language, formatter, t) => {
+  const localizedDistrict = getLocalizedEnumLabel('districts', school.district, language);
+  const localizedType = getLocalizedEnumLabel('schoolTypes', school.type, language);
+  const localizedLanguages = getLocalizedSchoolValue(school.languages, language);
+  const localizedPrice = formatPrice(school.tuition_fee, formatter, t);
+  const localizedClassSize = getLocalizedSchoolValue(school.class_size, language);
+  const localizedAdmission = getLocalizedSchoolValue(school.admission_requirements, language);
+  const whyLabels = {
+    ru: [
+      `✓ Район: ${localizedDistrict}`,
+      `✓ Тип школы: ${localizedType}`,
+      `✓ Бюджет: ${localizedPrice}`,
+      `✓ Языки обучения: ${localizedLanguages}`,
+      school.after_school_program === 'yes' ? '✓ Есть продленка' : null,
+      school.school_bus === 'yes' ? '✓ Есть школьный автобус' : null,
+      school.admission_test === 'no' ? '✓ Поступление без отдельного теста' : `✓ Требования к поступлению описаны: ${localizedAdmission}`
+    ],
+    kz: [
+      `✓ Аудан: ${localizedDistrict}`,
+      `✓ Мектеп түрі: ${localizedType}`,
+      `✓ Бюджет: ${localizedPrice}`,
+      `✓ Оқыту тілдері: ${localizedLanguages}`,
+      school.after_school_program === 'yes' ? '✓ Сабақтан кейінгі бағдарлама бар' : null,
+      school.school_bus === 'yes' ? '✓ Мектеп автобусы бар' : null,
+      school.admission_test === 'no' ? '✓ Жеке тестсіз қабылдау' : `✓ Қабылдау талаптары сипатталған: ${localizedAdmission}`
+    ],
+    en: [
+      `✓ District: ${localizedDistrict}`,
+      `✓ School type: ${localizedType}`,
+      `✓ Budget: ${localizedPrice}`,
+      `✓ Instruction languages: ${localizedLanguages}`,
+      school.after_school_program === 'yes' ? '✓ Has after-school program' : null,
+      school.school_bus === 'yes' ? '✓ Has school bus' : null,
+      school.admission_test === 'no' ? '✓ Admission without a separate test' : `✓ Admission requirements are listed: ${localizedAdmission}`
+    ]
+  };
+  const concernLabels = {
+    ru: [
+      school.admission_test === 'yes' ? '⚠ Возможен конкурсный процесс поступления' : null,
+      school.after_school_program !== 'yes' ? `⚠ Продленка: ${getLocalizedEnumLabel('yesNoUnknown', school.after_school_program, language)}` : null,
+      school.school_bus !== 'yes' ? `⚠ Школьный автобус: ${getLocalizedEnumLabel('yesNoUnknown', school.school_bus, language)}` : null,
+      hasLargeClassSize(localizedClassSize) ? `⚠ Проверьте наполняемость классов: ${localizedClassSize}` : null
+    ],
+    kz: [
+      school.admission_test === 'yes' ? '⚠ Конкурстық қабылдау процесі болуы мүмкін' : null,
+      school.after_school_program !== 'yes' ? `⚠ Сабақтан кейінгі бағдарлама: ${getLocalizedEnumLabel('yesNoUnknown', school.after_school_program, language)}` : null,
+      school.school_bus !== 'yes' ? `⚠ Мектеп автобусы: ${getLocalizedEnumLabel('yesNoUnknown', school.school_bus, language)}` : null,
+      hasLargeClassSize(localizedClassSize) ? `⚠ Сынып көлемін нақтылаңыз: ${localizedClassSize}` : null
+    ],
+    en: [
+      school.admission_test === 'yes' ? '⚠ Competitive admission process may be required' : null,
+      school.after_school_program !== 'yes' ? `⚠ After-school program: ${getLocalizedEnumLabel('yesNoUnknown', school.after_school_program, language)}` : null,
+      school.school_bus !== 'yes' ? `⚠ School bus: ${getLocalizedEnumLabel('yesNoUnknown', school.school_bus, language)}` : null,
+      hasLargeClassSize(localizedClassSize) ? `⚠ Confirm class size: ${localizedClassSize}` : null
+    ]
+  };
+  const why = whyLabels[language].filter(Boolean).slice(0, 7);
+  const concerns = concernLabels[language].filter(Boolean);
+  return { score: Math.max(72, Math.min(98, 100 - concerns.length * 6)), why, concerns: concerns.length > 0 ? concerns : [language === 'en' ? 'No major concerns listed in the database' : language === 'kz' ? 'Базада маңызды ескерту көрсетілмеген' : 'В базе нет существенных предупреждений'] };
+};
+
 export function generateStaticParams() {
   return schools.map((school) => ({ slug: getSchoolSlug(school) }));
 }
@@ -370,6 +446,7 @@ export default async function SchoolDetailPage({ params, searchParams }) {
   const imageSourceName = getLocalizedSchoolValue(imageSource?.localized_name, language) || imageSource?.name;
   const ratingStats = getSchoolRatingStats(school);
   const insightKeys = getSchoolInsightKeys(school);
+  const recommendationExplanation = getSchoolRecommendationExplanation(school, language, moneyFormatter, t);
   const detailRows = [
     [t.fields.schoolName, localizedName],
     [t.fields.district, localizedDistrict],
@@ -493,6 +570,26 @@ export default async function SchoolDetailPage({ params, searchParams }) {
             {insightKeys.map((key) => (
               <span key={key}>{t.insightTags[key]}</span>
             ))}
+          </div>
+        </section>
+
+        <section className="school-detail__section recommendation-card" aria-labelledby="recommendation-title">
+          <div className="recommendation-card__top">
+            <h2 id="recommendation-title">{t.recommendationTitle}</h2>
+            <div className="match-meter" aria-label={`${recommendationExplanation.score}% ${t.match}`}>
+              <strong>{recommendationExplanation.score}%</strong>
+              <span>{t.match}</span>
+            </div>
+          </div>
+          <div className="recommendation-card__lists">
+            <section>
+              <h3>{t.whyTitle}</h3>
+              <ul>{recommendationExplanation.why.map((reason) => <li key={reason}>{reason}</li>)}</ul>
+            </section>
+            <section>
+              <h3>{t.concernsTitle}</h3>
+              <ul>{recommendationExplanation.concerns.map((concern) => <li key={concern}>{concern}</li>)}</ul>
+            </section>
           </div>
         </section>
 
