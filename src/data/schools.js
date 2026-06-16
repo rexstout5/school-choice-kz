@@ -541,11 +541,13 @@ const createAstanaPublicSchool = ({
   gallery_images = null,
   image_source = null,
   image_status,
-  official_name_language,
+  official_name_language = 'en',
   preserve_brand_name = false,
   audit = AUDIT_RESULT
 }) => {
-  const localizedName = localizeName(name);
+  const localizedName = preserve_brand_name
+    ? { ru: official_name, kk: official_name, en: official_name }
+    : localizeName(name);
   const localizedDescription = localizeDescription({ description, district, instruction_languages, school_type });
   const localizedPrograms = localizePrograms(programs);
   const localizedAdmissionRequirements = localizeAdmissionRequirements(admission_requirements);
@@ -722,7 +724,7 @@ const privateSources = [
   source('WE Project: 10 private educational institutions in Astana', 'https://weproject.media/en/articles/detail/which-school-in-astana-to-choose-for-your-child-10-private-educational-institutions/')
 ];
 
-const createAstanaPrivateSchool = ({ id, name, official_name, district, address, phone = '', instruction_languages, school_type, type, tuition_fee = null, price_status = 'unknown', data_status = 'partially_verified', website = '', programs, description, after_school_program = 'unknown', school_bus = 'unknown', admission_test = 'yes', verification_status = 'partially_verified', coordinates, main_image = null, gallery = [], main_image_url = null, gallery_images = null, image_source = null, image_status, official_name_language, preserve_brand_name = false, sources = privateSources }) =>
+const createAstanaPrivateSchool = ({ id, name, official_name, district, address, phone = '', instruction_languages, school_type, type, tuition_fee = null, price_status = 'unknown', data_status = 'partially_verified', website = '', programs, description, after_school_program = 'unknown', school_bus = 'unknown', admission_test = 'yes', verification_status = 'partially_verified', coordinates, main_image = null, gallery = [], main_image_url = null, gallery_images = null, image_source = null, image_status, official_name_language = 'en', preserve_brand_name = true, sources = privateSources }) =>
   createAstanaPublicSchool({
     id,
     number: 0,
@@ -1091,7 +1093,9 @@ export const schools = [
     school_type: 'International specialized public gymnasium',
     description: 'A specialized public gymnasium in Yesil district with an international English-school profile and Kazakh-medium instruction.',
     programs: ['Specialized gymnasium curriculum', 'Kazakh-medium instruction', 'English enrichment', 'International profile'],
-    admission_test: 'yes'
+    admission_test: 'yes',
+    official_name_language: 'en',
+    preserve_brand_name: true
   }),
   createAstanaPublicSchool({
     id: 'astana-school-82-daryn',
@@ -1107,7 +1111,9 @@ export const schools = [
     school_type: 'Specialized public lyceum',
     description: 'A Kazakh-language specialized lyceum in Yesil district focused on advanced academic preparation for motivated students.',
     programs: ['Specialized lyceum curriculum', 'Kazakh-medium instruction', 'Academic competitions', 'Gifted education'],
-    admission_test: 'yes'
+    admission_test: 'yes',
+    official_name_language: 'en',
+    preserve_brand_name: true
   }),
   createAstanaPublicSchool({
     id: 'astana-school-83',
@@ -1573,8 +1579,8 @@ export const schools = [
     id,
     name: localizedSchool({ ru: ruName, kk: kkName, en: enName }),
     official_name: enName,
-    official_name_language: ruName === enName && kkName === enName ? 'en' : undefined,
-    preserve_brand_name: ruName === enName && kkName === enName,
+    official_name_language: 'en',
+    preserve_brand_name: true,
     district,
     address: localizedSchool({ ru: ruAddress, kk: kkAddress, en: enAddress }),
     instruction_languages: primaryLanguage === 'English' ? ['English', 'Russian'] : primaryLanguage === 'Kazakh' ? ['Kazakh', 'Russian'] : ['Russian', 'Kazakh'],
