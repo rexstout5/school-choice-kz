@@ -12,7 +12,8 @@ import {
 import { doesSchoolMatchCatalogFilters } from '../src/lib/schoolFilters.js';
 import { priceOptionValues } from '../src/lib/priceFilters.js';
 import FavoriteButton from '../src/components/FavoriteButton.jsx';
-import SchoolImageWithFallback, { createSchoolImagePlaceholder } from '../src/components/SchoolImageWithFallback.jsx';
+import SchoolImageWithFallback from '../src/components/SchoolImageWithFallback.jsx';
+import { createSchoolImagePlaceholder } from '../src/utils/schoolImages.js';
 import { formatAverageRating, getAverageRating, getSchoolReviews, getStoredReviewsBySchool } from '../src/lib/reviews.js';
 
 const initialFilters = {
