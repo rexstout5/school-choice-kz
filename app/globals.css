@@ -1820,3 +1820,80 @@ button:focus {
     grid-template-columns: 1fr;
   }
 }
+
+.footer-links,
+.seo-school-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.footer-links a,
+.seo-school-links a {
+  color: #0a6070;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.seo-page {
+  display: grid;
+  gap: 28px;
+}
+
+.seo-hero,
+.seo-section {
+  display: grid;
+  gap: 20px;
+  padding: 32px;
+  border: 1px solid #dce6f2;
+  border-radius: 28px;
+  background: #ffffff;
+  box-shadow: 0 16px 40px rgba(29, 47, 73, 0.08);
+}
+
+.seo-hero {
+  color: #ffffff;
+  background: linear-gradient(135deg, #12365d, #0a7c8f);
+}
+
+.seo-hero h1,
+.seo-hero p,
+.seo-card h2,
+.seo-card p {
+  margin: 0;
+}
+
+.seo-hero p {
+  color: #d9f7fb;
+}
+
+.seo-card {
+  display: grid;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.seo-school-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.seo-school-links a {
+  display: grid;
+  gap: 4px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #eef8fb;
+}
+
+.seo-school-links span {
+  color: #56657b;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 760px) {
+  .seo-school-links {
+    grid-template-columns: 1fr;
+  }
+}
