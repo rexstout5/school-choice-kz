@@ -54,6 +54,7 @@ const translations = {
     pageTitle: 'Выбор школы в Казахстане',
     languageSwitcherLabel: 'Выберите язык интерфейса',
     favoritesLink: 'Избранное',
+    mapLink: 'Карта',
     favorite: {
       add: 'Добавить в избранное',
       remove: 'В избранном'
@@ -157,6 +158,7 @@ const translations = {
     pageTitle: 'Қазақстандағы мектеп таңдауы',
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
     favoritesLink: 'Таңдаулылар',
+    mapLink: 'Карта',
     favorite: {
       add: 'Таңдаулыға қосу',
       remove: 'Таңдаулыда'
@@ -260,6 +262,7 @@ const translations = {
     pageTitle: 'School Choice Kazakhstan',
     languageSwitcherLabel: 'Choose interface language',
     favoritesLink: 'Favorites',
+    mapLink: 'Map',
     favorite: {
       add: 'Add to favorites',
       remove: 'Saved to favorites'
@@ -865,6 +868,7 @@ export default function Home() {
           {t.pageTitle}
         </a>
         <div className="site-header__actions">
+          <a className="site-header__link" href={`/map?lang=${currentLanguage}`}>{t.mapLink}</a>
           <a className="site-header__link" href={`/favorites?lang=${currentLanguage}`}>♡ {t.favoritesLink} ({favoriteCount})</a>
           <LanguageSwitcher currentLanguage={currentLanguage} onLanguageChange={updateLanguage} t={t} />
         </div>
