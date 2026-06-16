@@ -57,6 +57,32 @@ const requiredFields = [
 
 const errors = [];
 const ids = new Set();
+
+const directImageExtensionPattern = /\.(?:jpe?g|png|webp)(?:[?#].*)?$/i;
+const screenshotHostPattern = /(?:^|\.)thum\.io$/i;
+
+const isStableDirectImageUrl = (url) => {
+  if (typeof url !== 'string' || url.trim().length === 0) {
+    return false;
+  }
+
+  try {
+    const parsedUrl = new URL(url);
+    return ['http:', 'https:'].includes(parsedUrl.protocol) && directImageExtensionPattern.test(parsedUrl.pathname) && !screenshotHostPattern.test(parsedUrl.hostname);
+  } catch {
+    return false;
+  }
+};
+
+const validateImageUrl = (school, label, url, errors) => {
+  if (!url) {
+    return;
+  }
+
+  if (!isStableDirectImageUrl(url)) {
+    errors.push(`${school.id} ${label} must be a stable direct jpg, jpeg, png, or webp URL and cannot use Thum.io`);
+  }
+};
 const localizedObjectFields = ['name', 'school_type', 'languages', 'description', 'address', 'admission_requirements', 'class_size'];
 const auditedLocalizedFields = [
   'name',
@@ -256,6 +282,18 @@ schools.forEach((school, index) => {
 
   if (typeof school.main_image_url !== 'string') {
     errors.push(`${school.id} main_image_url must be a string`);
+  }
+
+  validateImageUrl(school, 'main_image_url', school.main_image_url, errors);
+  validateImageUrl(school, 'main_image.src', school.main_image?.src, errors);
+  school.gallery_images.forEach((image, index) => validateImageUrl(school, `gallery_images[${index}].src`, image?.src, errors));
+
+  if (!school.main_image_url && !school.main_image && school.image_status !== 'missing') {
+    errors.push(`${school.id} without a direct image must have image_status missing`);
+  }
+
+  if ((school.main_image_url || school.main_image) && school.image_status === 'verified') {
+    errors.push(`${school.id} direct image reachability must be audited before image_status can be verified`);
   }
 
   if (!Array.isArray(school.gallery_images)) {

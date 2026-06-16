@@ -59,63 +59,22 @@ const schoolWebsite = (schoolNumber) => `https://${schoolNumber}.astana-bilim.kz
 
 const imageStatusValues = ['verified', 'needs_review', 'missing'];
 
-const createWebsiteScreenshotImage = (website, schoolName) => {
-  if (!website) {
-    return null;
+const directImageExtensionPattern = /\.(?:jpe?g|png|webp)(?:[?#].*)?$/i;
+
+const isStableDirectImageUrl = (url) => {
+  if (typeof url !== 'string' || url.trim().length === 0) {
+    return false;
   }
 
-  const screenshotUrl = `https://image.thum.io/get/width/1200/crop/800/noanimate/${encodeURIComponent(website)}`;
-  const caption = {
-    ru: 'Снимок официального сайта школы',
-    kk: 'Мектептің ресми сайтының суреті',
-    en: 'Screenshot of the school official website'
-  };
-  const alt = {
-    ru: `${getLocalizedSchoolValue(schoolName, 'ru')} — официальный сайт`,
-    kk: `${getLocalizedSchoolValue(schoolName, 'kk')} — ресми сайт`,
-    en: `${getLocalizedSchoolValue(schoolName, 'en')} official website`
-  };
-
-  return {
-    src: screenshotUrl,
-    alt,
-    caption,
-    source: {
-      name: 'Official school website screenshot via Thum.io',
-      url: website
-    }
-  };
-};
-
-
-const createPublicDirectoryScreenshotImage = (sourceInfo, schoolName) => {
-  if (!sourceInfo?.url) {
-    return null;
+  try {
+    const parsedUrl = new URL(url);
+    return ['http:', 'https:'].includes(parsedUrl.protocol) && directImageExtensionPattern.test(parsedUrl.pathname);
+  } catch {
+    return false;
   }
-
-  const screenshotUrl = `https://image.thum.io/get/width/1200/crop/800/noanimate/${encodeURIComponent(sourceInfo.url)}`;
-  const caption = {
-    ru: 'Снимок публичного каталога с фотографиями школы',
-    kk: 'Мектеп фотолары бар ашық каталог суреті',
-    en: 'Screenshot of a public directory with school photos'
-  };
-  const alt = {
-    ru: `${getLocalizedSchoolValue(schoolName, 'ru')} — публичный каталог`,
-    kk: `${getLocalizedSchoolValue(schoolName, 'kk')} — ашық каталог`,
-    en: `${getLocalizedSchoolValue(schoolName, 'en')} public directory`
-  };
-
-  return {
-    src: screenshotUrl,
-    alt,
-    caption,
-    source: {
-      name: sourceInfo.name,
-      localized_name: sourceInfo.localized_name,
-      url: sourceInfo.url
-    }
-  };
 };
+
+const normalizeStableImage = (image) => (image?.src && isStableDirectImageUrl(image.src) ? image : null);
 
 const fallbackLanguageOrder = ['ru', 'en', 'kk'];
 
@@ -522,12 +481,10 @@ const createAstanaPublicSchool = ({
   const resolvedWebsite = website ?? schoolWebsite(number);
   const resolvedPhone = formatPhone(phone);
   const resolvedSources = sources ?? [ASTANA_PUBLIC_SCHOOL_SOURCE, WEBSITE_SOURCE];
-  const publicDirectorySource = resolvedSources.find((item) => item.url && !item.url.includes('search/'));
-  const officialWebsiteImage = createWebsiteScreenshotImage(resolvedWebsite, localizedName);
-  const publicDirectoryImage = createPublicDirectoryScreenshotImage(publicDirectorySource, localizedName);
-  const resolvedMainImage = main_image ?? officialWebsiteImage ?? publicDirectoryImage;
-  const resolvedGallery = Array.isArray(gallery_images) ? gallery_images : gallery;
-  const resolvedMainImageUrl = main_image_url ?? resolvedMainImage?.src ?? '';
+  const resolvedMainImage = normalizeStableImage(main_image);
+  const resolvedGallery = (Array.isArray(gallery_images) ? gallery_images : gallery).filter(normalizeStableImage);
+  const normalizedMainImageUrl = isStableDirectImageUrl(main_image_url) ? main_image_url : '';
+  const resolvedMainImageUrl = normalizedMainImageUrl || resolvedMainImage?.src || '';
   const resolvedImageSource = image_source ?? resolvedMainImage?.source ?? (resolvedMainImageUrl ? {
     name: 'School image source pending review',
     localized_name: {
@@ -536,8 +493,16 @@ const createAstanaPublicSchool = ({
       en: 'School image source pending review'
     },
     url: resolvedMainImageUrl
-  } : null);
-  const resolvedImageStatus = image_status ?? (officialWebsiteImage ? 'verified' : resolvedMainImageUrl ? 'needs_review' : 'missing');
+  } : {
+    name: 'No stable direct school image available',
+    localized_name: {
+      ru: 'Стабильное прямое фото школы пока не найдено',
+      kk: 'Мектептің тұрақты тікелей фотосы әзірге табылмады',
+      en: 'No stable direct school image available'
+    },
+    url: resolvedWebsite
+  });
+  const resolvedImageStatus = image_status ?? (resolvedMainImageUrl ? 'needs_review' : 'missing');
 
   return ({
   id,

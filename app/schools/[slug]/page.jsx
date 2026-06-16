@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { getLocalizedEnumLabel, getLocalizedSchoolValue, schools } from '../../../src/data/schools.js';
 import FavoriteButton from '../../../src/components/FavoriteButton.jsx';
 import SchoolReviews from '../../../src/components/SchoolReviews.jsx';
+import SchoolImageWithFallback, { createSchoolImagePlaceholder } from '../../../src/components/SchoolImageWithFallback.jsx';
 
 const defaultLanguage = 'ru';
 
@@ -260,16 +261,11 @@ const formatPrice = (price, formatter, t) => {
 
 
 const getImageAlt = (image, fallback, language) => getLocalizedSchoolValue(image?.alt, language) || fallback;
-const escapeSvgText = (value) => String(value).replace(/[&<>\"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[character]);
-const createFallbackImage = (schoolName, t) => {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="${t.fallbackImageAlt}"><defs><linearGradient id="sky" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#e9f4ff"/><stop offset="0.55" stop-color="#f8fbff"/><stop offset="1" stop-color="#dff8ef"/></linearGradient><linearGradient id="front" x1="0" x2="1"><stop stop-color="#12365d"/><stop offset="1" stop-color="#0a7c8f"/></linearGradient></defs><rect width="1200" height="800" fill="url(#sky)"/><circle cx="980" cy="130" r="92" fill="#a9e9f2" opacity="0.7"/><path d="M170 670h860V365L600 170 170 365z" fill="url(#front)"/><path d="M255 670V405h690v265z" fill="#ffffff" opacity="0.94"/><path d="M600 170 120 390h960z" fill="#0a7c8f"/><rect x="520" y="500" width="160" height="170" rx="18" fill="#12365d"/><g fill="#a9e9f2"><rect x="310" y="445" width="95" height="85" rx="14"/><rect x="455" y="445" width="95" height="85" rx="14"/><rect x="650" y="445" width="95" height="85" rx="14"/><rect x="795" y="445" width="95" height="85" rx="14"/></g><text x="600" y="735" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800" fill="#12365d">${escapeSvgText(schoolName)}</text></svg>`;
-
-  return {
-    src: `data:image/svg+xml,${encodeURIComponent(svg)}`,
-    alt: t.fallbackImageAlt,
-    isFallback: true
-  };
-};
+const createFallbackImage = (schoolName, t) => ({
+  src: createSchoolImagePlaceholder(schoolName),
+  alt: t.fallbackImageAlt,
+  isFallback: true
+});
 const getSchoolImages = (school, schoolName, t) => {
   const normalizedMainImage = school.main_image_url ? { ...(school.main_image ?? {}), src: school.main_image_url } : school.main_image;
   const galleryImages = Array.isArray(school.gallery_images) ? school.gallery_images : school.gallery;
@@ -382,7 +378,7 @@ export default async function SchoolDetailPage({ params, searchParams }) {
             </div>
           </div>
           <figure className={heroImage.isFallback ? 'school-detail__media school-detail__media--fallback' : 'school-detail__media'}>
-            <img src={heroImage.src} alt={getImageAlt(heroImage, t.fallbackImageAlt, language)} loading="eager" decoding="async" />
+            <SchoolImageWithFallback src={heroImage.src} alt={getImageAlt(heroImage, t.fallbackImageAlt, language)} schoolName={localizedName} loading="eager" decoding="async" />
             {heroImage.isFallback ? <figcaption>{t.imagePlaceholder}</figcaption> : null}
           </figure>
         </header>
@@ -395,7 +391,7 @@ export default async function SchoolDetailPage({ params, searchParams }) {
           <div className="school-gallery">
             {schoolImages.map((image, index) => (
               <figure key={`${image.src}-${index}`} className={image.isFallback ? 'school-gallery__item school-gallery__item--fallback' : 'school-gallery__item'}>
-                <img src={image.src} alt={getImageAlt(image, t.fallbackImageAlt, language)} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
+                <SchoolImageWithFallback src={image.src} alt={getImageAlt(image, t.fallbackImageAlt, language)} schoolName={localizedName} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
                 {image.caption ? <figcaption>{getLocalizedSchoolValue(image.caption, language)}</figcaption> : null}
               </figure>
             ))}
