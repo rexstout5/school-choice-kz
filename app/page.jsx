@@ -14,7 +14,7 @@ import { priceOptionValues } from '../src/lib/priceFilters.js';
 import FavoriteButton from '../src/components/FavoriteButton.jsx';
 import SchoolImageWithFallback from '../src/components/SchoolImageWithFallback.jsx';
 import { createSchoolImagePlaceholder } from '../src/utils/schoolImages.js';
-import { formatAverageRating, getSchoolReviews, getStoredReviewsBySchool } from '../src/lib/reviews.js';
+import { formatAverageRating, getCombinedSchoolReviews, getSchoolReviews, getStoredReviewsBySchool, sortReviewsByLatest } from '../src/lib/reviews.js';
 import { getRatingSummaryKey, getSchoolRatingStats, sortOptionValues, sortSchools } from '../src/lib/schoolDiscovery.js';
 import { favoritesChangedEventName, getStoredFavoriteSchoolIds } from '../src/lib/favorites.js';
 import { seoFooterLinks } from '../src/data/seoPages.js';
@@ -41,6 +41,60 @@ const comparisonStorageKey = 'school-choice-kz-comparison';
 const maxComparedSchools = 3;
 const defaultLanguage = 'ru';
 
+const homepageTranslations = {
+  ru: {
+    heroTitle: 'Подберите школу для ребенка в Астане за 2 минуты',
+    heroDescription: 'Сравните государственные, частные и международные школы по району, языку обучения и стоимости.',
+    heroCta: 'Подобрать школу',
+    heroSecondaryCta: 'Смотреть каталог',
+    heroStats: ['77+ школ', '5 районов', '4 языка обучения'],
+    quickFiltersTitle: 'Быстрый старт',
+    quickFilters: [
+      ['🏫', 'Государственные школы', '/catalog?type=public'],
+      ['🏫', 'Частные школы', '/catalog?type=private'],
+      ['🌍', 'Международные школы', '/catalog?type=international'],
+      ['🇬🇧', 'Английский язык', '/catalog?language=English'],
+      ['💰', 'До 200 000 ₸', '/catalog?maxPrice=up_to_200000'],
+      ['🎓', 'Подготовка к НИШ', '/catalog?query=nis']
+    ],
+    howTitle: 'Как это работает',
+    howSteps: ['Ответьте на несколько вопросов', 'Получите список подходящих школ', 'Сравните варианты и сохраните избранное'],
+    topTitle: 'Лучшие школы для старта',
+    tabs: { public: 'Государственные', private: 'Частные', international: 'Международные' },
+    toolsTitle: 'Инструменты для выбора',
+    tools: [['📍','Карта школ','/map'], ['⚖','Сравнение школ','/compare'], ['❤️','Избранное','/favorites'], ['⭐','Рейтинг школ','/rankings']],
+    mapTitle: 'Школы на карте', mapDescription: 'Посмотрите расположение школ рядом с домом, работой и удобными маршрутами.', mapCta: 'Открыть карту',
+    reviewsTitle: 'Отзывы родителей', reviewsEmpty: 'Отзывы родителей скоро появятся.', reviewGrade: 'класс',
+    articlesTitle: 'Полезные статьи', articles: [['Как выбрать школу в Астане','/how-to-choose-school'], ['Частная или государственная школа','/private-schools-astana'], ['Сколько стоит обучение в Астане','/best-schools-astana']],
+  },
+  kz: {
+    heroTitle: 'Астанада балаңызға мектепті 2 минутта таңдаңыз',
+    heroDescription: 'Мемлекеттік, жеке және халықаралық мектептерді аудан, оқу тілі және құны бойынша салыстырыңыз.',
+    heroCta: 'Мектеп таңдау', heroSecondaryCta: 'Каталогты қарау', heroStats: ['77+ мектеп', '5 аудан', '4 оқу тілі'],
+    quickFiltersTitle: 'Жылдам таңдау',
+    quickFilters: [['🏫','Мемлекеттік мектептер','/catalog?type=public'], ['🏫','Жеке мектептер','/catalog?type=private'], ['🌍','Халықаралық мектептер','/catalog?type=international'], ['🇬🇧','Ағылшын тілі','/catalog?language=English'], ['💰','200 000 ₸ дейін','/catalog?maxPrice=up_to_200000'], ['🎓','НИМ-ге дайындық','/catalog?query=nis']],
+    howTitle: 'Бұл қалай жұмыс істейді', howSteps: ['Бірнеше сұраққа жауап беріңіз', 'Сәйкес мектептер тізімін алыңыз', 'Нұсқаларды салыстырып, таңдаулыға сақтаңыз'],
+    topTitle: 'Алғаш көруге болатын үздік мектептер', tabs: { public: 'Мемлекеттік', private: 'Жеке', international: 'Халықаралық' },
+    toolsTitle: 'Таңдау құралдары', tools: [['📍','Мектептер картасы','/map'], ['⚖','Мектептерді салыстыру','/compare'], ['❤️','Таңдаулылар','/favorites'], ['⭐','Мектеп рейтингі','/rankings']],
+    mapTitle: 'Мектептер картада', mapDescription: 'Үйге, жұмысқа және күнделікті бағыттарға жақын мектептердің орналасуын қараңыз.', mapCta: 'Картаны ашу',
+    reviewsTitle: 'Ата-аналар пікірлері', reviewsEmpty: 'Ата-аналар пікірлері жақында пайда болады.', reviewGrade: 'сынып',
+    articlesTitle: 'Пайдалы мақалалар', articles: [['Астанада мектепті қалай таңдау керек','/how-to-choose-school'], ['Жеке ме, мемлекеттік мектеп пе','/private-schools-astana'], ['Астанада оқу қанша тұрады','/best-schools-astana']],
+  },
+  en: {
+    heroTitle: 'Find a school for your child in Astana in 2 minutes',
+    heroDescription: 'Compare public, private, and international schools by district, language of instruction, and tuition.',
+    heroCta: 'Find a school', heroSecondaryCta: 'View catalog', heroStats: ['77+ schools', '5 districts', '4 instruction languages'],
+    quickFiltersTitle: 'Quick filters',
+    quickFilters: [['🏫','Public schools','/catalog?type=public'], ['🏫','Private schools','/catalog?type=private'], ['🌍','International schools','/catalog?type=international'], ['🇬🇧','English language','/catalog?language=English'], ['💰','Up to 200,000 ₸','/catalog?maxPrice=up_to_200000'], ['🎓','NIS preparation','/catalog?query=nis']],
+    howTitle: 'How it works', howSteps: ['Answer a few questions', 'Get a list of suitable schools', 'Compare options and save favorites'],
+    topTitle: 'Top schools to start with', tabs: { public: 'Public', private: 'Private', international: 'International' },
+    toolsTitle: 'Selection tools', tools: [['📍','School map','/map'], ['⚖','School comparison','/compare'], ['❤️','Favorites','/favorites'], ['⭐','School ratings','/rankings']],
+    mapTitle: 'Schools on the map', mapDescription: 'See school locations near home, work, and daily routes.', mapCta: 'Open map',
+    reviewsTitle: 'Parent reviews', reviewsEmpty: 'Parent reviews will appear soon.', reviewGrade: 'grade',
+    articlesTitle: 'Helpful articles', articles: [['How to choose a school in Astana','/how-to-choose-school'], ['Private or public school','/private-schools-astana'], ['How much tuition costs in Astana','/best-schools-astana']],
+  }
+};
+
 
 const getSchoolCardImage = (school, schoolName) => school.main_image_url || school.main_image?.src || createSchoolImagePlaceholder(schoolName, 'card');
 
@@ -58,6 +112,8 @@ const translations = {
     mapLink: 'Карта',
     rankingsLink: 'Рейтинги',
     addSchoolLink: 'Добавить школу',
+    catalogLink: 'Каталог',
+    footerSeoLabel: 'Полезные страницы',
     favorite: {
       add: 'Добавить в избранное',
       remove: 'В избранном'
@@ -176,6 +232,8 @@ const translations = {
     mapLink: 'Карта',
     rankingsLink: 'Рейтингтер',
     addSchoolLink: 'Мектеп қосу',
+    catalogLink: 'Каталог',
+    footerSeoLabel: 'Пайдалы беттер',
     favorite: {
       add: 'Таңдаулыға қосу',
       remove: 'Таңдаулыда'
@@ -296,6 +354,7 @@ const translations = {
     addSchoolLink: 'Add school',
 
     catalogLink: 'Catalog',
+    footerSeoLabel: 'Helpful pages',
     howItWorks: {
       kicker: 'Start here',
       title: 'How it works',
@@ -847,6 +906,84 @@ function FeedbackForm({ t, currentLanguage }) {
   );
 }
 
+function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStats }) {
+  const localizedName = getLocalizedSchoolValue(school.name, currentLanguage);
+  const localizedDistrict = getLocalizedEnumLabel('districts', school.district, currentLanguage);
+  const localizedLanguages = getLocalizedSchoolValue(school.languages, currentLanguage);
+  const cardImage = getSchoolCardImage(school, localizedName);
+  const tuition = school.tuition_fee === null || school.tuition_fee === undefined
+    ? t.priceUnknown
+    : school.tuition_fee === 0
+      ? t.freePublicSchool
+      : `${moneyFormatter.format(school.tuition_fee)} / ${t.perMonth}`;
+  const rating = ratingStats.averageRating === null ? t.notYetRated : `⭐ ${formatAverageRating(ratingStats.averageRating)} / 5`;
+
+  return (
+    <article className="top-school-card">
+      <div className="top-school-card__image">
+        <SchoolImageWithFallback src={cardImage} alt={localizedName} schoolName={localizedName} loading="lazy" decoding="async" size="card" />
+      </div>
+      <div className="top-school-card__body">
+        <h3>{localizedName}</h3>
+        <dl>
+          <div><dt>{t.district}</dt><dd>{localizedDistrict}</dd></div>
+          <div><dt>{t.language}</dt><dd>{localizedLanguages}</dd></div>
+          <div><dt>{t.schoolCard.tuitionFee}</dt><dd>{tuition}</dd></div>
+          <div><dt>{t.schoolCard.rating}</dt><dd>{rating}</dd></div>
+        </dl>
+        <a className="button-link" href={`/schools/${school.slug ?? school.id}?lang=${currentLanguage}`}>{t.schoolCard.details}</a>
+      </div>
+    </article>
+  );
+}
+
+function TopSchoolsTabs({ groups, moneyFormatter, t, homeT, currentLanguage, reviewsBySchool }) {
+  const [activeTab, setActiveTab] = useState('public');
+
+  return (
+    <section className="top-schools" aria-labelledby="top-schools-title">
+      <div className="section-heading section-heading--split">
+        <h2 id="top-schools-title">{homeT.topTitle}</h2>
+        <div className="tabs" role="tablist" aria-label={homeT.topTitle}>
+          {Object.keys(groups).map((type) => (
+            <button key={type} type="button" role="tab" aria-selected={activeTab === type} className={activeTab === type ? 'tab tab--active' : 'tab'} onClick={() => setActiveTab(type)}>
+              {homeT.tabs[type]}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="top-school-grid">
+        {groups[activeTab].map((school) => (
+          <HomeSchoolCard key={school.id} school={school} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} ratingStats={getSchoolRatingStats(school, getSchoolReviews(reviewsBySchool, school.id))} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ReviewsPreview({ homeT, currentLanguage, reviewsBySchool }) {
+  const latestReviews = sortReviewsByLatest(
+    schools.flatMap((school) => getCombinedSchoolReviews(school, reviewsBySchool).map((review) => ({ ...review, school })))
+  ).slice(0, 3);
+
+  return (
+    <section className="reviews-preview" aria-labelledby="reviews-preview-title">
+      <div className="section-heading"><h2 id="reviews-preview-title">{homeT.reviewsTitle}</h2></div>
+      {latestReviews.length ? (
+        <div className="review-grid">
+          {latestReviews.map((review) => (
+            <article className="review-card" key={`${review.school.id}-${review.id}`}>
+              <strong>{review.parentName} · ⭐ {review.rating}/5</strong>
+              <p>{getLocalizedSchoolValue(review.text, currentLanguage)}</p>
+              <span>{getLocalizedSchoolValue(review.school.name, currentLanguage)} · {review.reviewGrade ?? review.childGrade} {homeT.reviewGrade}</span>
+            </article>
+          ))}
+        </div>
+      ) : <p className="empty-note">{homeT.reviewsEmpty}</p>}
+    </section>
+  );
+}
+
 export default function Home() {
   const [filters, setFilters] = useState(initialFilters);
   const [currentLanguage, setCurrentLanguage] = useState(defaultLanguage);
@@ -883,7 +1020,8 @@ export default function Home() {
     }
   }, []);
 
-  const t = { ...translations.en, ...translations[currentLanguage], howItWorks: translations[currentLanguage].howItWorks ?? translations.en.howItWorks, schoolTools: translations[currentLanguage].schoolTools ?? translations.en.schoolTools, featuredSchools: translations[currentLanguage].featuredSchools ?? translations.en.featuredSchools, catalogLink: translations[currentLanguage].catalogLink ?? translations.en.catalogLink };
+  const t = { ...translations.en, ...translations[currentLanguage], catalogLink: translations[currentLanguage].catalogLink ?? translations.en.catalogLink };
+  const homeT = homepageTranslations[currentLanguage];
   const districtOptionLabels = useMemo(() => getEnumOptionLabels('districts', schoolDistricts, currentLanguage), [currentLanguage]);
 
   const moneyFormatter = useMemo(
@@ -904,8 +1042,11 @@ export default function Home() {
 
   const totalPages = Math.max(1, Math.ceil(filteredSchools.length / schoolsPerPage));
   const visibleSchools = filteredSchools.slice((currentPage - 1) * schoolsPerPage, currentPage * schoolsPerPage);
-  const featuredPublicSchools = useMemo(() => sortSchools(schools.filter((school) => school.type === 'public'), initialSort, currentLanguage, reviewsBySchool).slice(0, 5), [currentLanguage, reviewsBySchool]);
-  const featuredPrivateSchools = useMemo(() => sortSchools(schools.filter((school) => school.type === 'private'), initialSort, currentLanguage, reviewsBySchool).slice(0, 5), [currentLanguage, reviewsBySchool]);
+  const topSchoolGroups = useMemo(() => ({
+    public: sortSchools(schools.filter((school) => school.type === 'public'), initialSort, currentLanguage, reviewsBySchool).slice(0, 5),
+    private: sortSchools(schools.filter((school) => school.type === 'private'), initialSort, currentLanguage, reviewsBySchool).slice(0, 5),
+    international: sortSchools(schools.filter((school) => school.type === 'international'), initialSort, currentLanguage, reviewsBySchool).slice(0, 5)
+  }), [currentLanguage, reviewsBySchool]);
   const selectedSchools = comparedSchoolIds
     .map((schoolId) => schools.find((school) => school.id === schoolId))
     .filter(Boolean);
@@ -982,100 +1123,48 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="hero" id="top">
+      <section className="hero hero--landing" id="top">
         <div className="hero__copy">
-          <p className="hero__kicker">{t.heroKicker}</p>
-          <h1>{t.heroTitle}</h1>
-          <p>{t.heroDescription}</p>
+          <h1>{homeT.heroTitle}</h1>
+          <p>{homeT.heroDescription}</p>
           <div className="hero__actions">
-            <a className="hero__cta" href={`/quiz?lang=${currentLanguage}`}>{t.heroCta}</a>
-            <a className="hero__cta hero__cta--secondary" href={`/catalog?lang=${currentLanguage}`}>{t.heroSecondaryCta}</a>
+            <a className="hero__cta" href={`/quiz?lang=${currentLanguage}`}>{homeT.heroCta}</a>
+            <a className="hero__cta hero__cta--secondary" href={`/catalog?lang=${currentLanguage}`}>{homeT.heroSecondaryCta}</a>
           </div>
-          <p className="hero__note">{t.heroNote}</p>
         </div>
-        <div className="hero__assistant" aria-label={t.heroNote}>
-          <div className="hero__stat">
-            <strong>{schools.length}</strong>
-            <span>{t.astanaSchools}</span>
-          </div>
-          <ol>
-            {t.assistantSteps.map((step) => (
-              <li key={step}>{step}</li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      <section className="how-it-works" aria-labelledby="how-it-works-title">
-        <div className="section-heading">
-          <p className="section-kicker">{t.howItWorks.kicker}</p>
-          <h2 id="how-it-works-title">{t.howItWorks.title}</h2>
-        </div>
-        <div className="steps-grid">
-          {t.howItWorks.steps.map(([title, description], index) => (
-            <article className="step-card" key={title}>
-              <span>{index + 1}</span>
-              <h3>{title}</h3>
-              <p>{description}</p>
-            </article>
+        <div className="hero-stat-grid" aria-label={homeT.heroStats.join(', ')}>
+          {homeT.heroStats.map((stat) => (
+            <strong key={stat}>{stat}</strong>
           ))}
         </div>
       </section>
 
-      <section className="school-tools" aria-labelledby="school-tools-title">
-        <div className="section-heading">
-          <p className="section-kicker">{t.schoolTools.kicker}</p>
-          <h2 id="school-tools-title">{t.schoolTools.title}</h2>
-          <p>{t.schoolTools.description}</p>
-        </div>
-        <div className="tools-grid">
-          {t.schoolTools.tools.map(([title, description, href]) => (
-            <a className="tool-card" key={title} href={`${href}?lang=${currentLanguage}`}>
+      <section className="quick-filters" aria-labelledby="quick-filters-title">
+        <div className="section-heading"><h2 id="quick-filters-title">{homeT.quickFiltersTitle}</h2></div>
+        <div className="quick-filter-grid">
+          {homeT.quickFilters.map(([icon, title, href]) => (
+            <a className="quick-filter-card" key={title} href={`${href}${href.includes('?') ? '&' : '?'}lang=${currentLanguage}`}>
+              <span>{icon}</span>
               <strong>{title}</strong>
-              <span>{description}</span>
             </a>
           ))}
         </div>
       </section>
 
-      <StatsSection t={t} favoriteCount={favoriteCount} />
-
-      <section className="featured-schools" aria-labelledby="featured-schools-title">
-        <div className="section-heading section-heading--split">
-          <div>
-            <p className="section-kicker">{t.featuredSchools.kicker}</p>
-            <h2 id="featured-schools-title">{t.featuredSchools.title}</h2>
-            <p>{t.featuredSchools.description}</p>
-          </div>
-          <a className="button-link" href={`/catalog?lang=${currentLanguage}`}>{t.featuredSchools.browseAll}</a>
-        </div>
-        <div className="featured-school-lists">
-          {[
-            [t.featuredSchools.publicTitle, featuredPublicSchools],
-            [t.featuredSchools.privateTitle, featuredPrivateSchools]
-          ].map(([title, featuredSchools]) => (
-            <section className="featured-school-list" key={title} aria-label={title}>
-              <h3>{title}</h3>
-              <div className="school-grid school-grid--featured">
-                {featuredSchools.map((school) => (
-                  <SchoolCard
-                    key={school.id}
-                    school={school}
-                    moneyFormatter={moneyFormatter}
-                    t={t}
-                    currentLanguage={currentLanguage}
-                    ratingStats={getSchoolRatingStats(school, getSchoolReviews(reviewsBySchool, school.id))}
-                    isCompared={comparedSchoolIds.includes(school.id)}
-                    isCompareDisabled={comparedSchoolIds.length >= maxComparedSchools && !comparedSchoolIds.includes(school.id)}
-                    onCompareToggle={toggleComparedSchool}
-                  />
-                ))}
-              </div>
-            </section>
+      <section className="how-it-works how-it-works--timeline" aria-labelledby="how-it-works-title">
+        <div className="section-heading"><h2 id="how-it-works-title">{homeT.howTitle}</h2></div>
+        <div className="timeline">
+          {homeT.howSteps.map((step, index) => (
+            <article className="timeline-card" key={step}>
+              <span className="timeline-card__icon">{['❓', '📋', '❤️'][index]}</span>
+              <span className="timeline-card__number">{index + 1}</span>
+              <h3>{step}</h3>
+            </article>
           ))}
         </div>
       </section>
 
+      <TopSchoolsTabs groups={topSchoolGroups} moneyFormatter={moneyFormatter} t={t} homeT={homeT} currentLanguage={currentLanguage} reviewsBySchool={reviewsBySchool} />
       <ComparisonBar
         selectedSchools={selectedSchools}
         currentLanguage={currentLanguage}
@@ -1084,11 +1173,39 @@ export default function Home() {
         t={t}
       />
 
+      <section className="tool-section" aria-labelledby="tools-title">
+        <div className="section-heading"><h2 id="tools-title">{homeT.toolsTitle}</h2></div>
+        <div className="tool-card-grid">
+          {homeT.tools.map(([icon, title, href]) => (
+            <a className="tool-card tool-card--large" key={title} href={`${href}?lang=${currentLanguage}`}><span>{icon}</span><strong>{title}</strong></a>
+          ))}
+        </div>
+      </section>
+
+      <section className="map-preview" aria-labelledby="map-preview-title">
+        <div>
+          <h2 id="map-preview-title">{homeT.mapTitle}</h2>
+          <p>{homeT.mapDescription}</p>
+        </div>
+        <a className="button-link" href={`/map?lang=${currentLanguage}`}>{homeT.mapCta}</a>
+      </section>
+
+      <ReviewsPreview homeT={homeT} currentLanguage={currentLanguage} reviewsBySchool={reviewsBySchool} />
+
+      <section className="articles" aria-labelledby="articles-title">
+        <div className="section-heading"><h2 id="articles-title">{homeT.articlesTitle}</h2></div>
+        <div className="article-grid">
+          {homeT.articles.map(([title, href]) => (
+            <a className="article-card" key={title} href={`${href}?lang=${currentLanguage}`}>{title}</a>
+          ))}
+        </div>
+      </section>
+
       <FeedbackForm t={t} currentLanguage={currentLanguage} />
 
       <footer className="site-footer">
         <p>{t.footer}</p>
-        <nav className="footer-links" aria-label="SEO pages">
+        <nav className="footer-links" aria-label={t.footerSeoLabel}>
           <a href={`/contribute?lang=${currentLanguage}`}>{t.addSchoolLink}</a>
           <a href={`/rankings?lang=${currentLanguage}`}>{t.rankingsLink}</a>
           {seoFooterLinks.map((link) => (

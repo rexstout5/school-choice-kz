@@ -58,6 +58,8 @@ const translations = {
     mapLink: 'Карта',
     rankingsLink: 'Рейтинги',
     addSchoolLink: 'Добавить школу',
+    catalogLink: 'Каталог',
+    footerSeoLabel: 'Полезные страницы',
     favorite: {
       add: 'Добавить в избранное',
       remove: 'В избранном'
@@ -176,6 +178,8 @@ const translations = {
     mapLink: 'Карта',
     rankingsLink: 'Рейтингтер',
     addSchoolLink: 'Мектеп қосу',
+    catalogLink: 'Каталог',
+    footerSeoLabel: 'Пайдалы беттер',
     favorite: {
       add: 'Таңдаулыға қосу',
       remove: 'Таңдаулыда'
@@ -840,9 +844,18 @@ export default function CatalogPage() {
 
   useEffect(() => {
     try {
-      const urlLanguage = new URLSearchParams(window.location.search).get('lang');
+      const searchParams = new URLSearchParams(window.location.search);
+      const urlLanguage = searchParams.get('lang');
       const storedLanguage = window.localStorage.getItem(languageStorageKey);
       const nextLanguage = translations[urlLanguage] ? urlLanguage : storedLanguage;
+      const nextFilters = {
+        type: schoolTypes.includes(searchParams.get('type')) ? searchParams.get('type') : initialFilters.type,
+        language: schoolLanguages.includes(searchParams.get('language')) ? searchParams.get('language') : initialFilters.language,
+        district: schoolDistricts.includes(searchParams.get('district')) ? searchParams.get('district') : initialFilters.district,
+        maxPrice: priceOptionValues.includes(searchParams.get('maxPrice')) ? searchParams.get('maxPrice') : initialFilters.maxPrice
+      };
+
+      setFilters(nextFilters);
 
       if (nextLanguage && translations[nextLanguage]) {
         setCurrentLanguage(nextLanguage);
@@ -1054,7 +1067,7 @@ export default function CatalogPage() {
 
       <footer className="site-footer">
         <p>{t.footer}</p>
-        <nav className="footer-links" aria-label="SEO pages">
+        <nav className="footer-links" aria-label={t.footerSeoLabel}>
           <a href={`/contribute?lang=${currentLanguage}`}>{t.addSchoolLink}</a>
           <a href={`/rankings?lang=${currentLanguage}`}>{t.rankingsLink}</a>
           {seoFooterLinks.map((link) => (
