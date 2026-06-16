@@ -14,7 +14,9 @@ import { priceOptionValues } from '../src/lib/priceFilters.js';
 import FavoriteButton from '../src/components/FavoriteButton.jsx';
 import SchoolImageWithFallback from '../src/components/SchoolImageWithFallback.jsx';
 import { createSchoolImagePlaceholder } from '../src/utils/schoolImages.js';
-import { formatAverageRating, getAverageRating, getSchoolReviews, getStoredReviewsBySchool } from '../src/lib/reviews.js';
+import { formatAverageRating, getSchoolReviews, getStoredReviewsBySchool } from '../src/lib/reviews.js';
+import { getRatingSummaryKey, getSchoolRatingStats, sortOptionValues, sortSchools } from '../src/lib/schoolDiscovery.js';
+import { favoritesChangedEventName, getStoredFavoriteSchoolIds } from '../src/lib/favorites.js';
 
 const initialFilters = {
   type: 'all',
@@ -22,6 +24,8 @@ const initialFilters = {
   district: 'all',
   maxPrice: 'all'
 };
+
+const initialSort = 'highest_rated';
 
 const initialFeedback = {
   childAge: '',
@@ -66,6 +70,16 @@ const translations = {
     language: 'Язык',
     district: 'Район',
     maxMonthlyPrice: 'Стоимость обучения',
+    sortBy: 'Сортировка',
+    sortOptions: {
+      highest_rated: 'Сначала с высоким рейтингом',
+      lowest_tuition: 'Сначала низкая стоимость',
+      highest_tuition: 'Сначала высокая стоимость',
+      most_reviewed: 'Больше всего отзывов',
+      alphabetical_az: 'По алфавиту А-Я'
+    },
+    reviewCount: (count) => `${count} ${pluralizeRu(count, ['отзыв', 'отзыва', 'отзывов'])}`,
+    ratingSummary: { excellent: 'Отлично', good: 'Хорошо', average: 'Средне' },
     priceOptions: {
       all: 'Все',
       free: 'Только бесплатные',
@@ -159,6 +173,16 @@ const translations = {
     language: 'Тілі',
     district: 'Аудан',
     maxMonthlyPrice: 'Айлық ең жоғары баға',
+    sortBy: 'Сұрыптау',
+    sortOptions: {
+      highest_rated: 'Рейтингі жоғары',
+      lowest_tuition: 'Бағасы төмен',
+      highest_tuition: 'Бағасы жоғары',
+      most_reviewed: 'Пікірі көп',
+      alphabetical_az: 'Әліпби бойынша A-Z'
+    },
+    reviewCount: (count) => `${count} пікір`,
+    ratingSummary: { excellent: 'Өте жақсы', good: 'Жақсы', average: 'Орташа' },
     priceOptions: {
       all: 'Барлығы',
       free: 'Тек тегін',
@@ -252,6 +276,16 @@ const translations = {
     language: 'Language',
     district: 'District',
     maxMonthlyPrice: 'Tuition fee',
+    sortBy: 'Sort by',
+    sortOptions: {
+      highest_rated: 'Highest rated',
+      lowest_tuition: 'Lowest tuition',
+      highest_tuition: 'Highest tuition',
+      most_reviewed: 'Most reviewed',
+      alphabetical_az: 'Alphabetical A-Z'
+    },
+    reviewCount: (count) => `${count} ${count === 1 ? 'review' : 'reviews'}`,
+    ratingSummary: { excellent: 'Excellent', good: 'Good', average: 'Average' },
     priceOptions: {
       all: 'All',
       free: 'Free only',
@@ -435,7 +469,21 @@ function PriceFilter({ value, onChange, t }) {
   );
 }
 
-function SchoolCard({ school, moneyFormatter, t, currentLanguage, averageRating, isCompared, isCompareDisabled, onCompareToggle }) {
+
+function SortControl({ value, onChange, t }) {
+  return (
+    <label className="filter-control" htmlFor="sort">
+      <span>{t.sortBy}</span>
+      <select id="sort" value={value} onChange={(event) => onChange(event.target.value)}>
+        {sortOptionValues.map((optionValue) => (
+          <option key={optionValue} value={optionValue}>{t.sortOptions[optionValue]}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function SchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStats, isCompared, isCompareDisabled, onCompareToggle }) {
   const localizedName = getLocalizedSchoolValue(school.name, currentLanguage);
   const localizedSchoolType = getLocalizedSchoolValue(school.school_type, currentLanguage);
   const localizedLanguages = getLocalizedSchoolValue(school.languages, currentLanguage);
@@ -472,7 +520,8 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage, averageRating,
           [t.schoolCard.schoolType, localizedSchoolType],
           [t.schoolCard.language, localizedLanguages],
           [t.schoolCard.tuitionFee, formatPrice(school.tuition_fee)],
-          [t.schoolCard.rating, averageRating === null ? t.notYetRated : `${formatAverageRating(averageRating)} / 5`],
+          [t.schoolCard.rating, ratingStats.averageRating === null ? t.notYetRated : `⭐ ${formatAverageRating(ratingStats.averageRating)} / 5 · ${t.ratingSummary[getRatingSummaryKey(ratingStats.averageRating)]}`],
+          ['📝', t.reviewCount(ratingStats.reviewCount)],
           [t.schoolCard.dataStatus, getLocalizedEnumLabel('dataStatuses', school.data_status, currentLanguage)]
         ].map(([term, detail]) => (
           <div key={term}>
@@ -698,10 +747,20 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const [comparedSchoolIds, setComparedSchoolIds] = useState([]);
   const [reviewsBySchool, setReviewsBySchool] = useState({});
+  const [favoriteCount, setFavoriteCount] = useState(0);
+  const [sortBy, setSortBy] = useState(initialSort);
 
   useEffect(() => {
     setComparedSchoolIds(getStoredComparedSchoolIds());
     setReviewsBySchool(getStoredReviewsBySchool());
+    const syncFavoriteCount = () => setFavoriteCount(getStoredFavoriteSchoolIds().length);
+    syncFavoriteCount();
+    window.addEventListener('storage', syncFavoriteCount);
+    window.addEventListener(favoritesChangedEventName, syncFavoriteCount);
+    return () => {
+      window.removeEventListener('storage', syncFavoriteCount);
+      window.removeEventListener(favoritesChangedEventName, syncFavoriteCount);
+    };
   }, []);
 
   useEffect(() => {
@@ -733,8 +792,8 @@ export default function Home() {
   );
 
   const filteredSchools = useMemo(
-    () => schools.filter((school) => doesSchoolMatchCatalogFilters(school, filters)),
-    [filters]
+    () => sortSchools(schools.filter((school) => doesSchoolMatchCatalogFilters(school, filters)), sortBy, currentLanguage, reviewsBySchool),
+    [filters, sortBy, currentLanguage, reviewsBySchool]
   );
 
   const totalPages = Math.max(1, Math.ceil(filteredSchools.length / schoolsPerPage));
@@ -806,7 +865,7 @@ export default function Home() {
           {t.pageTitle}
         </a>
         <div className="site-header__actions">
-          <a className="site-header__link" href={`/favorites?lang=${currentLanguage}`}>♡ {t.favoritesLink}</a>
+          <a className="site-header__link" href={`/favorites?lang=${currentLanguage}`}>♡ {t.favoritesLink} ({favoriteCount})</a>
           <LanguageSwitcher currentLanguage={currentLanguage} onLanguageChange={updateLanguage} t={t} />
         </div>
       </header>
@@ -853,6 +912,7 @@ export default function Home() {
           onChange={(value) => updateFilter('district', value)}
         />
         <PriceFilter value={filters.maxPrice} onChange={(value) => updateFilter('maxPrice', value)} t={t} />
+        <SortControl value={sortBy} onChange={(value) => { setSortBy(value); setCurrentPage(1); }} t={t} />
       </section>
 
       <section className="results-heading" aria-live="polite">
@@ -872,7 +932,7 @@ export default function Home() {
                 moneyFormatter={moneyFormatter}
                 t={t}
                 currentLanguage={currentLanguage}
-                averageRating={getAverageRating(getSchoolReviews(reviewsBySchool, school.id))}
+                ratingStats={getSchoolRatingStats(school, getSchoolReviews(reviewsBySchool, school.id))}
                 isCompared={comparedSchoolIds.includes(school.id)}
                 isCompareDisabled={comparedSchoolIds.length >= maxComparedSchools && !comparedSchoolIds.includes(school.id)}
                 onCompareToggle={toggleComparedSchool}

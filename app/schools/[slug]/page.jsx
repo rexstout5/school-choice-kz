@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation';
 import { getLocalizedEnumLabel, getLocalizedSchoolValue, schools } from '../../../src/data/schools.js';
 import FavoriteButton from '../../../src/components/FavoriteButton.jsx';
 import SchoolReviews from '../../../src/components/SchoolReviews.jsx';
+import { formatAverageRating } from '../../../src/lib/reviews.js';
+import { getRatingSummaryKey, getSchoolInsightKeys, getSchoolRatingStats } from '../../../src/lib/schoolDiscovery.js';
 import SchoolImageWithFallback from '../../../src/components/SchoolImageWithFallback.jsx';
 import { createSchoolImagePlaceholder, isUsableImageUrl, normalizeImageRecord } from '../../../src/utils/schoolImages.js';
 
@@ -20,6 +22,12 @@ const translations = {
     fallbackImageAlt: 'Иллюстрация здания школы',
     detailsTitle: 'Ключевые сведения',
     programsTitle: 'Программы',
+    suitableTitle: 'Кому подойдет эта школа?',
+    ratingSummary: { excellent: 'Отлично', good: 'Хорошо', average: 'Средне' },
+    reviewCount: (count) => `${count} ${count === 1 ? 'отзыв' : count > 1 && count < 5 ? 'отзыва' : 'отзывов'}`,
+    insightTags: {
+      strongAcademics: 'Сильная академическая база', stemFocused: 'STEM-фокус', englishFocused: 'Фокус на английском', affordable: 'Доступная стоимость', internationalCurriculum: 'Международная программа', closeToHome: 'Вариант рядом с домом', strongExtracurricular: 'Сильные внеурочные активности'
+    },
     contactsTitle: 'Контакты',
     openIn2Gis: 'Открыть в 2GIS',
     missingValue: 'Не указано',
@@ -46,7 +54,9 @@ const translations = {
       phone: 'Телефон',
       website: 'Сайт',
       email: 'Email',
-      description: 'Описание'
+      description: 'Описание',
+      rating: 'Рейтинг',
+      reviews: 'Отзывы'
     },
     freePublicSchool: 'Бесплатная государственная школа',
     priceUnknown: 'Стоимость уточняется',
@@ -87,6 +97,12 @@ const translations = {
     fallbackImageAlt: 'Мектеп ғимаратының иллюстрациясы',
     detailsTitle: 'Негізгі мәліметтер',
     programsTitle: 'Бағдарламалар',
+    suitableTitle: 'Бұл мектеп кімге қолайлы?',
+    ratingSummary: { excellent: 'Өте жақсы', good: 'Жақсы', average: 'Орташа' },
+    reviewCount: (count) => `${count} пікір`,
+    insightTags: {
+      strongAcademics: 'Күшті академиялық база', stemFocused: 'STEM бағыты', englishFocused: 'Ағылшынға фокус', affordable: 'Қолжетімді', internationalCurriculum: 'Халықаралық бағдарлама', closeToHome: 'Үйге жақын нұсқа', strongExtracurricular: 'Күшті қосымша іс-шаралар'
+    },
     contactsTitle: 'Байланыс',
     openIn2Gis: '2GIS-та ашу',
     missingValue: 'Көрсетілмеген',
@@ -113,7 +129,9 @@ const translations = {
       phone: 'Телефон',
       website: 'Сайт',
       email: 'Email',
-      description: 'Сипаттама'
+      description: 'Сипаттама',
+      rating: 'Рейтинг',
+      reviews: 'Пікірлер'
     },
     freePublicSchool: 'Тегін мемлекеттік мектеп',
     priceUnknown: 'Құны нақтыланады',
@@ -154,6 +172,12 @@ const translations = {
     fallbackImageAlt: 'Illustration of a school building',
     detailsTitle: 'Key details',
     programsTitle: 'Programs',
+    suitableTitle: 'Who is this school suitable for?',
+    ratingSummary: { excellent: 'Excellent', good: 'Good', average: 'Average' },
+    reviewCount: (count) => `${count} ${count === 1 ? 'review' : 'reviews'}`,
+    insightTags: {
+      strongAcademics: 'Strong academics', stemFocused: 'STEM focused', englishFocused: 'English focused', affordable: 'Affordable', internationalCurriculum: 'International curriculum', closeToHome: 'Close-to-home option', strongExtracurricular: 'Strong extracurricular activities'
+    },
     contactsTitle: 'Contacts',
     openIn2Gis: 'Open in 2GIS',
     missingValue: 'Not specified',
@@ -180,7 +204,9 @@ const translations = {
       phone: 'Phone',
       website: 'Website',
       email: 'Email',
-      description: 'Description'
+      description: 'Description',
+      rating: 'Rating',
+      reviews: 'Reviews'
     },
     freePublicSchool: 'Free public school',
     priceUnknown: 'Tuition to be confirmed',
@@ -338,6 +364,8 @@ export default async function SchoolDetailPage({ params, searchParams }) {
   const heroImage = schoolImages[0];
   const { imageSource, imageStatus } = getSchoolImageMetadata(school);
   const imageSourceName = getLocalizedSchoolValue(imageSource?.localized_name, language) || imageSource?.name;
+  const ratingStats = getSchoolRatingStats(school);
+  const insightKeys = getSchoolInsightKeys(school);
   const detailRows = [
     [t.fields.schoolName, localizedName],
     [t.fields.district, localizedDistrict],
@@ -345,6 +373,8 @@ export default async function SchoolDetailPage({ params, searchParams }) {
     [t.fields.schoolFormat, localizedSchoolFormat],
     [t.fields.language, localizedLanguages],
     [t.fields.tuitionFee, formatPrice(school.tuition_fee, moneyFormatter, t)],
+    [t.fields.rating, ratingStats.averageRating === null ? t.reviews.notYetRated : `⭐ ${formatAverageRating(ratingStats.averageRating)} / 5 · ${t.ratingSummary[getRatingSummaryKey(ratingStats.averageRating)]}`],
+    [t.fields.reviews, `📝 ${t.reviewCount(ratingStats.reviewCount)}`],
     [t.fields.priceStatus, getLocalizedEnumLabel('priceStatuses', school.price_status, language)],
     [t.fields.dataStatus, getLocalizedEnumLabel('dataStatuses', school.data_status, language)],
     [t.fields.afterSchoolProgram, getLocalizedEnumLabel('yesNoUnknown', school.after_school_program, language)],
@@ -449,6 +479,15 @@ export default async function SchoolDetailPage({ params, searchParams }) {
           <div className="program-list">
             {localizedPrograms.map((program) => (
               <span key={program}>{program}</span>
+            ))}
+          </div>
+        </section>
+
+        <section className="school-detail__section" aria-labelledby="suitable-title">
+          <h2 id="suitable-title">{t.suitableTitle}</h2>
+          <div className="program-list">
+            {insightKeys.map((key) => (
+              <span key={key}>{t.insightTags[key]}</span>
             ))}
           </div>
         </section>
