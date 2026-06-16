@@ -137,11 +137,6 @@ const homepageTranslations = {
 
 const getSchoolCardImage = (school, schoolName) => school.main_image_url || school.main_image?.src || createSchoolImagePlaceholder(schoolName, 'card');
 
-const getLocalizedInstructionLanguages = (languageValue, currentLanguage) => String(languageValue || '')
-  .split(',')
-  .map((value) => getLocalizedEnumLabel('instructionLanguages', value.trim(), currentLanguage))
-  .join(', ');
-
 function withLanguage(href, language) {
   return `${href}${href.includes('?') ? '&' : '?'}lang=${language}`;
 }
@@ -183,8 +178,6 @@ function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStat
       ? t.freePublicSchool
       : `${moneyFormatter.format(school.tuition_fee)} / ${t.perMonth}`;
   const rating = ratingStats.averageRating === null ? t.notYetRated : `${formatAverageRating(ratingStats.averageRating)} / 5`;
-  const language = getLocalizedInstructionLanguages(school.language, currentLanguage);
-
   return (
     <article className="top-school-card">
       <div className="top-school-card__image">
@@ -195,7 +188,6 @@ function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStat
         <h3>{localizedName}</h3>
         <dl>
           <div><dt>{t.district}</dt><dd>{localizedDistrict}</dd></div>
-          <div><dt>{t.language}</dt><dd>{language}</dd></div>
           <div><dt>{t.rating}</dt><dd>{rating}</dd></div>
           <div><dt>{t.tuition}</dt><dd>{tuition}</dd></div>
         </dl>

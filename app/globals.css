@@ -3269,8 +3269,18 @@ body {
 
 .top-school-card__image {
   position: relative;
-  min-height: 150px;
+  aspect-ratio: 16 / 9;
+  min-height: 0;
+  overflow: hidden;
   border-radius: 28px 28px 0 0;
+  background: linear-gradient(135deg, #e9f4ff 0%, #dff8ef 100%);
+}
+
+.top-school-card__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .top-school-card__rank {
@@ -3287,18 +3297,22 @@ body {
 }
 
 .top-school-card__body {
+  display: grid;
+  gap: 14px;
+  align-content: start;
   padding: 18px;
 }
 
 .top-school-card h3 {
   color: #0f2f4a;
-  font-size: 1rem;
+  font-size: 1.05rem;
   line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 
 .top-school-card dl {
   grid-template-columns: 1fr;
-  gap: 8px;
+  gap: 9px;
 }
 
 .top-school-card dl div {
@@ -3310,8 +3324,8 @@ body {
 }
 
 .top-school-card dt { font-size: 0.68rem; }
-.top-school-card dd { margin: 0; color: #243c52; font-size: 0.84rem; text-align: right; }
-.top-school-card .button-link { justify-content: center; text-align: center; }
+.top-school-card dd { margin: 0; color: #16324a; font-size: 0.88rem; font-weight: 850; text-align: right; }
+.top-school-card .button-link { justify-content: center; margin-top: 2px; text-align: center; }
 
 .tool-card-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
@@ -3376,5 +3390,6 @@ body {
   .hero__visual { min-height: 160px; }
   .hero-stat-grid { flex-direction: column; }
   .top-school-grid, .tool-card-grid, .timeline, .site-footer--simple { grid-template-columns: 1fr; }
-  .top-school-card__image { min-height: 180px; }
+  .top-school-card { border-radius: 22px; }
+  .top-school-card__image { border-radius: 22px 22px 0 0; }
 }
