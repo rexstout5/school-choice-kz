@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { getLocalizedEnumLabel, getLocalizedSchoolValue, schools } from '../../src/data/schools.js';
+import { formatAverageRating } from '../../src/lib/reviews.js';
+import { getRatingSummaryKey, getSchoolRatingStats } from '../../src/lib/schoolDiscovery.js';
 
 const defaultLanguage = 'ru';
 const languageStorageKey = 'school-choice-kz-language';
@@ -35,11 +37,16 @@ const translations = {
       schoolBus: 'Школьный автобус',
       admissionRequirements: 'Требования к поступлению',
       classSize: 'Размер класса',
-      dataStatus: 'Статус данных'
+      dataStatus: 'Статус данных',
+      rating: 'Рейтинг',
+      reviews: 'Отзывы'
     },
     freePublicSchool: 'Бесплатная государственная школа',
     priceUnknown: 'Стоимость уточняется',
-    perMonth: 'в месяц'
+    perMonth: 'в месяц',
+    notYetRated: 'Пока нет оценки',
+    reviewCount: (count) => `${count} ${count === 1 ? 'отзыв' : count > 1 && count < 5 ? 'отзыва' : 'отзывов'}`,
+    ratingSummary: { excellent: 'Отлично', good: 'Хорошо', average: 'Средне' }
   },
   kz: {
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
@@ -61,11 +68,16 @@ const translations = {
       schoolBus: 'Мектеп автобусы',
       admissionRequirements: 'Қабылдау талаптары',
       classSize: 'Сынып көлемі',
-      dataStatus: 'Дерек мәртебесі'
+      dataStatus: 'Дерек мәртебесі',
+      rating: 'Рейтинг',
+      reviews: 'Пікірлер'
     },
     freePublicSchool: 'Тегін мемлекеттік мектеп',
     priceUnknown: 'Құны нақтыланады',
-    perMonth: 'айына'
+    perMonth: 'айына',
+    notYetRated: 'Әзірге баға жоқ',
+    reviewCount: (count) => `${count} пікір`,
+    ratingSummary: { excellent: 'Өте жақсы', good: 'Жақсы', average: 'Орташа' }
   },
   en: {
     languageSwitcherLabel: 'Choose interface language',
@@ -87,11 +99,16 @@ const translations = {
       schoolBus: 'School bus',
       admissionRequirements: 'Admission requirements',
       classSize: 'Class size',
-      dataStatus: 'Data status'
+      dataStatus: 'Data status',
+      rating: 'Rating',
+      reviews: 'Reviews'
     },
     freePublicSchool: 'Free public school',
     priceUnknown: 'Tuition to be confirmed',
-    perMonth: 'month'
+    perMonth: 'month',
+    notYetRated: 'Not yet rated',
+    reviewCount: (count) => `${count} ${count === 1 ? 'review' : 'reviews'}`,
+    ratingSummary: { excellent: 'Excellent', good: 'Good', average: 'Average' }
   }
 };
 
@@ -184,6 +201,8 @@ export default function ComparePage() {
     [t.fields.schoolType, (school) => getLocalizedSchoolValue(school.school_type, currentLanguage)],
     [t.fields.language, (school) => getLocalizedSchoolValue(school.languages, currentLanguage)],
     [t.fields.tuitionFee, (school) => formatPrice(school.tuition_fee, moneyFormatter, t)],
+    [t.fields.rating, (school) => { const stats = getSchoolRatingStats(school); return stats.averageRating === null ? t.notYetRated : `⭐ ${formatAverageRating(stats.averageRating)} / 5 · ${t.ratingSummary[getRatingSummaryKey(stats.averageRating)]}`; }],
+    [t.fields.reviews, (school) => `📝 ${t.reviewCount(getSchoolRatingStats(school).reviewCount)}`],
     [t.fields.afterSchoolProgram, (school) => getLocalizedEnumLabel('yesNoUnknown', school.after_school_program, currentLanguage)],
     [t.fields.schoolBus, (school) => getLocalizedEnumLabel('yesNoUnknown', school.school_bus, currentLanguage)],
     [t.fields.admissionRequirements, (school) => getLocalizedSchoolValue(school.admission_requirements, currentLanguage)],
