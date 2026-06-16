@@ -58,12 +58,12 @@ const formatPhone = (phone) => {
 const schoolWebsite = (schoolNumber) => `https://${schoolNumber}.astana-bilim.kz`;
 
 const imageStatusValues = ['verified', 'needs_review', 'missing'];
-const coordinateStatusValues = ['verified', 'needs_review', 'missing'];
+const coordinateStatusValues = ['verified', 'estimated', 'missing'];
 
 const astanaDistrictCoordinateCenters = {
   almaty: { latitude: 51.142, longitude: 71.475 },
-  baikonur: { latitude: 51.172, longitude: 71.438 },
-  esil: { latitude: 51.105, longitude: 71.424 },
+  baikonyr: { latitude: 51.172, longitude: 71.438 },
+  yesil: { latitude: 51.105, longitude: 71.424 },
   nura: { latitude: 51.114, longitude: 71.365 },
   saryarka: { latitude: 51.185, longitude: 71.397 }
 };
@@ -86,7 +86,8 @@ const resolveSchoolCoordinates = ({ id, district, address, coordinates, latitude
     };
   }
 
-  const isAddressSpecific = typeof address === 'string' && address.trim().toLowerCase() !== 'astana';
+  const addressText = typeof address === 'string' ? address : (address?.en ?? address?.ru ?? address?.kk ?? '');
+  const isAddressSpecific = addressText.trim().length > 0 && addressText.trim().toLowerCase() !== 'astana';
   const districtCenter = astanaDistrictCoordinateCenters[district];
 
   if (!isAddressSpecific || !districtCenter) {
@@ -100,7 +101,7 @@ const resolveSchoolCoordinates = ({ id, district, address, coordinates, latitude
   return {
     latitude: resolvedLatitude,
     longitude: resolvedLongitude,
-    coordinates_status: coordinates_status ?? 'needs_review',
+    coordinates_status: coordinates_status ?? 'estimated',
     coordinates: { latitude: resolvedLatitude, longitude: resolvedLongitude }
   };
 };

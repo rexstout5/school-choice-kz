@@ -1,5 +1,6 @@
 import {
   cityValues,
+  coordinateStatusValues,
   dataStatuses,
   imageStatusValues,
   getLocalizedEnumLabel,
@@ -280,6 +281,18 @@ schools.forEach((school, index) => {
     errors.push(`${school.id} has invalid image_status ${school.image_status}`);
   }
 
+  if (!coordinateStatusValues.includes(school.coordinates_status)) {
+    errors.push(`${school.id} has invalid coordinates_status ${school.coordinates_status}`);
+  }
+
+  if (school.coordinates_status === 'missing' && (school.latitude !== null || school.longitude !== null || school.contact?.coordinates !== null || school.metadata?.coordinates !== null)) {
+    errors.push(`${school.id} missing coordinates_status must not include coordinates`);
+  }
+
+  if (school.coordinates_status !== 'missing' && (typeof school.latitude !== 'number' || typeof school.longitude !== 'number')) {
+    errors.push(`${school.id} ${school.coordinates_status} coordinates_status must include numeric latitude and longitude`);
+  }
+
   if (typeof school.main_image_url !== 'string') {
     errors.push(`${school.id} main_image_url must be a string`);
   }
@@ -383,6 +396,10 @@ schools.forEach((school, index) => {
 
   if (school.metadata?.price_status !== school.price_status || school.metadata?.data_status !== school.data_status) {
     errors.push(`${school.id} metadata statuses must mirror top-level statuses`);
+  }
+
+  if (school.contact?.coordinates_status !== school.coordinates_status || school.metadata?.coordinates_status !== school.coordinates_status) {
+    errors.push(`${school.id} nested coordinate statuses must mirror top-level coordinates_status`);
   }
 
   if (school.metadata?.audit_status !== school.audit?.status) {

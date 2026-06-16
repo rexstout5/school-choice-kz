@@ -10,6 +10,7 @@ import {
   schoolTypes
 } from '../../src/data/schools.js';
 import { doesSchoolMatchCatalogFilters } from '../../src/lib/schoolFilters.js';
+import { hasDisplayableCoordinates } from '../../src/lib/mapCoverageAudit.js';
 import { priceOptionValues } from '../../src/lib/priceFilters.js';
 import { formatAverageRating } from '../../src/lib/reviews.js';
 
@@ -78,7 +79,7 @@ export default function MapPage() {
   }, []);
 
   const filteredSchools = useMemo(() => schools.filter((school) => doesSchoolMatchCatalogFilters(school, filters) && (filters.minRating === 'all' || school.rating >= Number(filters.minRating))), [filters]);
-  const schoolsWithCoordinates = filteredSchools.filter((school) => typeof school.latitude === 'number' && typeof school.longitude === 'number' && school.coordinates_status !== 'missing');
+  const schoolsWithCoordinates = filteredSchools.filter(hasDisplayableCoordinates);
   const schoolsWithoutCoordinates = filteredSchools.filter((school) => !schoolsWithCoordinates.includes(school));
 
   useEffect(() => {
