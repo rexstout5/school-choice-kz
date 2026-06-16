@@ -1,5 +1,6 @@
 import { getLocalizedSchoolValue, schools } from '../data/schools.js';
 import { seoFooterLinks } from '../data/seoPages.js';
+import { brand } from '../data/brand.js';
 
 const languages = [
   { code: 'ru', label: 'Русский' },
@@ -14,9 +15,9 @@ const buildStructuredData = (page) => ({
   '@type': page.schemaType,
   name: page.h1.ru,
   description: page.intro.ru,
-  url: `https://school-choice-kz.example.com/${page.slug}`,
+  url: `${brand.url}/${page.slug}`,
   inLanguage: ['ru', 'kk', 'en'],
-  isPartOf: { '@type': 'WebSite', name: 'School Choice KZ' },
+  isPartOf: { '@type': 'WebSite', name: brand.name },
   about: pickSchools(page.featuredTypes).map((school) => ({
     '@type': 'School',
     name: getLocalizedSchoolValue(school.name, 'en'),
@@ -70,7 +71,7 @@ export default function SeoContentPage({ page }) {
       </section>
 
       <footer className="site-footer">
-        <p>School Choice KZ: SEO navigation</p>
+        <p>{brand.name}: SEO navigation</p>
         <nav className="footer-links" aria-label="SEO pages">
           {seoFooterLinks.map((link) => (
             <a key={link.href} href={link.href}>{link.label.ru} / {link.label.kk} / {link.label.en}</a>

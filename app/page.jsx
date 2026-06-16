@@ -7,6 +7,7 @@ import { getSchoolCoverImage, getSchoolPlaceholderImage } from '../src/utils/sch
 import { formatAverageRating, getSchoolReviews, getStoredReviewsBySchool } from '../src/lib/reviews.js';
 import { getSchoolRatingStats, sortSchools } from '../src/lib/schoolDiscovery.js';
 import { favoritesChangedEventName, getStoredFavoriteSchoolIds } from '../src/lib/favorites.js';
+import { brand } from '../src/data/brand.js';
 
 const languageStorageKey = 'school-choice-kz-language';
 const defaultLanguage = 'ru';
@@ -20,7 +21,7 @@ const languageOptions = [
 
 const homepageTranslations = {
   ru: {
-    pageTitle: 'Выбор школы в Казахстане',
+    pageTitle: brand.name,
     languageSwitcherLabel: 'Выберите язык интерфейса',
     catalogLink: 'Каталог школ',
     mapLink: 'Карта',
@@ -31,8 +32,8 @@ const homepageTranslations = {
     favoritesLink: 'Избранное',
     footerLabel: 'Навигация по сайту',
     heroTitle: 'Подберите школу для ребенка в Астане',
-    heroDescription: 'Сравните школы по району, языку обучения и стоимости.',
-    heroCta: 'Подобрать школу',
+    heroDescription: 'Используйте структурированные данные, рейтинги и фильтры, чтобы экспертно сравнить школы Астаны.',
+    heroCta: 'Начать подбор',
     heroSecondaryCta: 'Смотреть каталог',
     heroStats: ['77+ школ', '5 районов', '3 языка обучения'],
     topTitle: 'Популярные школы',
@@ -50,7 +51,7 @@ const homepageTranslations = {
     priceUnknown: 'Уточняется',
     perMonth: 'в месяц',
     language: 'Язык',
-    footerDescription: 'Сервис выбора образовательных возможностей для детей в Казахстане.',
+    footerDescription: 'Экспертный каталог школ Астаны для осознанного выбора семьи.',
     footerColumns: [
       ['Навигация', [['Каталог школ', '/catalog'], ['Карта школ', '/map'], ['Подбор школы', '/quiz'], ['Рейтинг школ', '/rankings']]],
       ['Для родителей', [['Как выбрать школу', '/how-to-choose-school'], ['Вопросы и ответы', '/school-readiness'], ['Полезные статьи', '/how-to-choose-school']]],
@@ -58,7 +59,7 @@ const homepageTranslations = {
     ]
   },
   kz: {
-    pageTitle: 'Қазақстандағы мектеп таңдауы',
+    pageTitle: brand.name,
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
     catalogLink: 'Мектептер каталогы',
     mapLink: 'Карта',
@@ -69,8 +70,8 @@ const homepageTranslations = {
     favoritesLink: 'Таңдаулылар',
     footerLabel: 'Сайт навигациясы',
     heroTitle: 'Астанада балаңызға мектеп таңдаңыз',
-    heroDescription: 'Мектептерді аудан, оқу тілі және құны бойынша салыстырыңыз.',
-    heroCta: 'Мектеп таңдау',
+    heroDescription: 'Астана мектептерін құрылымдалған дерек, рейтинг және сүзгілер арқылы сараптамалық салыстырыңыз.',
+    heroCta: 'Таңдауды бастау',
     heroSecondaryCta: 'Каталогты қарау',
     heroStats: ['77+ мектеп', '5 аудан', '3 оқу тілі'],
     topTitle: 'Танымал мектептер',
@@ -88,7 +89,7 @@ const homepageTranslations = {
     priceUnknown: 'Нақтыланады',
     perMonth: 'айына',
     language: 'Тіл',
-    footerDescription: 'Қазақстандағы балаларға арналған білім беру мүмкіндіктерін таңдау сервисі.',
+    footerDescription: 'Отбасы саналы таңдау жасайтын Астана мектептерінің сараптамалық каталогы.',
     footerColumns: [
       ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектептер картасы', '/map'], ['Мектеп таңдау', '/quiz'], ['Мектеп рейтингі', '/rankings']]],
       ['Ата-аналарға', [['Мектепті қалай таңдау керек', '/how-to-choose-school'], ['Сұрақтар мен жауаптар', '/school-readiness'], ['Пайдалы мақалалар', '/how-to-choose-school']]],
@@ -96,7 +97,7 @@ const homepageTranslations = {
     ]
   },
   en: {
-    pageTitle: 'School Choice Kazakhstan',
+    pageTitle: brand.name,
     languageSwitcherLabel: 'Choose interface language',
     catalogLink: 'Catalog',
     mapLink: 'Map',
@@ -107,8 +108,8 @@ const homepageTranslations = {
     favoritesLink: 'Favorites',
     footerLabel: 'Site navigation',
     heroTitle: 'Find a school for your child in Astana',
-    heroDescription: 'Compare schools by district, instruction language, and tuition.',
-    heroCta: 'Find a school',
+    heroDescription: 'Use structured data, ratings, and filters to compare Astana schools with expert context.',
+    heroCta: 'Start matching',
     heroSecondaryCta: 'View catalog',
     heroStats: ['77+ schools', '5 districts', '3 instruction languages'],
     topTitle: 'Popular schools',
@@ -126,7 +127,7 @@ const homepageTranslations = {
     priceUnknown: 'To be confirmed',
     perMonth: 'month',
     language: 'Language',
-    footerDescription: 'A service for choosing educational opportunities for children in Kazakhstan.',
+    footerDescription: 'An expert Astana school catalog for informed family decisions.',
     footerColumns: [
       ['Navigation', [['School catalog', '/catalog'], ['School map', '/map'], ['School matcher', '/quiz'], ['School rankings', '/rankings']]],
       ['For parents', [['How to choose a school', '/how-to-choose-school'], ['Questions and answers', '/school-readiness'], ['Helpful articles', '/how-to-choose-school']]],
@@ -284,7 +285,7 @@ export default function Home() {
   return (
     <main>
       <header className="site-header">
-        <a className="site-header__brand" href="#top" aria-label={t.pageTitle}>BilimChoice</a>
+        <a className="site-header__brand" href="#top" aria-label={t.pageTitle}>{brand.name}</a>
         <nav className="site-header__nav" aria-label={t.footerLabel}>
           <a className="site-header__link" href={withLanguage('/catalog', currentLanguage)}>{t.catalogLink}</a>
           <a className="site-header__link" href={withLanguage('/map', currentLanguage)}>{t.mapLink}</a>
@@ -337,7 +338,7 @@ export default function Home() {
       </section>
 
       <footer className="site-footer site-footer--simple" id="footer">
-        <div className="site-footer__brand"><strong>BilimChoice</strong><p>{t.footerDescription}</p></div>
+        <div className="site-footer__brand"><strong>{brand.name}</strong><p>{t.footerDescription}</p></div>
         {t.footerColumns.map(([title, links]) => (
           <nav className="footer-links" key={title} aria-label={title}>
             <h3>{title}</h3>

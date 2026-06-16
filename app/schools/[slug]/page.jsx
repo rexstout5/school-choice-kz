@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { getLocalizedEnumLabel, getLocalizedSchoolValue, schools } from '../../../src/data/schools.js';
 import FavoriteButton from '../../../src/components/FavoriteButton.jsx';
 import SchoolReviews from '../../../src/components/SchoolReviews.jsx';
+import { getBrandTitle } from '../../../src/data/brand.js';
 import { formatAverageRating } from '../../../src/lib/reviews.js';
 import { getRatingSummaryKey, getSchoolInsightKeys, getSchoolRatingStats } from '../../../src/lib/schoolDiscovery.js';
 import SchoolImageWithFallback from '../../../src/components/SchoolImageWithFallback.jsx';
@@ -406,12 +407,12 @@ export async function generateMetadata({ params }) {
 
   if (!school) {
     return {
-      title: 'School not found | School Choice Kazakhstan'
+      title: getBrandTitle('School not found')
     };
   }
 
   return {
-    title: `${getLocalizedSchoolValue(school.name, defaultLanguage)} | School Choice Kazakhstan`,
+    title: getBrandTitle(getLocalizedSchoolValue(school.name, defaultLanguage)),
     description: getLocalizedSchoolValue(school.description, defaultLanguage)
   };
 }

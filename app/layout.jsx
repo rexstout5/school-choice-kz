@@ -1,8 +1,18 @@
 import './globals.css';
+import { brand } from '../src/data/brand.js';
 
 export const metadata = {
-  title: 'School Choice Kazakhstan',
-  description: 'Сравните государственные и частные школы Астаны по району, языку, цене, рейтингу и программам.'
+  title: { default: brand.name, template: brand.titleTemplate },
+  description: brand.description.ru,
+  metadataBase: new URL(brand.url),
+  openGraph: {
+    title: brand.name,
+    description: brand.description.ru,
+    url: brand.url,
+    siteName: brand.name,
+    locale: brand.locale,
+    type: 'website'
+  }
 };
 
 export default function RootLayout({ children }) {
