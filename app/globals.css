@@ -1529,3 +1529,132 @@ button:focus {
   margin: 4px 0 0;
   font-weight: 800;
 }
+
+.site-header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.site-header__brand,
+.site-header__link {
+  color: #12365d;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.site-header__actions,
+.language-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.language-switcher__button {
+  padding: 8px 12px;
+  color: #12365d;
+  background: #e9f4ff;
+}
+
+.language-switcher__button--active {
+  color: #ffffff;
+  background: #0a7c8f;
+}
+
+.filters--map {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.map-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 20px;
+  align-items: start;
+}
+
+.school-map {
+  min-height: 620px;
+  overflow: hidden;
+  border: 1px solid #dce6f2;
+  border-radius: 28px;
+  background: #dfeaf5;
+  box-shadow: 0 16px 40px rgba(29, 47, 73, 0.08);
+}
+
+.without-coordinates {
+  padding: 20px;
+  border: 1px solid #dce6f2;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 16px 40px rgba(29, 47, 73, 0.08);
+}
+
+.without-coordinates h2 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+}
+
+.without-coordinates ul {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.without-coordinates li {
+  display: grid;
+  gap: 4px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #edf2f8;
+}
+
+.without-coordinates a,
+.map-popup__details {
+  color: #0a6b7c;
+  font-weight: 900;
+}
+
+.without-coordinates span {
+  color: #56657b;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 860px) {
+  main {
+    width: min(100% - 20px, 1180px);
+    padding: 24px 0;
+  }
+
+  .site-header,
+  .hero,
+  .map-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .site-header {
+    align-items: flex-start;
+  }
+
+  .filters,
+  .filters--map,
+  .school-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    padding: 28px;
+  }
+
+  .hero__stat {
+    width: 140px;
+    height: 140px;
+  }
+
+  .school-map {
+    min-height: 460px;
+  }
+}

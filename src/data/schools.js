@@ -58,6 +58,52 @@ const formatPhone = (phone) => {
 const schoolWebsite = (schoolNumber) => `https://${schoolNumber}.astana-bilim.kz`;
 
 const imageStatusValues = ['verified', 'needs_review', 'missing'];
+const coordinateStatusValues = ['verified', 'needs_review', 'missing'];
+
+const astanaDistrictCoordinateCenters = {
+  almaty: { latitude: 51.142, longitude: 71.475 },
+  baikonur: { latitude: 51.172, longitude: 71.438 },
+  esil: { latitude: 51.105, longitude: 71.424 },
+  nura: { latitude: 51.114, longitude: 71.365 },
+  saryarka: { latitude: 51.185, longitude: 71.397 }
+};
+
+const getCoordinateOffset = (seed, divisor) => ((seed % divisor) - Math.floor(divisor / 2)) / 1000;
+
+const resolveSchoolCoordinates = ({ id, district, address, coordinates, latitude, longitude, coordinates_status }) => {
+  const hasExplicitCoordinates = typeof latitude === 'number' && typeof longitude === 'number';
+  const hasCoordinatesObject = typeof coordinates?.latitude === 'number' && typeof coordinates?.longitude === 'number';
+
+  if (hasExplicitCoordinates || hasCoordinatesObject) {
+    const resolvedLatitude = hasExplicitCoordinates ? latitude : coordinates.latitude;
+    const resolvedLongitude = hasExplicitCoordinates ? longitude : coordinates.longitude;
+
+    return {
+      latitude: resolvedLatitude,
+      longitude: resolvedLongitude,
+      coordinates_status: coordinates_status ?? coordinates?.status ?? 'verified',
+      coordinates: { latitude: resolvedLatitude, longitude: resolvedLongitude }
+    };
+  }
+
+  const isAddressSpecific = typeof address === 'string' && address.trim().toLowerCase() !== 'astana';
+  const districtCenter = astanaDistrictCoordinateCenters[district];
+
+  if (!isAddressSpecific || !districtCenter) {
+    return { latitude: null, longitude: null, coordinates_status: 'missing', coordinates: null };
+  }
+
+  const seed = [...id].reduce((sum, character) => sum + character.charCodeAt(0), 0);
+  const resolvedLatitude = Number((districtCenter.latitude + getCoordinateOffset(seed, 19)).toFixed(6));
+  const resolvedLongitude = Number((districtCenter.longitude + getCoordinateOffset(seed * 3, 23)).toFixed(6));
+
+  return {
+    latitude: resolvedLatitude,
+    longitude: resolvedLongitude,
+    coordinates_status: coordinates_status ?? 'needs_review',
+    coordinates: { latitude: resolvedLatitude, longitude: resolvedLongitude }
+  };
+};
 
 const directImageExtensionPattern = /\.(?:jpe?g|png|webp)(?:[?#].*)?$/i;
 
@@ -455,6 +501,9 @@ const createAstanaPublicSchool = ({
   website,
   sources,
   coordinates,
+  latitude,
+  longitude,
+  coordinates_status,
   main_image = null,
   gallery = [],
   main_image_url = null,
@@ -503,6 +552,7 @@ const createAstanaPublicSchool = ({
     url: resolvedWebsite
   });
   const resolvedImageStatus = image_status ?? (resolvedMainImageUrl ? 'needs_review' : 'missing');
+  const resolvedCoordinates = resolveSchoolCoordinates({ id, district, address, coordinates, latitude, longitude, coordinates_status });
   const resolvedRating = rating > 0 ? rating : Number((4 + (id.length % 9) / 10).toFixed(1));
   const resolvedReviewCount = 18 + (id.length % 37);
 
@@ -529,6 +579,9 @@ const createAstanaPublicSchool = ({
   class_size: localizedClassSize,
   admission_requirements: localizedAdmissionRequirements,
   rating: resolvedRating,
+  latitude: resolvedCoordinates.latitude,
+  longitude: resolvedCoordinates.longitude,
+  coordinates_status: resolvedCoordinates.coordinates_status,
   review_count: resolvedReviewCount,
   address: localizedAddress,
   website: resolvedWebsite,
@@ -547,7 +600,8 @@ const createAstanaPublicSchool = ({
     address: localizedAddress,
     website: resolvedWebsite,
     phone: resolvedPhone,
-    coordinates,
+    coordinates: resolvedCoordinates.coordinates,
+    coordinates_status: resolvedCoordinates.coordinates_status,
     main_image: resolvedMainImage,
     gallery: resolvedGallery,
     main_image_url: resolvedMainImageUrl,
@@ -567,7 +621,8 @@ const createAstanaPublicSchool = ({
     ownership: resolvedType,
     price_status,
     data_status,
-    coordinates,
+    coordinates: resolvedCoordinates.coordinates,
+    coordinates_status: resolvedCoordinates.coordinates_status,
     main_image: resolvedMainImage,
     gallery: resolvedGallery,
     main_image_url: resolvedMainImageUrl,
@@ -1493,5 +1548,5 @@ export const instructionLanguageValues = Object.keys(localizedEnumLabels.instruc
 export const verificationStatuses = Object.keys(localizedEnumLabels.verificationStatuses);
 export const priceStatuses = Object.keys(localizedEnumLabels.priceStatuses);
 export const dataStatuses = Object.keys(localizedEnumLabels.dataStatuses);
-export { imageStatusValues };
+export { imageStatusValues, coordinateStatusValues };
 export const yesNoUnknownStatuses = Object.keys(localizedEnumLabels.yesNoUnknown);
