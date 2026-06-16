@@ -56,6 +56,7 @@ const translations = {
     languageSwitcherLabel: 'Выберите язык интерфейса',
     favoritesLink: 'Избранное',
     mapLink: 'Карта',
+    addSchoolLink: 'Add school',
     favorite: {
       add: 'Добавить в избранное',
       remove: 'В избранном'
@@ -160,6 +161,7 @@ const translations = {
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
     favoritesLink: 'Таңдаулылар',
     mapLink: 'Карта',
+    addSchoolLink: 'Add school',
     favorite: {
       add: 'Таңдаулыға қосу',
       remove: 'Таңдаулыда'
@@ -264,6 +266,7 @@ const translations = {
     languageSwitcherLabel: 'Choose interface language',
     favoritesLink: 'Favorites',
     mapLink: 'Map',
+    addSchoolLink: 'Add school',
     favorite: {
       add: 'Add to favorites',
       remove: 'Saved to favorites'
@@ -870,6 +873,7 @@ export default function Home() {
         </a>
         <div className="site-header__actions">
           <a className="site-header__link" href={`/map?lang=${currentLanguage}`}>{t.mapLink}</a>
+          <a className="site-header__link" href={`/contribute?lang=${currentLanguage}`}>{t.addSchoolLink}</a>
           <a className="site-header__link" href={`/favorites?lang=${currentLanguage}`}>♡ {t.favoritesLink} ({favoriteCount})</a>
           <LanguageSwitcher currentLanguage={currentLanguage} onLanguageChange={updateLanguage} t={t} />
         </div>
@@ -969,6 +973,7 @@ export default function Home() {
       <footer className="site-footer">
         <p>{t.footer}</p>
         <nav className="footer-links" aria-label="SEO pages">
+          <a href={`/contribute?lang=${currentLanguage}`}>{t.addSchoolLink}</a>
           {seoFooterLinks.map((link) => (
             <a key={link.href} href={`${link.href}?lang=${currentLanguage}`}>{link.label[currentLanguage]}</a>
           ))}
