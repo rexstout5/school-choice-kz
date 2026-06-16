@@ -68,6 +68,36 @@ const astanaDistrictCoordinateCenters = {
   saryarka: { latitude: 51.185, longitude: 71.397 }
 };
 
+
+const normalizeReviewRating = (rating) => Math.min(Math.max(Math.round(Number(rating) || 0), 1), 5);
+const reviewCategoryKeys = ['academics', 'teachers', 'safety', 'parentCommunication', 'extracurricular'];
+const parentReviewSamples = [
+  { parentName: 'Aigul', childGrade: '3', text: { ru: 'Отмечаем стабильную учебную нагрузку, внимательных учителей и понятную связь с классным руководителем.', kk: 'Оқу жүктемесі тұрақты, мұғалімдер мұқият, сынып жетекшісімен байланыс түсінікті.', en: 'We appreciate the steady workload, attentive teachers, and clear contact with the homeroom teacher.' } },
+  { parentName: 'Sergey', childGrade: '6', text: { ru: 'Ребенку нравятся кружки после уроков, а вопросы безопасности и расписания решаются быстро.', kk: 'Балама сабақтан кейінгі үйірмелер ұнайды, қауіпсіздік пен кесте сұрақтары тез шешіледі.', en: 'My child likes the after-school clubs, and safety or schedule questions are handled quickly.' } },
+  { parentName: 'Dana', childGrade: '8', text: { ru: 'Хорошая академическая база, хотелось бы еще больше регулярных обновлений для родителей.', kk: 'Академиялық база жақсы, ата-аналарға тұрақты жаңартулар көбірек болса дейміз.', en: 'The academic foundation is good; we would like even more regular updates for parents.' } }
+];
+
+const createSeedReviews = (id, averageRating) => {
+  const roundedRating = normalizeReviewRating(averageRating || 4);
+
+  return parentReviewSamples.map((sample, index) => {
+    const baseRating = normalizeReviewRating(roundedRating + (index === 1 ? 1 : index === 2 ? -1 : 0));
+    const categoryRatings = Object.fromEntries(
+      reviewCategoryKeys.map((key, keyIndex) => [key, normalizeReviewRating(baseRating + ((id.length + index + keyIndex) % 3) - 1)])
+    );
+
+    return {
+      id: `${id}-seed-review-${index + 1}`,
+      parentName: sample.parentName,
+      childGrade: sample.childGrade,
+      rating: baseRating,
+      categoryRatings,
+      text: sample.text,
+      submittedAt: `2026-0${Math.min(index + 3, 9)}-${String(8 + ((id.length + index * 5) % 20)).padStart(2, '0')}T09:00:00.000Z`
+    };
+  });
+};
+
 const getCoordinateOffset = (seed, divisor) => ((seed % divisor) - Math.floor(divisor / 2)) / 1000;
 
 const resolveSchoolCoordinates = ({ id, district, address, coordinates, latitude, longitude, coordinates_status }) => {
@@ -555,7 +585,7 @@ const createAstanaPublicSchool = ({
   const resolvedImageStatus = image_status ?? (resolvedMainImageUrl ? 'needs_review' : 'missing');
   const resolvedCoordinates = resolveSchoolCoordinates({ id, district, address, coordinates, latitude, longitude, coordinates_status });
   const resolvedRating = rating > 0 ? rating : Number((4 + (id.length % 9) / 10).toFixed(1));
-  const resolvedReviewCount = 18 + (id.length % 37);
+  const resolvedReviews = createSeedReviews(id, resolvedRating);
 
   return ({
   id,
@@ -583,7 +613,8 @@ const createAstanaPublicSchool = ({
   latitude: resolvedCoordinates.latitude,
   longitude: resolvedCoordinates.longitude,
   coordinates_status: resolvedCoordinates.coordinates_status,
-  review_count: resolvedReviewCount,
+  reviews: resolvedReviews,
+  review_count: resolvedReviews.length,
   address: localizedAddress,
   website: resolvedWebsite,
   phone: resolvedPhone,

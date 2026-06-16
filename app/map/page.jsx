@@ -13,6 +13,7 @@ import { doesSchoolMatchCatalogFilters } from '../../src/lib/schoolFilters.js';
 import { hasDisplayableCoordinates } from '../../src/lib/mapCoverageAudit.js';
 import { priceOptionValues } from '../../src/lib/priceFilters.js';
 import { formatAverageRating } from '../../src/lib/reviews.js';
+import { getSchoolRatingStats } from '../../src/lib/schoolDiscovery.js';
 
 const defaultLanguage = 'ru';
 const languageStorageKey = 'school-choice-kz-language';
@@ -78,7 +79,10 @@ export default function MapPage() {
     setCurrentLanguage(isSupportedLanguage(urlLanguage) ? urlLanguage : isSupportedLanguage(storedLanguage) ? storedLanguage : defaultLanguage);
   }, []);
 
-  const filteredSchools = useMemo(() => schools.filter((school) => doesSchoolMatchCatalogFilters(school, filters) && (filters.minRating === 'all' || school.rating >= Number(filters.minRating))), [filters]);
+  const filteredSchools = useMemo(() => schools.filter((school) => {
+    const ratingStats = getSchoolRatingStats(school);
+    return doesSchoolMatchCatalogFilters(school, filters) && (filters.minRating === 'all' || (ratingStats.averageRating ?? 0) >= Number(filters.minRating));
+  }), [filters]);
   const schoolsWithCoordinates = filteredSchools.filter(hasDisplayableCoordinates);
   const schoolsWithoutCoordinates = filteredSchools.filter((school) => !schoolsWithCoordinates.includes(school));
 
@@ -111,7 +115,7 @@ export default function MapPage() {
       window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
       schoolsWithCoordinates.forEach((school) => {
         const name = getLocalizedSchoolValue(school.name, currentLanguage);
-        window.L.marker([school.latitude, school.longitude]).addTo(map).bindPopup(`<strong>${name}</strong><br>${getLocalizedEnumLabel('districts', school.district, currentLanguage)}<br>${t.tuitionFee}: ${formatPrice(school, t)}<br>${t.rating}: ${school.rating ? formatAverageRating(school.rating) : t.notYetRated}<br><a class="button-link map-popup__details" href="/schools/${school.id}?lang=${currentLanguage}">${t.details}</a>`);
+        window.L.marker([school.latitude, school.longitude]).addTo(map).bindPopup(`<strong>${name}</strong><br>${getLocalizedEnumLabel('districts', school.district, currentLanguage)}<br>${t.tuitionFee}: ${formatPrice(school, t)}<br>${t.rating}: ${getSchoolRatingStats(school).averageRating ? formatAverageRating(getSchoolRatingStats(school).averageRating) : t.notYetRated}<br><a class="button-link map-popup__details" href="/schools/${school.id}?lang=${currentLanguage}">${t.details}</a>`);
       });
       if (schoolsWithCoordinates.length > 0) map.fitBounds(schoolsWithCoordinates.map((school) => [school.latitude, school.longitude]), { padding: [32, 32], maxZoom: 13 });
     };

@@ -4,20 +4,25 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   formatAverageRating,
   getAverageRating,
+  getAverageCategoryRatings,
+  getReviewCategoryRating,
   getSchoolReviews,
+  getSchoolSeedReviews,
   getStoredReviewsBySchool,
   normalizeReviewRating,
+  reviewCategoryKeys,
   saveStoredReviewsBySchool,
   sortReviewsByLatest
 } from '../lib/reviews.js';
+import { getLocalizedSchoolValue } from '../data/schools.js';
 
 const initialReview = {
   parentName: '',
   rating: '5',
   childGrade: '',
-  text: ''
+  text: '',
+  categoryRatings: Object.fromEntries(reviewCategoryKeys.map((key) => [key, '5']))
 };
-
 
 const formatTemplate = (template, values) =>
   Object.entries(values).reduce((formattedValue, [key, value]) => formattedValue.replaceAll(`{${key}}`, String(value)), template);
@@ -48,22 +53,36 @@ const formatSubmittedAt = (submittedAt, locale) => {
   }).format(submittedDate);
 };
 
-export default function SchoolReviews({ schoolId, labels, locale }) {
+const getReviewText = (review, language) => getLocalizedSchoolValue(review.text, language) || review.text;
+
+export default function SchoolReviews({ school, schoolId, labels, locale, language }) {
   const [review, setReview] = useState(initialReview);
-  const [reviews, setReviews] = useState([]);
+  const [storedReviews, setStoredReviews] = useState([]);
   const [statusMessage, setStatusMessage] = useState('');
 
   useEffect(() => {
-    setReviews(sortReviewsByLatest(getSchoolReviews(getStoredReviewsBySchool(), schoolId)));
+    setStoredReviews(sortReviewsByLatest(getSchoolReviews(getStoredReviewsBySchool(), schoolId)));
   }, [schoolId]);
 
+  const reviews = useMemo(() => sortReviewsByLatest([...storedReviews, ...getSchoolSeedReviews(school)]), [school, storedReviews]);
   const averageRating = useMemo(() => getAverageRating(reviews), [reviews]);
+  const categoryRatings = useMemo(() => getAverageCategoryRatings(reviews), [reviews]);
   const latestReviews = useMemo(() => sortReviewsByLatest(reviews).slice(0, 5), [reviews]);
 
   const updateReview = (name, value) => {
     setReview((currentReview) => ({
       ...currentReview,
       [name]: value
+    }));
+  };
+
+  const updateCategoryRating = (name, value) => {
+    setReview((currentReview) => ({
+      ...currentReview,
+      categoryRatings: {
+        ...currentReview.categoryRatings,
+        [name]: value
+      }
     }));
   };
 
@@ -75,6 +94,7 @@ export default function SchoolReviews({ schoolId, labels, locale }) {
       parentName: review.parentName.trim(),
       rating: normalizeReviewRating(review.rating),
       childGrade: review.childGrade.trim(),
+      categoryRatings: Object.fromEntries(reviewCategoryKeys.map((key) => [key, normalizeReviewRating(review.categoryRatings[key])])),
       text: review.text.trim(),
       submittedAt: new Date().toISOString()
     };
@@ -86,7 +106,7 @@ export default function SchoolReviews({ schoolId, labels, locale }) {
         ...reviewsBySchool,
         [schoolId]: nextSchoolReviews
       });
-      setReviews(nextSchoolReviews);
+      setStoredReviews(nextSchoolReviews);
       setReview(initialReview);
       setStatusMessage(labels.success);
     } catch {
@@ -109,6 +129,18 @@ export default function SchoolReviews({ schoolId, labels, locale }) {
         </div>
       </div>
 
+      <div className="reviews__category-summary" aria-label={labels.categorySummaryTitle}>
+        <h3>{labels.categorySummaryTitle}</h3>
+        <dl className="reviews__category-list">
+          {reviewCategoryKeys.map((key) => (
+            <div key={key}>
+              <dt>{labels.categories[key]}</dt>
+              <dd>{categoryRatings[key] === null ? labels.notYetRated : `⭐ ${formatAverageRating(categoryRatings[key])}`}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
       <form className="feedback-form reviews__form" onSubmit={handleSubmit}>
         <label htmlFor="parent-name">
           <span>{labels.parentName}</span>
@@ -128,6 +160,20 @@ export default function SchoolReviews({ schoolId, labels, locale }) {
           <span>{labels.childGrade}</span>
           <input id="child-grade" name="childGrade" value={review.childGrade} onChange={(event) => updateReview('childGrade', event.target.value)} placeholder={labels.childGradePlaceholder} required />
         </label>
+
+        <fieldset className="reviews__category-fieldset">
+          <legend>{labels.categoryRatings}</legend>
+          {reviewCategoryKeys.map((key) => (
+            <label key={key} htmlFor={`review-${key}`}>
+              <span>{labels.categories[key]}</span>
+              <select id={`review-${key}`} value={review.categoryRatings[key]} onChange={(event) => updateCategoryRating(key, event.target.value)} required>
+                {[5, 4, 3, 2, 1].map((rating) => (
+                  <option key={rating} value={rating}>{formatTemplate(labels.ratingOption, { rating })}</option>
+                ))}
+              </select>
+            </label>
+          ))}
+        </fieldset>
 
         <label htmlFor="review-text">
           <span>{labels.reviewText}</span>
@@ -150,7 +196,15 @@ export default function SchoolReviews({ schoolId, labels, locale }) {
                   <strong>{item.parentName}</strong>
                   <span>{formatTemplate(labels.reviewRating, { rating: item.rating })}</span>
                 </div>
-                <p>{item.text}</p>
+                <p>{getReviewText(item, language)}</p>
+                <dl className="reviews__item-categories">
+                  {reviewCategoryKeys.map((key) => (
+                    <div key={key}>
+                      <dt>{labels.categories[key]}</dt>
+                      <dd>{getReviewCategoryRating(item, key)}/5</dd>
+                    </div>
+                  ))}
+                </dl>
                 <small>
                   {formatTemplate(labels.gradeLabel, { grade: item.childGrade })}
                   {formatSubmittedAt(item.submittedAt, locale) ? ` · ${formatTemplate(labels.submittedAt, { date: formatSubmittedAt(item.submittedAt, locale) })}` : ''}
