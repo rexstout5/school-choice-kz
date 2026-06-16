@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getLocalizedEnumLabel, getLocalizedSchoolValue, schools } from '../src/data/schools.js';
 import SchoolImageWithFallback from '../src/components/SchoolImageWithFallback.jsx';
-import { createSchoolImagePlaceholder } from '../src/utils/schoolImages.js';
+import { getSchoolCoverImage, getSchoolPlaceholderImage } from '../src/utils/schoolImages.js';
 import { formatAverageRating, getSchoolReviews, getStoredReviewsBySchool } from '../src/lib/reviews.js';
 import { getSchoolRatingStats, sortSchools } from '../src/lib/schoolDiscovery.js';
 import { favoritesChangedEventName, getStoredFavoriteSchoolIds } from '../src/lib/favorites.js';
@@ -135,7 +135,7 @@ const homepageTranslations = {
   }
 };
 
-const getSchoolCardImage = (school, schoolName) => school.main_image_url || school.main_image?.src || createSchoolImagePlaceholder(schoolName, 'card');
+const getSchoolCardImage = (school) => getSchoolCoverImage(school);
 
 function withLanguage(href, language) {
   return `${href}${href.includes('?') ? '&' : '?'}lang=${language}`;
@@ -171,7 +171,8 @@ function LanguageSwitcher({ currentLanguage, onLanguageChange, t }) {
 function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStats, rank }) {
   const localizedName = getLocalizedSchoolValue(school.name, currentLanguage);
   const localizedDistrict = getLocalizedEnumLabel('districts', school.district, currentLanguage);
-  const cardImage = getSchoolCardImage(school, localizedName);
+  const cardImage = getSchoolCardImage(school);
+  const fallbackImage = getSchoolPlaceholderImage(school);
   const tuition = school.tuition_fee === null || school.tuition_fee === undefined
     ? t.priceUnknown
     : school.tuition_fee === 0
@@ -182,7 +183,7 @@ function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStat
     <article className="top-school-card">
       <div className="top-school-card__image">
         <span className="top-school-card__rank">#{rank}</span>
-        <SchoolImageWithFallback src={cardImage} alt={localizedName} schoolName={localizedName} loading="lazy" decoding="async" size="card" />
+        <SchoolImageWithFallback src={cardImage} alt={localizedName} schoolName={localizedName} loading="lazy" decoding="async" size="card" fallbackSrc={fallbackImage} />
       </div>
       <div className="top-school-card__body">
         <h3>{localizedName}</h3>
@@ -306,7 +307,7 @@ export default function Home() {
             <a className="hero__cta hero__cta--secondary" href={withLanguage('/catalog', currentLanguage)}>{t.heroSecondaryCta}</a>
           </div>
         </div>
-        <div className="hero__visual" aria-hidden="true"><div className="hero__visual-card"><span /><strong>BilimChoice</strong><p>Astana school selection</p></div></div>
+        <div className="hero__visual" aria-hidden="true"><img src="/images/hero/astana-schools.jpg" alt="" loading="eager" decoding="async" /></div>
         <div className="hero-stat-grid" aria-label={t.heroStats.join(', ')}>
           {t.heroStats.map((stat) => <strong key={stat}>{stat}</strong>)}
         </div>
