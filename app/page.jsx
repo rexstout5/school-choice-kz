@@ -56,7 +56,7 @@ const translations = {
     languageSwitcherLabel: 'Выберите язык интерфейса',
     favoritesLink: 'Избранное',
     mapLink: 'Карта',
-    addSchoolLink: 'Add school',
+    addSchoolLink: 'Добавить школу',
     favorite: {
       add: 'Добавить в избранное',
       remove: 'В избранном'
@@ -161,7 +161,7 @@ const translations = {
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
     favoritesLink: 'Таңдаулылар',
     mapLink: 'Карта',
-    addSchoolLink: 'Add school',
+    addSchoolLink: 'Мектеп қосу',
     favorite: {
       add: 'Таңдаулыға қосу',
       remove: 'Таңдаулыда'

@@ -33,7 +33,7 @@ const translations = {
     filtersAria: 'Фильтры карты школ', all: 'Все', type: 'Тип', language: 'Язык', district: 'Район', maxMonthlyPrice: 'Стоимость обучения', rating: 'Рейтинг',
     ratingOptions: { all: 'Любой рейтинг', '4.5': 'От 4.5', '4': 'От 4.0', '3.5': 'От 3.5' },
     priceOptions: { all: 'Все', free: 'Только бесплатные', paid_only: 'Только платные', up_to_200000: 'Платные до 200 000 ₸', range_200000_400000: 'Платные 200 000–400 000 ₸', range_400000_800000: 'Платные 400 000–800 000 ₸', range_800000_plus: 'Платные от 800 000 ₸', unknown_price: 'Стоимость неизвестна' },
-    shown: (m, t) => `${m} из ${t} школ показаны на карте`, resetFilters: 'Сбросить фильтры', tuitionFee: 'Стоимость', freePublicSchool: 'Бесплатная государственная школа', priceUnknown: 'Стоимость уточняется', perMonth: 'в месяц', details: 'Подробнее', notYetRated: 'Пока нет оценки', withoutCoordinates: 'Schools without coordinates'
+    shown: (m, t) => `${m} из ${t} школ показаны на карте`, resetFilters: 'Сбросить фильтры', tuitionFee: 'Стоимость', freePublicSchool: 'Бесплатная государственная школа', priceUnknown: 'Стоимость уточняется', perMonth: 'в месяц', details: 'Подробнее', notYetRated: 'Пока нет оценки', withoutCoordinates: 'Школы без координат'
   },
   kz: {
     pageTitle: 'Астана мектептерінің картасы', catalogLink: 'Каталог', mapLink: 'Карта', languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
@@ -41,7 +41,7 @@ const translations = {
     filtersAria: 'Мектеп картасының сүзгілері', all: 'Барлығы', type: 'Түрі', language: 'Тілі', district: 'Аудан', maxMonthlyPrice: 'Оқу ақысы', rating: 'Рейтинг',
     ratingOptions: { all: 'Кез келген рейтинг', '4.5': '4.5-тен жоғары', '4': '4.0-ден жоғары', '3.5': '3.5-тен жоғары' },
     priceOptions: { all: 'Барлығы', free: 'Тек тегін', paid_only: 'Тек ақылы', up_to_200000: 'Ақылы 200 000 ₸ дейін', range_200000_400000: 'Ақылы 200 000–400 000 ₸', range_400000_800000: 'Ақылы 400 000–800 000 ₸', range_800000_plus: 'Ақылы 800 000 ₸ бастап', unknown_price: 'Бағасы белгісіз' },
-    shown: (m, t) => `${m}/${t} мектеп картада көрсетілді`, resetFilters: 'Сүзгілерді тазалау', tuitionFee: 'Оқу ақысы', freePublicSchool: 'Тегін мемлекеттік мектеп', priceUnknown: 'Құны нақтыланады', perMonth: 'айына', details: 'Толығырақ', notYetRated: 'Әзірге баға жоқ', withoutCoordinates: 'Schools without coordinates'
+    shown: (m, t) => `${m}/${t} мектеп картада көрсетілді`, resetFilters: 'Сүзгілерді тазалау', tuitionFee: 'Оқу ақысы', freePublicSchool: 'Тегін мемлекеттік мектеп', priceUnknown: 'Құны нақтыланады', perMonth: 'айына', details: 'Толығырақ', notYetRated: 'Әзірге баға жоқ', withoutCoordinates: 'Координаттары жоқ мектептер'
   },
   en: {
     pageTitle: 'Astana school map', catalogLink: 'Catalog', mapLink: 'Map', languageSwitcherLabel: 'Choose interface language',
@@ -58,6 +58,7 @@ const ratingOptions = ['all', '4.5', '4', '3.5'];
 
 const getLanguageFromUrl = () => typeof window === 'undefined' ? defaultLanguage : new URLSearchParams(window.location.search).get('lang');
 const isSupportedLanguage = (language) => ['ru', 'kz', 'en'].includes(language);
+const getSchoolSlug = (school) => school.slug ?? school.id;
 const formatPrice = (school, t) => school.tuition_fee === 0 ? t.freePublicSchool : typeof school.tuition_fee === 'number' ? `${school.tuition_fee.toLocaleString('ru-RU')} ₸ / ${t.perMonth}` : t.priceUnknown;
 
 function FilterControl({ id, label, value, options, optionLabels, allLabel, onChange }) {
@@ -115,7 +116,7 @@ export default function MapPage() {
       window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
       schoolsWithCoordinates.forEach((school) => {
         const name = getLocalizedSchoolValue(school.name, currentLanguage);
-        window.L.marker([school.latitude, school.longitude]).addTo(map).bindPopup(`<strong>${name}</strong><br>${getLocalizedEnumLabel('districts', school.district, currentLanguage)}<br>${t.tuitionFee}: ${formatPrice(school, t)}<br>${t.rating}: ${getSchoolRatingStats(school).averageRating ? formatAverageRating(getSchoolRatingStats(school).averageRating) : t.notYetRated}<br><a class="button-link map-popup__details" href="/schools/${school.id}?lang=${currentLanguage}">${t.details}</a>`);
+        window.L.marker([school.latitude, school.longitude]).addTo(map).bindPopup(`<strong>${name}</strong><br>${getLocalizedEnumLabel('districts', school.district, currentLanguage)}<br>${t.tuitionFee}: ${formatPrice(school, t)}<br>${t.rating}: ${getSchoolRatingStats(school).averageRating ? formatAverageRating(getSchoolRatingStats(school).averageRating) : t.notYetRated}<br><a class="button-link map-popup__details" href="/schools/${getSchoolSlug(school)}?lang=${currentLanguage}">${t.details}</a>`);
       });
       if (schoolsWithCoordinates.length > 0) map.fitBounds(schoolsWithCoordinates.map((school) => [school.latitude, school.longitude]), { padding: [32, 32], maxZoom: 13 });
     };
@@ -137,6 +138,6 @@ export default function MapPage() {
     <section className="hero"><div><p className="hero__kicker">{t.mapLink}</p><h1>{t.heroTitle}</h1><p>{t.heroDescription}</p></div><div className="hero__stat"><strong>{schoolsWithCoordinates.length}</strong><span>{t.mapLink}</span></div></section>
     <section className="filters filters--map" aria-label={t.filtersAria}><FilterControl id="type" label={t.type} value={filters.type} options={schoolTypes} allLabel={t.all} optionLabels={optionLabels('schoolTypes', schoolTypes)} onChange={(value) => updateFilter('type', value)} /><FilterControl id="language" label={t.language} value={filters.language} options={schoolLanguages} allLabel={t.all} optionLabels={optionLabels('instructionLanguages', schoolLanguages)} onChange={(value) => updateFilter('language', value)} /><FilterControl id="district" label={t.district} value={filters.district} options={schoolDistricts} allLabel={t.all} optionLabels={optionLabels('districts', schoolDistricts)} onChange={(value) => updateFilter('district', value)} /><FilterControl id="maxPrice" label={t.maxMonthlyPrice} value={filters.maxPrice} options={priceOptionValues.filter((value) => value !== 'all')} allLabel={t.all} optionLabels={t.priceOptions} onChange={(value) => updateFilter('maxPrice', value)} /><FilterControl id="rating" label={t.rating} value={filters.minRating} options={ratingOptions.filter((value) => value !== 'all')} allLabel={t.ratingOptions.all} optionLabels={t.ratingOptions} onChange={(value) => updateFilter('minRating', value)} /></section>
     <section className="results-heading"><h2>{t.shown(schoolsWithCoordinates.length, filteredSchools.length)}</h2><button type="button" onClick={() => setFilters(initialFilters)}>{t.resetFilters}</button></section>
-    <section className="map-layout"><div id="astana-school-map" className="school-map" aria-label={t.pageTitle} /><aside className="without-coordinates"><h2>{t.withoutCoordinates}</h2>{schoolsWithoutCoordinates.length > 0 ? <ul>{schoolsWithoutCoordinates.map((school) => <li key={school.id}><a href={`/schools/${school.id}?lang=${currentLanguage}`}>{getLocalizedSchoolValue(school.name, currentLanguage)}</a><span>{getLocalizedEnumLabel('districts', school.district, currentLanguage)}</span></li>)}</ul> : <p>{t.shown(0, 0)}</p>}</aside></section>
+    <section className="map-layout"><div id="astana-school-map" className="school-map" aria-label={t.pageTitle} /><aside className="without-coordinates"><h2>{t.withoutCoordinates}</h2>{schoolsWithoutCoordinates.length > 0 ? <ul>{schoolsWithoutCoordinates.map((school) => <li key={school.id}><a href={`/schools/${getSchoolSlug(school)}?lang=${currentLanguage}`}>{getLocalizedSchoolValue(school.name, currentLanguage)}</a><span>{getLocalizedEnumLabel('districts', school.district, currentLanguage)}</span></li>)}</ul> : <p>{t.shown(0, 0)}</p>}</aside></section>
   </main>;
 }
