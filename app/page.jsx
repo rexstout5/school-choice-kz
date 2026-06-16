@@ -17,6 +17,7 @@ import { createSchoolImagePlaceholder } from '../src/utils/schoolImages.js';
 import { formatAverageRating, getSchoolReviews, getStoredReviewsBySchool } from '../src/lib/reviews.js';
 import { getRatingSummaryKey, getSchoolRatingStats, sortOptionValues, sortSchools } from '../src/lib/schoolDiscovery.js';
 import { favoritesChangedEventName, getStoredFavoriteSchoolIds } from '../src/lib/favorites.js';
+import { seoFooterLinks } from '../src/data/seoPages.js';
 
 const initialFilters = {
   type: 'all',
@@ -967,6 +968,11 @@ export default function Home() {
 
       <footer className="site-footer">
         <p>{t.footer}</p>
+        <nav className="footer-links" aria-label="SEO pages">
+          {seoFooterLinks.map((link) => (
+            <a key={link.href} href={`${link.href}?lang=${currentLanguage}`}>{link.label[currentLanguage]}</a>
+          ))}
+        </nav>
       </footer>
     </main>
   );
