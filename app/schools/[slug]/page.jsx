@@ -318,12 +318,7 @@ const getSchoolImageMetadata = (school) => ({
   imageStatus: typeof school.image_status === 'string' && school.image_status.trim().length > 0 ? school.image_status : 'missing'
 });
 
-const getReportMailto = (schoolName, slug, language) => {
-  const subject = encodeURIComponent(`School Choice KZ: incorrect information for ${schoolName}`);
-  const body = encodeURIComponent(`School: ${schoolName}\nURL: /schools/${slug}?lang=${language}\n\nPlease describe the incorrect information:\n`);
-
-  return `mailto:info@school-choice.kz?subject=${subject}&body=${body}`;
-};
+const getReportContributionUrl = (slug, language) => `/contribute?lang=${language}&tab=correction&school=${encodeURIComponent(slug)}`;
 
 export function generateStaticParams() {
   return schools.map((school) => ({ slug: getSchoolSlug(school) }));
@@ -420,7 +415,7 @@ export default async function SchoolDetailPage({ params, searchParams }) {
             <p>{localizedDescription}</p>
             <div className="school-detail__actions">
               <FavoriteButton schoolId={school.id} labels={t.favorite} className="favorite-button--detail" />
-              <a className="button-link" href={getReportMailto(localizedName, slug, language)}>
+              <a className="button-link" href={getReportContributionUrl(slug, language)}>
                 {t.reportIncorrectInfo}
               </a>
             </div>
