@@ -19,6 +19,7 @@ const requiredFields = [
   'id',
   'name',
   'official_name',
+  'preserve_brand_name',
   'city',
   'district',
   'type',
@@ -95,6 +96,7 @@ const auditedLocalizedFields = [
   'programs'
 ];
 const nonLocalizedContentPattern = /[A-Za-z]{2,}/;
+const isEnglishBrandNamePreserved = (school) => school.official_name_language === 'en' || school.preserve_brand_name === true;
 const languages = ['ru', 'kk', 'en'];
 
 const isLocalizedObject = (value) =>
@@ -265,6 +267,16 @@ schools.forEach((school, index) => {
     errors.push(`${school.id} has invalid verification status ${school.verification_status}`);
   }
 
+  if (isEnglishBrandNamePreserved(school)) {
+    if (school.name.ru !== school.name.en || school.name.kk !== school.name.en) {
+      errors.push(`${school.id} must preserve official English brand name identically across ru, kk, and en`);
+    }
+
+    if (school.name.en !== school.official_name) {
+      errors.push(`${school.id} preserved brand name must match official_name`);
+    }
+  }
+
   if (school.monthly_price !== school.tuition_fee) {
     errors.push(`${school.id} monthly_price must match tuition_fee`);
   }
@@ -337,6 +349,10 @@ schools.forEach((school, index) => {
   });
 
   auditedLocalizedFields.forEach((field) => {
+    if (field === 'name' && isEnglishBrandNamePreserved(school)) {
+      return;
+    }
+
     ['ru', 'kk'].forEach((language) => {
       const localizedValue = getLocalizedSchoolValue(school[field], language);
       toArray(localizedValue).forEach((value) => {
