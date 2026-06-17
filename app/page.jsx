@@ -39,9 +39,7 @@ const homepageTranslations = {
     topTitle: 'Популярные школы',
     tabs: { all: 'Все', public: 'Государственные', private: 'Частные', international: 'Международные' },
     toolsTitle: 'Полезные инструменты',
-    tools: [['map', 'Карта школ', '/map'], ['compare', 'Сравнение школ', '/compare'], ['star', 'Рейтинг школ', '/rankings'], ['heart', 'Избранное', '/favorites']],
-    howTitle: 'Как это работает',
-    howSteps: ['Ответьте на несколько вопросов', 'Получите список подходящих школ', 'Сравните и сохраните лучшие варианты'],
+    tools: [['catalog', 'Каталог школ', '/catalog'], ['map', 'Карта школ', '/map'], ['quiz', 'Подбор школы', '/quiz'], ['star', 'Рейтинг школ', '/rankings']],
     district: 'Район',
     rating: 'Рейтинг',
     tuition: 'Стоимость',
@@ -55,7 +53,7 @@ const homepageTranslations = {
     footerColumns: [
       ['Навигация', [['Каталог школ', '/catalog'], ['Карта школ', '/map'], ['Подбор школы', '/quiz'], ['Рейтинг школ', '/rankings']]],
       ['Для родителей', [['Как выбрать школу', '/how-to-choose-school'], ['Вопросы и ответы', '/school-readiness'], ['Полезные статьи', '/how-to-choose-school']]],
-      ['О проекте', [['О нас', '#top'], ['Добавить школу', '/contribute'], ['Контакты', '/contribute']]]
+      ['О проекте', [['О нас', '/about'], ['Добавить школу', '/contribute'], ['Контакты', '/contribute']]]
     ]
   },
   kz: {
@@ -77,9 +75,7 @@ const homepageTranslations = {
     topTitle: 'Танымал мектептер',
     tabs: { all: 'Все', public: 'Государственные', private: 'Частные', international: 'Международные' },
     toolsTitle: 'Пайдалы құралдар',
-    tools: [['map', 'Мектептер картасы', '/map'], ['compare', 'Мектептерді салыстыру', '/compare'], ['star', 'Мектеп рейтингі', '/rankings'], ['heart', 'Таңдаулылар', '/favorites']],
-    howTitle: 'Бұл қалай жұмыс істейді',
-    howSteps: ['Бірнеше сұраққа жауап беріңіз', 'Сәйкес мектептер тізімін алыңыз', 'Ең жақсы нұсқаларды салыстырып сақтаңыз'],
+    tools: [['catalog', 'Мектептер каталогы', '/catalog'], ['map', 'Мектептер картасы', '/map'], ['quiz', 'Мектеп таңдау', '/quiz'], ['star', 'Мектеп рейтингі', '/rankings']],
     district: 'Аудан',
     rating: 'Рейтинг',
     tuition: 'Құны',
@@ -93,7 +89,7 @@ const homepageTranslations = {
     footerColumns: [
       ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектептер картасы', '/map'], ['Мектеп таңдау', '/quiz'], ['Мектеп рейтингі', '/rankings']]],
       ['Ата-аналарға', [['Мектепті қалай таңдау керек', '/how-to-choose-school'], ['Сұрақтар мен жауаптар', '/school-readiness'], ['Пайдалы мақалалар', '/how-to-choose-school']]],
-      ['Жоба туралы', [['Біз туралы', '#top'], ['Мектеп қосу', '/contribute'], ['Байланыс', '/contribute']]]
+      ['Жоба туралы', [['Біз туралы', '/about'], ['Мектеп қосу', '/contribute'], ['Байланыс', '/contribute']]]
     ]
   },
   en: {
@@ -115,9 +111,7 @@ const homepageTranslations = {
     topTitle: 'Popular schools',
     tabs: { all: 'Все', public: 'Государственные', private: 'Частные', international: 'Международные' },
     toolsTitle: 'Helpful tools',
-    tools: [['map', 'School map', '/map'], ['compare', 'School comparison', '/compare'], ['star', 'School rankings', '/rankings'], ['heart', 'Favorites', '/favorites']],
-    howTitle: 'How it works',
-    howSteps: ['Answer a few questions', 'Get a list of suitable schools', 'Compare and save the best options'],
+    tools: [['catalog', 'School catalog', '/catalog'], ['map', 'School map', '/map'], ['quiz', 'School matcher', '/quiz'], ['star', 'School rankings', '/rankings']],
     district: 'District',
     rating: 'Rating',
     tuition: 'Tuition',
@@ -131,7 +125,7 @@ const homepageTranslations = {
     footerColumns: [
       ['Navigation', [['School catalog', '/catalog'], ['School map', '/map'], ['School matcher', '/quiz'], ['School rankings', '/rankings']]],
       ['For parents', [['How to choose a school', '/how-to-choose-school'], ['Questions and answers', '/school-readiness'], ['Helpful articles', '/how-to-choose-school']]],
-      ['About', [['About us', '#top'], ['Add a school', '/contribute'], ['Contacts', '/contribute']]]
+      ['About', [['About us', '/about'], ['Add a school', '/contribute'], ['Contacts', '/contribute']]]
     ]
   }
 };
@@ -146,11 +140,14 @@ function withLanguage(href, language) {
 
 function ToolIcon({ name }) {
   const common = { width: '32', height: '32', viewBox: '0 0 32 32', fill: 'none', 'aria-hidden': 'true' };
+  if (name === 'catalog') {
+    return <svg {...common}><path d="M8 6h11a5 5 0 0 1 5 5v15H11a5 5 0 0 0-5-5V8a2 2 0 0 1 2-2Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/><path d="M11 11h8M11 16h7" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>;
+  }
   if (name === 'map') {
     return <svg {...common}><path d="M12 5 4 8v19l8-3 8 3 8-3V5l-8 3-8-3Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/><path d="M12 5v19M20 8v19" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>;
   }
-  if (name === 'compare') {
-    return <svg {...common}><path d="M8 7v18M24 7v18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><path d="M12 11h12l-4-4M20 25H8l4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+  if (name === 'quiz') {
+    return <svg {...common}><path d="M8 8h16M8 16h16M8 24h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><path d="m22 22 2 2 4-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>;
   }
   if (name === 'star') {
     return <svg {...common}><path d="m16 4 3.5 7.1 7.8 1.1-5.6 5.5 1.3 7.7-7-3.7-7 3.7 1.3-7.7-5.6-5.5 7.8-1.1L16 4Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>;
@@ -324,7 +321,7 @@ export default function Home() {
           <a className="site-header__link" href={withLanguage('/map', currentLanguage)}>{t.mapLink}</a>
           <a className="site-header__link" href={withLanguage('/quiz', currentLanguage)}>{t.quizLink}</a>
           <a className="site-header__link" href={withLanguage('/rankings', currentLanguage)}>{t.rankingsLink}</a>
-          <a className="site-header__link" href="#footer">{t.aboutLink}</a>
+          <a className="site-header__link" href={withLanguage('/about', currentLanguage)}>{t.aboutLink}</a>
         </nav>
         <div className="site-header__actions">
           <a className="site-header__link site-header__link--favorite" href={withLanguage('/favorites', currentLanguage)}>♡ {t.favoritesLink} ({favoriteCount})</a>
@@ -358,17 +355,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="how-it-works how-it-works--timeline" aria-labelledby="how-it-works-title">
-        <div className="section-heading"><h2 id="how-it-works-title">{t.howTitle}</h2></div>
-        <div className="timeline">
-          {t.howSteps.map((step, index) => (
-            <article className="timeline-card" key={step}>
-              <span className="timeline-card__number">{index + 1}</span>
-              <h3>{step}</h3>
-            </article>
-          ))}
-        </div>
-      </section>
 
       <footer className="site-footer site-footer--simple" id="footer">
         <div className="site-footer__brand"><strong>{brand.name}</strong><p>{t.footerDescription}</p></div>
