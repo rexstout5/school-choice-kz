@@ -25,7 +25,12 @@ const initialAnswers = {
   instructionLanguage: 'any',
   afterSchoolProgram: 'not_important',
   schoolBus: 'not_important',
-  admissionTest: 'not_important'
+  admissionTest: 'not_important',
+  knowsLetters: 'partial',
+  countsTo10: 'partial',
+  followsInstructions: 'partial',
+  concentrates15Minutes: 'partial',
+  retellsStory: 'partial'
 };
 
 const languageOptions = [
@@ -38,16 +43,19 @@ const childAgeOptions = ['5', '6', '7'];
 const schoolTypeOptions = ['public', 'private', 'international', 'any'];
 const budgetOptions = ['free', 'paid_only', 'up_to_200000', 'range_200000_400000', 'range_400000_800000', 'range_800000_plus', 'unknown_price', 'any'];
 const preferenceOptions = ['yes', 'no', 'not_important'];
+const readinessAnswerScores = { yes: 20, partial: 10, no: 0 };
+const readinessQuestionKeys = ['knowsLetters', 'countsTo10', 'followsInstructions', 'concentrates15Minutes', 'retellsStory'];
 
 const translations = {
   ru: {
     languageSwitcherLabel: 'Выберите язык интерфейса',
     backToCatalog: 'Назад к каталогу',
-    pageKicker: 'Подбор школы',
-    pageTitle: 'Ответьте на 8 вопросов и получите рейтинг школ',
+    pageKicker: 'Оценка ребенка и подбор школы',
+    pageTitle: 'Оценка ребенка и подбор школы',
     pageDescription:
-      'Квиз использует текущую базу школ и ту же логику фильтрации стоимости, что и каталог. Ответы сохраняются только в вашем браузере.',
-    formTitle: 'Ваши критерии',
+      'Ответьте на вопросы о готовности ребенка и критериях школы, чтобы получить единый результат: оценку готовности и персональные рекомендации.',
+    readinessFormTitle: 'Оценка готовности ребенка',
+    formTitle: 'Критерии школы',
     submit: 'Показать рекомендации',
     update: 'Обновить рекомендации',
     saved: 'Ответы сохранены локально.',
@@ -60,13 +68,19 @@ const translations = {
       instructionLanguage: 'Язык обучения',
       afterSchoolProgram: 'Нужна продленка',
       schoolBus: 'Нужен школьный автобус',
-      admissionTest: 'Готовы к вступительному тесту'
+      admissionTest: 'Готовы к вступительному тесту',
+      knowsLetters: 'Ребенок знает буквы',
+      countsTo10: 'Ребенок считает до 10',
+      followsInstructions: 'Ребенок следует инструкциям',
+      concentrates15Minutes: 'Концентрируется 15+ минут',
+      retellsStory: 'Может пересказать историю'
     },
     any: 'Любой',
     preference: {
       yes: 'Да',
       no: 'Нет',
-      not_important: 'Не важно'
+      not_important: 'Не важно',
+      partial: 'Частично'
     },
     budgets: {
       free: 'Только бесплатные',
@@ -92,6 +106,12 @@ const translations = {
     freePublicSchool: 'Бесплатная государственная школа',
     perMonth: 'в месяц',
     unavailableAge: 'Проверьте у школы прием и наличие мест для возраста',
+    readinessScoreTitle: 'Готовность ребенка',
+    strengthsTitle: 'Сильные стороны',
+    improvementsTitle: 'Зоны роста',
+    noStrengths: 'Сильные стороны проявятся по мере подготовки.',
+    noImprovements: 'Критичных зон развития не отмечено.',
+    readinessReason: (value) => `✓ Готовность ребенка учтена в подборе: ${value}%`,
     reasons: {
       district: (value) => `✓ Район совпадает: ${value}`,
       schoolType: (value) => `✓ Тип школы совпадает: ${value}`,
@@ -104,7 +124,9 @@ const translations = {
       flexibleBudget: '✓ Бюджет не ограничен',
       flexibleDistrict: '✓ Район не ограничен',
       flexibleLanguage: '✓ Язык обучения не ограничен',
-      partialMatch: 'Школа включена в рейтинг для сравнения компромиссов'
+      partialMatch: 'Школа включена в рейтинг для сравнения компромиссов',
+      gentleReadiness: '✓ Мягкая адаптация подходит к текущей готовности',
+      advancedReadiness: '✓ Формат подходит для высокой готовности'
     },
     concerns: {
       district: (value) => `⚠ Другой район: ${value}`,
@@ -122,11 +144,12 @@ const translations = {
   kz: {
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
     backToCatalog: 'Каталогқа оралу',
-    pageKicker: 'Мектеп таңдау',
-    pageTitle: '8 сұраққа жауап беріп, мектеп рейтингін алыңыз',
+    pageKicker: 'Баланы бағалау және мектеп таңдау',
+    pageTitle: 'Баланы бағалау және мектеп таңдау',
     pageDescription:
-      'Квиз ағымдағы мектеп базасын және каталогтағы баға сүзгілеу логикасын пайдаланады. Жауаптар тек браузеріңізде сақталады.',
-    formTitle: 'Критерийлеріңіз',
+      'Баланың дайындығы мен мектеп критерийлері туралы сұрақтарға жауап беріп, дайындық бағасын және жеке ұсыныстарды алыңыз.',
+    readinessFormTitle: 'Баланың дайындығын бағалау',
+    formTitle: 'Мектеп критерийлері',
     submit: 'Ұсыныстарды көрсету',
     update: 'Ұсыныстарды жаңарту',
     saved: 'Жауаптар жергілікті сақталды.',
@@ -139,13 +162,19 @@ const translations = {
       instructionLanguage: 'Оқыту тілі',
       afterSchoolProgram: 'Сабақтан кейінгі бағдарлама керек пе',
       schoolBus: 'Мектеп автобусы керек пе',
-      admissionTest: 'Қабылдау тестіне дайынсыз ба'
+      admissionTest: 'Қабылдау тестіне дайынсыз ба',
+      knowsLetters: 'Бала әріптерді біледі',
+      countsTo10: 'Бала 10-ға дейін санайды',
+      followsInstructions: 'Бала нұсқауларды орындайды',
+      concentrates15Minutes: '15+ минут зейін қояды',
+      retellsStory: 'Әңгімені мазмұндай алады'
     },
     any: 'Кез келген',
     preference: {
       yes: 'Иә',
       no: 'Жоқ',
-      not_important: 'Маңызды емес'
+      not_important: 'Маңызды емес',
+      partial: 'Ішінара'
     },
     budgets: {
       free: 'Тек тегін',
@@ -171,6 +200,12 @@ const translations = {
     freePublicSchool: 'Тегін мемлекеттік мектеп',
     perMonth: 'айына',
     unavailableAge: 'Мектептен осы жасқа қабылдау мен бос орындарды нақтылаңыз',
+    readinessScoreTitle: 'Баланың дайындығы',
+    strengthsTitle: 'Күшті жақтары',
+    improvementsTitle: 'Дамытатын тұстар',
+    noStrengths: 'Күшті жақтары дайындық барысында айқындалады.',
+    noImprovements: 'Маңызды даму аймақтары белгіленбеді.',
+    readinessReason: (value) => `✓ Баланың дайындығы таңдауда ескерілді: ${value}%`,
     reasons: {
       district: (value) => `✓ Аудан сәйкес: ${value}`,
       schoolType: (value) => `✓ Мектеп түрі сәйкес: ${value}`,
@@ -183,7 +218,9 @@ const translations = {
       flexibleBudget: '✓ Бюджет шектелмеген',
       flexibleDistrict: '✓ Аудан шектелмеген',
       flexibleLanguage: '✓ Оқыту тілі шектелмеген',
-      partialMatch: 'Мектеп ымыралы нұсқаларды салыстыру үшін рейтингке қосылды'
+      partialMatch: 'Мектеп ымыралы нұсқаларды салыстыру үшін рейтингке қосылды',
+      gentleReadiness: '✓ Жұмсақ бейімделу қазіргі дайындыққа сәйкес',
+      advancedReadiness: '✓ Формат жоғары дайындыққа сәйкес'
     },
     concerns: {
       district: (value) => `⚠ Басқа аудан: ${value}`,
@@ -201,11 +238,12 @@ const translations = {
   en: {
     languageSwitcherLabel: 'Choose interface language',
     backToCatalog: 'Back to catalog',
-    pageKicker: 'School recommendation',
-    pageTitle: 'Answer 8 questions and get ranked school matches',
+    pageKicker: 'Child Assessment & School Matching',
+    pageTitle: 'Child Assessment & School Matching',
     pageDescription:
-      'The quiz uses the current school database and the same tuition filter logic as the catalog. Answers are stored only in your browser.',
-    formTitle: 'Your criteria',
+      'Answer readiness and school-preference questions to get one result: readiness insights followed by personalized school matches.',
+    readinessFormTitle: 'Child readiness assessment',
+    formTitle: 'School criteria',
     submit: 'Show recommendations',
     update: 'Update recommendations',
     saved: 'Answers saved locally.',
@@ -218,13 +256,19 @@ const translations = {
       instructionLanguage: 'Language of instruction',
       afterSchoolProgram: 'Need after-school program',
       schoolBus: 'Need school bus',
-      admissionTest: 'Admission test acceptable'
+      admissionTest: 'Admission test acceptable',
+      knowsLetters: 'Child knows letters',
+      countsTo10: 'Child can count to 10',
+      followsInstructions: 'Child follows instructions',
+      concentrates15Minutes: 'Concentrates for 15+ minutes',
+      retellsStory: 'Can retell a story'
     },
     any: 'Any',
     preference: {
       yes: 'Yes',
       no: 'No',
-      not_important: 'Not important'
+      not_important: 'Not important',
+      partial: 'Partially'
     },
     budgets: {
       free: 'Free only',
@@ -250,6 +294,12 @@ const translations = {
     freePublicSchool: 'Free public school',
     perMonth: 'month',
     unavailableAge: 'Confirm admissions and seats for this age with the school',
+    readinessScoreTitle: 'Child readiness',
+    strengthsTitle: 'Strengths',
+    improvementsTitle: 'Areas to improve',
+    noStrengths: 'Strengths will become clearer with preparation.',
+    noImprovements: 'No critical development areas marked.',
+    readinessReason: (value) => `✓ Child readiness included in matching: ${value}%`,
     reasons: {
       district: (value) => `✓ District matches: ${value}`,
       schoolType: (value) => `✓ School type matches: ${value}`,
@@ -262,7 +312,9 @@ const translations = {
       flexibleBudget: '✓ Budget is flexible',
       flexibleDistrict: '✓ District is flexible',
       flexibleLanguage: '✓ Instruction language is flexible',
-      partialMatch: 'Included in the ranking so you can compare trade-offs'
+      partialMatch: 'Included in the ranking so you can compare trade-offs',
+      gentleReadiness: '✓ Gentle adaptation fits current readiness',
+      advancedReadiness: '✓ Format fits high readiness'
     },
     concerns: {
       district: (value) => `⚠ Different district: ${value}`,
@@ -333,7 +385,20 @@ const formatPrice = (school, formatter, t) => {
 
 const getLocalizedYesNo = (value, language) => getLocalizedEnumLabel('yesNoUnknown', value, language);
 
-const scoreSchool = ({ school, answers, language, moneyFormatter, t }) => {
+const getReadinessScore = (answers) =>
+  readinessQuestionKeys.reduce((sum, key) => sum + (readinessAnswerScores[answers[key]] ?? 0), 0);
+
+const getReadinessInsights = (answers, t) => {
+  const strengths = readinessQuestionKeys.filter((key) => answers[key] === 'yes').map((key) => t.labels[key]);
+  const improvements = readinessQuestionKeys.filter((key) => answers[key] === 'partial' || answers[key] === 'no').map((key) => t.labels[key]);
+  return {
+    score: getReadinessScore(answers),
+    strengths: strengths.length > 0 ? strengths : [t.noStrengths],
+    improvements: improvements.length > 0 ? improvements : [t.noImprovements]
+  };
+};
+
+const scoreSchool = ({ school, answers, language, moneyFormatter, t, readinessScore }) => {
   let score = 0;
   const maxScore = 100;
   const why = [];
@@ -406,6 +471,19 @@ const scoreSchool = ({ school, answers, language, moneyFormatter, t }) => {
   } else {
     concerns.push(t.concerns.schoolBus(getLocalizedYesNo(school.school_bus, language)));
   }
+
+  if (readinessScore >= 80) {
+    score += school.admission_test === 'yes' || school.type === 'specialized' ? 6 : 3;
+    why.push(t.reasons.advancedReadiness);
+  } else if (readinessScore < 60) {
+    const hasGentleStart = school.after_school_program === 'yes' || school.admission_test !== 'yes';
+    score += hasGentleStart ? 6 : 2;
+    why.push(t.reasons.gentleReadiness);
+  } else {
+    score += 4;
+  }
+
+  why.push(t.readinessReason(readinessScore));
 
   if (answers.admissionTest === 'not_important') {
     score += 7;
@@ -534,14 +612,15 @@ export default function QuizPage() {
 
   const t = translations[currentLanguage];
   const moneyFormatter = useMemo(() => getMoneyFormatter(currentLanguage), [currentLanguage]);
+  const readiness = useMemo(() => getReadinessInsights(answers, t), [answers, t]);
   const recommendations = useMemo(
     () =>
       schools
         .filter((school) => doesSchoolMatchBudgetFilter(school, answers.budget))
-        .map((school) => scoreSchool({ school, answers, language: currentLanguage, moneyFormatter, t }))
+        .map((school) => scoreSchool({ school, answers, language: currentLanguage, moneyFormatter, t, readinessScore: readiness.score }))
         .sort((first, second) => second.score - first.score || getLocalizedSchoolValue(first.school.name, currentLanguage).localeCompare(getLocalizedSchoolValue(second.school.name, currentLanguage)))
         .slice(0, 12),
-    [answers, currentLanguage, moneyFormatter, t]
+    [answers, currentLanguage, moneyFormatter, t, readiness.score]
   );
 
   const updateAnswer = (name, value) => {
@@ -589,6 +668,27 @@ export default function QuizPage() {
       </section>
 
       <form className="quiz-form" onSubmit={handleSubmit}>
+        <div className="quiz-form__header">
+          <h2>{t.readinessFormTitle}</h2>
+          <p>{t.pageDescription}</p>
+        </div>
+
+        <div className="readiness-options readiness-options--quiz">
+          {readinessQuestionKeys.map((key) => (
+            <fieldset className="readiness-question readiness-question--compact" key={key}>
+              <legend>{t.labels[key]}</legend>
+              <div className="readiness-options">
+                {['yes', 'partial', 'no'].map((option) => (
+                  <label key={option} className={answers[key] === option ? 'readiness-option readiness-option--selected' : 'readiness-option'}>
+                    <input type="radio" name={key} value={option} checked={answers[key] === option} onChange={() => updateAnswer(key, option)} />
+                    {t.preference[option]}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          ))}
+        </div>
+
         <div className="quiz-form__header">
           <h2>{t.formTitle}</h2>
           <p>{t.ageNote}</p>
@@ -644,6 +744,22 @@ export default function QuizPage() {
 
       {hasSubmitted ? (
         <section className="quiz-results" aria-live="polite">
+          <div className="readiness-results readiness-results--quiz">
+            <div className="readiness-score">
+              <span>{t.readinessScoreTitle}</span>
+              <strong>{readiness.score}%</strong>
+            </div>
+            <div className="readiness-insights">
+              <section>
+                <h3>{t.strengthsTitle}</h3>
+                <ul>{readiness.strengths.map((item) => <li key={item}>{item}</li>)}</ul>
+              </section>
+              <section>
+                <h3>{t.improvementsTitle}</h3>
+                <ul>{readiness.improvements.map((item) => <li key={item}>{item}</li>)}</ul>
+              </section>
+            </div>
+          </div>
           {recommendations.length > 0 ? (
             <>
               <h2>{t.resultsTitle(recommendations.length)}</h2>
