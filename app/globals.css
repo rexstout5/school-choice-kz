@@ -3941,7 +3941,8 @@ main {
 
 .readiness-hero,
 .readiness-card,
-.readiness-results {
+.readiness-results,
+.readiness-age-card {
   border: 1px solid var(--brand-border);
   border-radius: 28px;
   background: #ffffff;
@@ -4265,6 +4266,45 @@ main {
   gap: 22px;
   margin-bottom: 24px;
 }
+.readiness-age-card {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 24px;
+  padding: 16px;
+  border: 1px solid var(--brand-border);
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 16px 40px rgba(29, 47, 73, 0.08);
+}
+
+.readiness-age-card > span {
+  color: var(--brand-muted);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.readiness-age-card > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.readiness-age-option {
+  min-height: 52px;
+  border: 1px solid var(--brand-border);
+  border-radius: 18px;
+  color: var(--brand-ink-strong);
+  background: var(--brand-surface);
+}
+
+.readiness-age-option--selected {
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-ink-strong));
+  box-shadow: 0 12px 28px rgba(11, 127, 134, 0.22);
+}
+
 
 .readiness-drawing-analysis {
   grid-template-columns: minmax(0, 1fr) auto;
@@ -4413,15 +4453,19 @@ main {
 }
 
 .readiness-support-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: start;
 }
 
 .readiness-support-grid div {
+  border-top: 6px solid var(--brand-primary);
   border-radius: 22px;
   padding: 20px;
   background: var(--brand-surface);
 }
+
+.readiness-support-grid div:nth-child(2) { border-top-color: var(--brand-accent); }
+.readiness-support-grid div:nth-child(3) { border-top-color: #12a182; }
 
 .readiness-support-grid ul {
   display: grid;
@@ -4439,6 +4483,7 @@ main {
 }
 
 @media (max-width: 920px) {
+  .readiness-age-card > div,
   .readiness-options--scale,
   .readiness-results--assessment,
   .readiness-drawing-analysis,

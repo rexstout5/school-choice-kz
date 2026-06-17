@@ -56,7 +56,7 @@ const translations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Выберите язык интерфейса',
     favoritesLink: 'Избранное',
-    readinessLink: 'Готовность к школе',
+    readinessLink: 'Оценка готовности к школе',
     addSchoolLink: 'Добавить школу',
     catalogLink: 'Каталог',
     footerSeoLabel: 'Полезные страницы',
@@ -68,7 +68,7 @@ const translations = {
     heroTitle: 'Найдите школу, которая подходит вашей семье',
     heroDescription:
       'Изучайте проверенные данные, фильтруйте по ключевым критериям и сравнивайте школы Астаны.',
-    heroCta: 'Готовность к школе',
+    heroCta: 'Оценка готовности к школе',
     astanaSchools: 'школ в каталоге',
     heroSecondaryCta: 'Смотреть каталог',
     heroNote: 'Персональный маршрут выбора: каталог → сравнение → готовность к школе.',
@@ -175,7 +175,7 @@ const translations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
     favoritesLink: 'Таңдаулылар',
-    readinessLink: 'Мектепке дайындық',
+    readinessLink: 'Мектепке дайындықты бағалау',
     addSchoolLink: 'Мектеп қосу',
     catalogLink: 'Каталог',
     footerSeoLabel: 'Пайдалы беттер',
@@ -187,7 +187,7 @@ const translations = {
     heroTitle: 'Отбасыңызға сай мектепті табыңыз',
     heroDescription:
       'Тексерілген деректерді қарап, негізгі өлшемдер бойынша сүзгіден өткізіп, Астана мектептерін салыстырыңыз.',
-    heroCta: 'Мектепке дайындық',
+    heroCta: 'Мектепке дайындықты бағалау',
     astanaSchools: 'каталогтағы мектеп',
     heroSecondaryCta: 'Каталогты қарау',
     heroNote: 'Таңдаудың жеке маршруты: каталог → салыстыру → мектепке дайындық.',
@@ -294,7 +294,7 @@ const translations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Choose interface language',
     favoritesLink: 'Favorites',
-    readinessLink: 'School readiness',
+    readinessLink: 'School readiness assessment',
     addSchoolLink: 'Add school',
     favorite: {
       add: 'Add to favorites',
@@ -304,7 +304,7 @@ const translations = {
     heroTitle: 'Find the school that fits your family',
     heroDescription:
       'Review verified data, filter by key criteria, and compare Astana schools.',
-    heroCta: 'School readiness',
+    heroCta: 'School readiness assessment',
     astanaSchools: 'schools in the catalog',
     heroSecondaryCta: 'Browse catalog',
     heroNote: 'A guided path for parents: catalog → comparison → school readiness.',
