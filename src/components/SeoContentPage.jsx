@@ -42,7 +42,7 @@ export default function SeoContentPage({ page }) {
             <p>{page.intro[code]}</p>
           </div>
         ))}
-        <a className="hero__cta" href="/quiz">{page.cta.ru} / {page.cta.kk} / {page.cta.en}</a>
+        <a className="hero__cta" href="/catalog">{page.cta.ru} / {page.cta.kk} / {page.cta.en}</a>
       </section>
 
       {languages.map(({ code, label }) => (
