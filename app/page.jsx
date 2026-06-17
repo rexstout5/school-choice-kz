@@ -44,7 +44,7 @@ const homepageTranslations = {
     emptyCategory: 'Пока нет школ в этой категории.',
     catalogButton: 'Смотреть каталог',
     toolsTitle: 'Полезные инструменты',
-    tools: [['catalog', 'Каталог школ', '/catalog'], ['map', 'Карта школ', '/map'], ['quiz', 'Подбор школы', '/quiz'], ['heart', 'Избранное', '/favorites']],
+    tools: [['catalog', 'Каталог школ', '/catalog'], ['map', 'Карта школ', '/map'], ['quiz', 'Подбор школы', '/quiz'], ['readiness', 'Готовность к школе', '/school-readiness'], ['heart', 'Избранное', '/favorites']],
     district: 'Район',
     rating: 'Рейтинг',
     tuition: 'Стоимость',
@@ -85,7 +85,7 @@ const homepageTranslations = {
     emptyCategory: 'Бұл санатта әзірге мектеп жоқ.',
     catalogButton: 'Каталогты қарау',
     toolsTitle: 'Пайдалы құралдар',
-    tools: [['catalog', 'Мектептер каталогы', '/catalog'], ['map', 'Мектептер картасы', '/map'], ['quiz', 'Мектеп таңдау', '/quiz'], ['heart', 'Таңдаулылар', '/favorites']],
+    tools: [['catalog', 'Мектептер каталогы', '/catalog'], ['map', 'Мектептер картасы', '/map'], ['quiz', 'Мектеп таңдау', '/quiz'], ['readiness', 'Мектепке дайындық', '/school-readiness'], ['heart', 'Таңдаулылар', '/favorites']],
     district: 'Аудан',
     rating: 'Рейтинг',
     tuition: 'Құны',
@@ -126,7 +126,7 @@ const homepageTranslations = {
     emptyCategory: 'There are no schools in this category yet.',
     catalogButton: 'View catalog',
     toolsTitle: 'Helpful tools',
-    tools: [['catalog', 'School catalog', '/catalog'], ['map', 'School map', '/map'], ['quiz', 'School matcher', '/quiz'], ['heart', 'Favorites', '/favorites']],
+    tools: [['catalog', 'School catalog', '/catalog'], ['map', 'School map', '/map'], ['quiz', 'School matcher', '/quiz'], ['readiness', 'School readiness', '/school-readiness'], ['heart', 'Favorites', '/favorites']],
     district: 'District',
     rating: 'Rating',
     tuition: 'Tuition',
@@ -162,6 +162,9 @@ function ToolIcon({ name }) {
   }
   if (name === 'quiz') {
     return <svg {...common}><path d="M8 8h16M8 16h16M8 24h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><path d="m22 22 2 2 4-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+  }
+  if (name === 'readiness') {
+    return <svg {...common}><path d="M16 5c4 0 7 3 7 7 0 5.5-7 15-7 15S9 17.5 9 12c0-4 3-7 7-7Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/><path d="M13 12.2 15.2 14.4 19.2 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>;
   }
   if (name === 'star') {
     return <svg {...common}><path d="m16 4 3.5 7.1 7.8 1.1-5.6 5.5 1.3 7.7-7-3.7-7 3.7 1.3-7.7-5.6-5.5 7.8-1.1L16 4Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>;
