@@ -4230,3 +4230,25 @@ main {
     width: 100%;
   }
 }
+
+.readiness-options--quiz {
+  grid-template-columns: 1fr;
+}
+
+.readiness-question--compact legend {
+  display: block;
+}
+
+.readiness-results--quiz {
+  margin-top: 0;
+}
+
+@media (max-width: 560px) {
+  .readiness-results--quiz {
+    grid-template-columns: 1fr;
+  }
+
+  .readiness-results--quiz .readiness-score {
+    min-height: 180px;
+  }
+}
