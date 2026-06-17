@@ -203,19 +203,29 @@ function HeroVisual() {
   const [imageFailed, setImageFailed] = useState(false);
 
   return (
-    <div className="hero__visual" aria-hidden="true">
+    <div className="hero-visual">
+      <div className="hero-visual-shape hero-visual-shape-one"></div>
+      <div className="hero-visual-shape hero-visual-shape-two"></div>
+
       {!imageFailed && (
-        <img
-          src={heroImagePath}
-          alt=""
-          loading="eager"
-          decoding="async"
-          onError={() => setImageFailed(true)}
-        />
+        <div className="hero-image-frame">
+          <img
+            src={heroImagePath}
+            alt="Астана и образование"
+            className="hero-image"
+            loading="eager"
+            decoding="async"
+            onError={() => setImageFailed(true)}
+          />
+        </div>
       )}
-      <div className="hero__badge">
-        <span className="hero__badge-icon">✓</span>
-        <span><strong>Актуальные данные 2025</strong><em>Мы обновляем информацию о школах</em></span>
+
+      <div className="hero-badge">
+        <span className="hero-badge-icon" aria-hidden="true">✓</span>
+        <div>
+          <strong>Актуальные данные 2025</strong>
+          <span>Мы обновляем информацию о школах</span>
+        </div>
       </div>
     </div>
   );

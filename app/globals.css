@@ -3459,9 +3459,9 @@ main {
 .language-switcher__button--active { color: #fff; background: var(--brand-primary); }
 
 .hero.hero--landing {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(24px, 4vw, 58px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
   align-items: center;
   padding: 30px 50px 22px;
   border: 0;
@@ -3471,7 +3471,7 @@ main {
   box-shadow: none;
   overflow: visible;
 }
-.hero__copy { align-self: center; }
+.hero__copy { flex: 0 0 44%; align-self: center; padding-right: clamp(24px, 4vw, 58px); }
 .hero--landing h1 {
   max-width: 620px;
   margin: 0;
@@ -3485,14 +3485,17 @@ main {
 .hero__actions { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 28px; }
 .hero__cta { display: inline-flex; align-items: center; justify-content: center; min-height: 58px; border-radius: 999px; padding: 0 30px; color: #fff; background: var(--brand-primary); font-size: 1.08rem; font-weight: 900; text-decoration: none; box-shadow: 0 16px 30px rgba(0, 140, 149, 0.18); }
 .hero__cta--secondary { color: var(--brand-primary-dark); border: 1px solid #bed5dd; background: #fff; box-shadow: none; }
-.hero__visual { position: relative; min-height: clamp(420px, 38vw, 560px); overflow: hidden; border-radius: 128px 42px 42px 42px; background: #d9edf3; box-shadow: 0 16px 40px rgba(8, 35, 63, 0.09); clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%, 6% 64%); }
-.hero__visual img { display: block; width: 100%; height: 100%; min-height: inherit; object-fit: cover; object-position: center; }
-.hero__badge { position: absolute; left: 72px; bottom: 28px; display: flex; gap: 16px; align-items: center; min-width: min(390px, calc(100% - 108px)); border-radius: 18px; padding: 15px 22px; color: var(--brand-ink); background: #fff; box-shadow: 0 18px 35px rgba(8, 35, 63, 0.14); }
-.hero__badge-icon { display: grid; flex: 0 0 auto; width: 42px; height: 42px; place-items: center; border: 3px solid var(--brand-primary); border-radius: 14px; color: var(--brand-primary); font-size: 1.4rem; font-weight: 900; }
-.hero__badge strong, .hero__badge em { display: block; font-style: normal; line-height: 1.2; }
-.hero__badge strong { font-size: 1rem; font-weight: 900; }
-.hero__badge em { margin-top: 4px; color: var(--brand-muted); font-size: 0.88rem; font-weight: 700; }
-.hero-stat-grid { grid-column: 1 / 2; display: flex; flex-wrap: wrap; gap: 14px; margin-top: -58px; }
+.hero-visual { position: relative; flex: 0 0 56%; min-height: 460px; display: flex; align-items: center; justify-content: center; }
+.hero-image-frame { position: relative; z-index: 2; width: min(680px, 100%); height: 420px; overflow: hidden; border-radius: 120px 36px 36px 180px; background: #e8f7f8; box-shadow: 0 28px 80px rgba(8, 35, 63, 0.16); }
+.hero-image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center center; }
+.hero-visual-shape { position: absolute; z-index: 1; border-radius: 999px; background: rgba(0, 151, 163, 0.12); pointer-events: none; }
+.hero-visual-shape-one { top: -30px; right: 40px; width: 520px; height: 520px; }
+.hero-visual-shape-two { right: -40px; bottom: -40px; width: 360px; height: 360px; background: rgba(216, 232, 239, 0.6); }
+.hero-badge { position: absolute; left: 70px; bottom: 26px; z-index: 3; display: flex; align-items: center; gap: 14px; max-width: min(410px, calc(100% - 96px)); padding: 16px 22px; border-radius: 22px; background: rgba(255, 255, 255, 0.92); box-shadow: 0 18px 50px rgba(8, 35, 63, 0.16); backdrop-filter: blur(12px); }
+.hero-badge-icon { display: grid; flex: 0 0 auto; width: 42px; height: 42px; place-items: center; border: 3px solid var(--brand-primary); border-radius: 14px; color: var(--brand-primary); font-size: 1.4rem; font-weight: 900; }
+.hero-badge strong { display: block; color: #08233f; font-weight: 800; line-height: 1.2; }
+.hero-badge span { display: block; color: #58707c; font-size: 14px; font-weight: 700; line-height: 1.25; }
+.hero-stat-grid { flex: 0 0 44%; display: flex; flex-wrap: wrap; gap: 14px; margin-top: -58px; }
 .hero-stat-grid strong { border: 1px solid var(--brand-border); border-radius: 999px; padding: 15px 20px; color: var(--brand-ink); background: #fff; font-size: 1.05rem; font-weight: 900; box-shadow: 0 10px 24px rgba(8, 35, 63, 0.04); }
 .hero-stat-grid strong::before { margin-right: 10px; color: var(--brand-ink); }
 .hero-stat-grid strong:nth-child(1)::before { content: '⌂'; }
@@ -3527,10 +3530,14 @@ main {
   main { width: min(100% - 28px, 1500px); padding-top: 14px; }
   .site-header { position: static; grid-template-columns: 1fr; border-radius: 28px; padding: 18px; }
   .site-header__nav, .site-header__actions { justify-content: flex-start; }
-  .hero.hero--landing { grid-template-columns: 1fr; padding: 18px 4px 0; }
+  .hero.hero--landing { flex-direction: column; padding: 18px 4px 0; }
+  .hero__copy, .hero-visual { flex: 0 1 auto; width: 100%; padding-right: 0; }
   .hero--landing h1 { font-size: clamp(3rem, 13vw, 4.8rem); }
-  .hero__visual { min-height: 320px; border-radius: 54px 26px 26px; clip-path: none; }
-  .hero-stat-grid { grid-column: auto; margin-top: 0; }
+  .hero-visual { min-height: auto; margin-top: 28px; overflow: hidden; }
+  .hero-image-frame { height: 260px; border-radius: 42px; }
+  .hero-visual-shape { display: none; }
+  .hero-badge { position: relative; left: auto; bottom: auto; margin: -34px auto 0; width: calc(100% - 32px); max-width: 520px; }
+  .hero-stat-grid { flex: 0 1 auto; width: 100%; margin-top: 0; }
   .section-heading--split { align-items: flex-start; flex-direction: column; margin-inline: 0; }
   .top-school-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0; }
   .tool-card-grid, .timeline, .site-footer--simple { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -3540,9 +3547,9 @@ main {
   .language-switcher__button { width: 44px; height: 44px; }
   .hero__actions, .hero__cta, .tabs, .tab { width: 100%; }
   .hero__cta, .tab { text-align: center; }
-  .hero__visual { min-height: 230px; }
-  .hero__badge { left: 14px; right: 14px; bottom: 14px; min-width: 0; padding: 12px; }
-  .hero__badge-icon { width: 34px; height: 34px; border-radius: 10px; }
+  .hero-image-frame { height: 260px; }
+  .hero-badge { padding: 12px; }
+  .hero-badge-icon { width: 34px; height: 34px; border-radius: 10px; }
   .hero-stat-grid { flex-direction: column; }
   .top-school-grid, .tool-card-grid, .timeline, .site-footer--simple { grid-template-columns: 1fr; }
   .top-school-card h3 { min-height: auto; }
