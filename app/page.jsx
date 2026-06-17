@@ -220,7 +220,7 @@ function HeroVisual() {
       <div className="hero-badge">
         <span className="hero-badge-icon" aria-hidden="true">✓</span>
         <div>
-          <strong>Актуальные данные 2025</strong>
+          <strong>Актуальные данные 2026</strong>
           <span>Мы обновляем информацию о школах</span>
         </div>
       </div>
@@ -337,11 +337,11 @@ export default function Home() {
             <a className="hero__cta" href={withLanguage('/quiz', currentLanguage)}>{t.heroCta}</a>
             <a className="hero__cta hero__cta--secondary" href={withLanguage('/catalog', currentLanguage)}>{t.heroSecondaryCta}</a>
           </div>
+          <div className="hero-stat-grid" aria-label={t.heroStats.join(', ')}>
+            {t.heroStats.map((stat) => <strong key={stat}>{stat}</strong>)}
+          </div>
         </div>
         <HeroVisual />
-        <div className="hero-stat-grid" aria-label={t.heroStats.join(', ')}>
-          {t.heroStats.map((stat) => <strong key={stat}>{stat}</strong>)}
-        </div>
       </section>
 
       <PopularSchools groups={popularSchoolGroups} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} reviewsBySchool={reviewsBySchool} />
