@@ -3391,7 +3391,8 @@ body {
   .site-header__link { padding: 8px 10px; }
   .hero.hero--landing { padding: 24px; }
   .hero__visual { min-height: 190px; }
-  .hero-stat-grid { flex-direction: column; }
+  .hero-stat-grid { gap: 10px; }
+  .hero-stat-grid strong { flex: 1 1 150px; justify-content: center; white-space: normal; text-align: center; }
   .top-school-grid, .tool-card-grid, .site-footer--simple { grid-template-columns: 1fr; }
   .top-school-card { border-radius: 22px; }
   .top-school-card__image { border-radius: 22px 22px 0 0; }
@@ -3494,8 +3495,8 @@ main {
 .hero-badge-icon { display: grid; flex: 0 0 auto; width: 42px; height: 42px; place-items: center; border: 3px solid var(--brand-primary); border-radius: 14px; color: var(--brand-primary); font-size: 1.4rem; font-weight: 900; }
 .hero-badge strong { display: block; color: #08233f; font-weight: 800; line-height: 1.2; }
 .hero-badge span { display: block; color: #58707c; font-size: 14px; font-weight: 700; line-height: 1.25; }
-.hero-stat-grid { flex: 0 0 44%; display: flex; flex-wrap: wrap; gap: 14px; margin-top: -58px; }
-.hero-stat-grid strong { border: 1px solid var(--brand-border); border-radius: 999px; padding: 15px 20px; color: var(--brand-ink); background: #fff; font-size: 1.05rem; font-weight: 900; box-shadow: 0 10px 24px rgba(8, 35, 63, 0.04); }
+.hero-stat-grid { display: flex; flex-wrap: wrap; gap: 12px; max-width: 600px; margin-top: 22px; }
+.hero-stat-grid strong { display: inline-flex; align-items: center; min-width: 0; border: 1px solid var(--brand-border); border-radius: 999px; padding: 10px 15px; color: var(--brand-ink); background: #fff; font-size: 0.96rem; font-weight: 900; line-height: 1.1; white-space: nowrap; box-shadow: 0 10px 24px rgba(8, 35, 63, 0.04); }
 .hero-stat-grid strong::before { margin-right: 10px; color: var(--brand-ink); }
 .hero-stat-grid strong:nth-child(1)::before { content: '⌂'; }
 .hero-stat-grid strong:nth-child(2)::before { content: '⌖'; }
@@ -3536,7 +3537,7 @@ main {
   .hero-image-frame { height: 260px; border-radius: 42px; }
   .hero-visual-shape { display: none; }
   .hero-badge { position: relative; left: auto; bottom: auto; margin: -34px auto 0; width: calc(100% - 32px); max-width: 520px; }
-  .hero-stat-grid { flex: 0 1 auto; width: 100%; margin-top: 0; }
+  .hero-stat-grid { width: 100%; margin-top: 20px; }
   .section-heading--split { align-items: flex-start; flex-direction: column; margin-inline: 0; }
   .top-school-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0; }
   .tool-card-grid, .site-footer--simple { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -3549,7 +3550,8 @@ main {
   .hero-image-frame { height: 260px; }
   .hero-badge { padding: 12px; }
   .hero-badge-icon { width: 34px; height: 34px; border-radius: 10px; }
-  .hero-stat-grid { flex-direction: column; }
+  .hero-stat-grid { gap: 10px; }
+  .hero-stat-grid strong { flex: 1 1 150px; justify-content: center; white-space: normal; text-align: center; }
   .top-school-grid, .tool-card-grid, .site-footer--simple { grid-template-columns: 1fr; }
   .top-school-card h3 { min-height: auto; }
 }
