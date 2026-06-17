@@ -1,10 +1,10 @@
 const escapeSvgText = (value) => String(value ?? '').replace(/[&<>"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[character]);
 
 export const schoolPlaceholderImages = {
-  public: '/images/placeholders/public-school.jpg',
-  private: '/images/placeholders/private-school.jpg',
-  international: '/images/placeholders/international-school.jpg',
-  stem: '/images/placeholders/stem-school.jpg'
+  public: '/images/placeholders/public-school.svg',
+  private: '/images/placeholders/private-school.svg',
+  international: '/images/placeholders/international-school.svg',
+  stem: '/images/placeholders/stem-school.svg'
 };
 
 const getLocalizedText = (value) => {

@@ -37,7 +37,7 @@ const homepageTranslations = {
     heroSecondaryCta: 'Смотреть каталог',
     heroStats: ['77+ школ', '5 районов', '3 языка обучения'],
     topTitle: 'Популярные школы',
-    tabs: { all: 'Все', public: 'Государственные', private: 'Частные' },
+    tabs: { all: 'Все', public: 'Государственные', private: 'Частные', international: 'Международные' },
     toolsTitle: 'Полезные инструменты',
     tools: [['map', 'Карта школ', '/map'], ['compare', 'Сравнение школ', '/compare'], ['star', 'Рейтинг школ', '/rankings'], ['heart', 'Избранное', '/favorites']],
     howTitle: 'Как это работает',
@@ -75,7 +75,7 @@ const homepageTranslations = {
     heroSecondaryCta: 'Каталогты қарау',
     heroStats: ['77+ мектеп', '5 аудан', '3 оқу тілі'],
     topTitle: 'Танымал мектептер',
-    tabs: { all: 'Барлығы', public: 'Мемлекеттік', private: 'Жеке' },
+    tabs: { all: 'Все', public: 'Государственные', private: 'Частные', international: 'Международные' },
     toolsTitle: 'Пайдалы құралдар',
     tools: [['map', 'Мектептер картасы', '/map'], ['compare', 'Мектептерді салыстыру', '/compare'], ['star', 'Мектеп рейтингі', '/rankings'], ['heart', 'Таңдаулылар', '/favorites']],
     howTitle: 'Бұл қалай жұмыс істейді',
@@ -113,7 +113,7 @@ const homepageTranslations = {
     heroSecondaryCta: 'View catalog',
     heroStats: ['77+ schools', '5 districts', '3 instruction languages'],
     topTitle: 'Popular schools',
-    tabs: { all: 'All', public: 'Public', private: 'Private' },
+    tabs: { all: 'Все', public: 'Государственные', private: 'Частные', international: 'Международные' },
     toolsTitle: 'Helpful tools',
     tools: [['map', 'School map', '/map'], ['compare', 'School comparison', '/compare'], ['star', 'School rankings', '/rankings'], ['heart', 'Favorites', '/favorites']],
     howTitle: 'How it works',
@@ -189,12 +189,11 @@ function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStat
       </div>
       <div className="top-school-card__body">
         <h3>{localizedName}</h3>
-        <dl>
-          <div><dt>{t.district}</dt><dd>{localizedDistrict}</dd></div>
-          <div><dt>{t.rating}</dt><dd>{rating}</dd></div>
-          <div><dt>{t.tuition}</dt><dd>{tuition}</dd></div>
-        </dl>
-        <a className="button-link" href={withLanguage(`/schools/${school.slug ?? school.id}`, currentLanguage)}>{t.details}</a>
+        <p className="top-school-card__district">{localizedDistrict}</p>
+        <div className="top-school-card__meta">
+          <span className="top-school-card__rating" aria-label={`${t.rating}: ${rating}`}>⭐ {rating}</span>
+          <span className="top-school-card__tuition">{tuition}</span>
+        </div>
       </div>
     </article>
   );
@@ -214,6 +213,10 @@ function HeroVisual() {
           onError={() => setImageFailed(true)}
         />
       )}
+      <div className="hero__badge">
+        <span className="hero__badge-icon">✓</span>
+        <span><strong>Актуальные данные 2025</strong><em>Мы обновляем информацию о школах</em></span>
+      </div>
     </div>
   );
 }
@@ -288,7 +291,8 @@ export default function Home() {
   const popularSchoolGroups = useMemo(() => ({
     all: sortSchools(schools, initialSort, currentLanguage, reviewsBySchool).slice(0, 5),
     public: sortSchools(schools.filter((school) => school.type === 'public'), initialSort, currentLanguage, reviewsBySchool).slice(0, 5),
-    private: sortSchools(schools.filter((school) => school.type === 'private'), initialSort, currentLanguage, reviewsBySchool).slice(0, 5)
+    private: sortSchools(schools.filter((school) => school.type === 'private'), initialSort, currentLanguage, reviewsBySchool).slice(0, 5),
+    international: sortSchools(schools.filter((school) => school.type === 'international'), initialSort, currentLanguage, reviewsBySchool).slice(0, 5)
   }), [currentLanguage, reviewsBySchool]);
 
   const updateLanguage = (language) => {
