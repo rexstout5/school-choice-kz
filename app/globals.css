@@ -4266,6 +4266,42 @@ main {
   margin-bottom: 24px;
 }
 
+.readiness-drawing-analysis {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  margin-bottom: 24px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(13, 155, 165, 0.1), transparent 28%),
+    #ffffff;
+}
+
+.readiness-drawing-analysis h2,
+.readiness-drawing-analysis p {
+  margin: 0;
+}
+
+.readiness-drawing-analysis__content,
+.readiness-drawing-analysis__action {
+  display: grid;
+  gap: 12px;
+}
+
+.readiness-drawing-analysis__content p:not(.hero__kicker),
+.readiness-drawing-analysis__action p {
+  color: var(--brand-muted);
+  font-weight: 800;
+}
+
+.readiness-drawing-analysis__action {
+  justify-items: end;
+  max-width: 320px;
+}
+
+.readiness-upload-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .readiness-question-meta,
 .readiness-navigation,
 .readiness-domain-score div:first-child {
@@ -4405,8 +4441,14 @@ main {
 @media (max-width: 920px) {
   .readiness-options--scale,
   .readiness-results--assessment,
+  .readiness-drawing-analysis,
   .readiness-support-grid {
     grid-template-columns: 1fr;
+  }
+
+  .readiness-drawing-analysis__action {
+    justify-items: start;
+    max-width: none;
   }
 }
 
@@ -4419,6 +4461,7 @@ main {
   }
 
   .readiness-navigation .hero__cta,
+  .readiness-upload-button,
   .readiness-nav-button,
   .readiness-retake {
     width: 100%;
