@@ -7,9 +7,9 @@ export const seoFooterLinks = [
 ];
 
 const sharedCta = {
-  ru: 'Пройти короткий квиз',
-  kk: 'Қысқа квизден өту',
-  en: 'Take the short quiz'
+  ru: 'Открыть каталог школ',
+  kk: 'Мектептер каталогын ашу',
+  en: 'Open the school catalog'
 };
 
 export const seoPages = {

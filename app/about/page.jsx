@@ -18,7 +18,7 @@ const translations = {
     kicker: 'О проекте',
     title: `${brand.name} помогает семьям выбирать школы Астаны`,
     description: 'Мы собираем данные о школах, форматах обучения, рейтингах и отзывах в одном понятном каталоге, чтобы родителям было проще сравнить варианты.',
-    points: ['структурированный каталог школ', 'карта и быстрые фильтры', 'подбор школы и рейтинги']
+    points: ['структурированный каталог школ', 'сравнение школ', 'готовность к школе']
   },
   kz: {
     pageTitle: 'Жоба туралы',
@@ -26,7 +26,7 @@ const translations = {
     kicker: 'Жоба туралы',
     title: `${brand.name} отбасыларға Астана мектептерін таңдауға көмектеседі`,
     description: 'Ата-аналар нұсқаларды оңай салыстыруы үшін мектептер, оқу форматтары, рейтингтер және пікірлер туралы деректерді бір каталогқа жинаймыз.',
-    points: ['құрылымдалған мектеп каталогы', 'карта және жылдам сүзгілер', 'мектеп таңдау және рейтингтер']
+    points: ['құрылымдалған мектеп каталогы', 'мектептерді салыстыру', 'мектепке дайындық']
   },
   en: {
     pageTitle: 'About',
@@ -34,7 +34,7 @@ const translations = {
     kicker: 'About',
     title: `${brand.name} helps families choose schools in Astana`,
     description: 'We bring school data, learning formats, ratings, and reviews into one clear catalog so parents can compare options faster.',
-    points: ['structured school catalog', 'map and quick filters', 'school matcher and rankings']
+    points: ['structured school catalog', 'school comparison', 'school readiness']
   }
 };
 

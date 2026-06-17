@@ -56,7 +56,7 @@ const translations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Выберите язык интерфейса',
     favoritesLink: 'Избранное',
-    mapLink: 'Карта',
+    readinessLink: 'Готовность к школе',
     addSchoolLink: 'Добавить школу',
     catalogLink: 'Каталог',
     footerSeoLabel: 'Полезные страницы',
@@ -67,12 +67,12 @@ const translations = {
     heroKicker: brand.name,
     heroTitle: 'Найдите школу, которая подходит вашей семье',
     heroDescription:
-      'Изучайте проверенные данные, фильтруйте по ключевым критериям и формируйте экспертный шорт-лист школ Астаны.',
-    heroCta: 'Пройти квиз подбора',
+      'Изучайте проверенные данные, фильтруйте по ключевым критериям и сравнивайте школы Астаны.',
+    heroCta: 'Готовность к школе',
     astanaSchools: 'школ в каталоге',
     heroSecondaryCta: 'Смотреть каталог',
-    heroNote: 'Персональный маршрут выбора: квиз → шорт-лист → сравнение.',
-    assistantSteps: ['Укажите район и бюджет', 'Получите подходящие варианты', 'Сравните и сохраните школы'],
+    heroNote: 'Персональный маршрут выбора: каталог → сравнение → готовность к школе.',
+    assistantSteps: ['Выберите фильтры каталога', 'Сравните школы', 'Сохраните избранное'],
     stats: {
       title: 'Каталог, созданный для решения родителей',
       description: 'Мы показываем меньше шума и больше сигналов: район, язык, стоимость, отзывы и действия для следующего шага.',
@@ -175,7 +175,7 @@ const translations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
     favoritesLink: 'Таңдаулылар',
-    mapLink: 'Карта',
+    readinessLink: 'Мектепке дайындық',
     addSchoolLink: 'Мектеп қосу',
     catalogLink: 'Каталог',
     footerSeoLabel: 'Пайдалы беттер',
@@ -186,12 +186,12 @@ const translations = {
     heroKicker: brand.name,
     heroTitle: 'Отбасыңызға сай мектепті табыңыз',
     heroDescription:
-      'Тексерілген деректерді қарап, негізгі өлшемдер бойынша сүзгіден өткізіп, Астана мектептерінің сараптамалық қысқа тізімін жасаңыз.',
-    heroCta: 'Таңдау квизінен өту',
+      'Тексерілген деректерді қарап, негізгі өлшемдер бойынша сүзгіден өткізіп, Астана мектептерін салыстырыңыз.',
+    heroCta: 'Мектепке дайындық',
     astanaSchools: 'каталогтағы мектеп',
     heroSecondaryCta: 'Каталогты қарау',
-    heroNote: 'Таңдаудың жеке маршруты: квиз → қысқа тізім → салыстыру.',
-    assistantSteps: ['Аудан мен бюджетті белгілеңіз', 'Сәйкес нұсқаларды алыңыз', 'Мектептерді салыстырып сақтаңыз'],
+    heroNote: 'Таңдаудың жеке маршруты: каталог → салыстыру → мектепке дайындық.',
+    assistantSteps: ['Каталог сүзгілерін таңдаңыз', 'Мектептерді салыстырыңыз', 'Таңдаулыға сақтаңыз'],
     stats: {
       title: 'Ата-ананың шешіміне арналған каталог',
       description: 'Біз артық ақпаратты азайтып, маңыздысын көрсетеміз: аудан, тіл, баға, пікірлер және келесі қадамдар.',
@@ -294,7 +294,7 @@ const translations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Choose interface language',
     favoritesLink: 'Favorites',
-    mapLink: 'Map',
+    readinessLink: 'School readiness',
     addSchoolLink: 'Add school',
     favorite: {
       add: 'Add to favorites',
@@ -303,12 +303,12 @@ const translations = {
     heroKicker: brand.name,
     heroTitle: 'Find the school that fits your family',
     heroDescription:
-      'Review verified data, filter by key criteria, and build an expert shortlist of Astana schools.',
-    heroCta: 'Take the recommendation quiz',
-    astanaSchools: 'schools in the guide',
+      'Review verified data, filter by key criteria, and compare Astana schools.',
+    heroCta: 'School readiness',
+    astanaSchools: 'schools in the catalog',
     heroSecondaryCta: 'Browse catalog',
-    heroNote: 'A guided path for parents: quiz → shortlist → comparison.',
-    assistantSteps: ['Share district and budget', 'Get focused school options', 'Compare and save choices'],
+    heroNote: 'A guided path for parents: catalog → comparison → school readiness.',
+    assistantSteps: ['Choose catalog filters', 'Compare schools', 'Save favorites'],
     stats: {
       title: 'A catalog designed around parent decisions',
       description: 'We reduce noise and surface the signals families need: location, language, tuition, reviews, and clear next steps.',
@@ -951,7 +951,7 @@ export default function CatalogPage() {
           {t.pageTitle}
         </a>
         <div className="site-header__actions">
-          <a className="site-header__link" href={`/map?lang=${currentLanguage}`}>{t.mapLink}</a>
+          <a className="site-header__link" href={`/school-readiness?lang=${currentLanguage}`}>{t.readinessLink}</a>
           <a className="site-header__link" href={`/contribute?lang=${currentLanguage}`}>{t.addSchoolLink}</a>
           <a className="site-header__link" href={`/favorites?lang=${currentLanguage}`}>♡ {t.favoritesLink} ({favoriteCount})</a>
           <LanguageSwitcher currentLanguage={currentLanguage} onLanguageChange={updateLanguage} t={t} />
@@ -964,7 +964,7 @@ export default function CatalogPage() {
           <h1>{t.heroTitle}</h1>
           <p>{t.heroDescription}</p>
           <div className="hero__actions">
-            <a className="hero__cta" href={`/quiz?lang=${currentLanguage}`}>{t.heroCta}</a>
+            <a className="hero__cta" href={`/school-readiness?lang=${currentLanguage}`}>{t.heroCta}</a>
             <a className="hero__cta hero__cta--secondary" href="#catalog">{t.heroSecondaryCta}</a>
           </div>
           <p className="hero__note">{t.heroNote}</p>

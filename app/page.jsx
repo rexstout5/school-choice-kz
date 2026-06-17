@@ -24,27 +24,26 @@ const homepageTranslations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Выберите язык интерфейса',
     catalogLink: 'Каталог школ',
-    mapLink: 'Карта',
-    quizLink: 'Подбор школы',
+    readinessLink: 'Готовность к школе',
     addSchoolLink: 'Добавить школу',
     aboutLink: 'О проекте',
     contactsLink: 'Контакты',
     favoritesLink: 'Избранное',
     footerLabel: 'Навигация по сайту',
     heroTitle: 'Найдите школу, которая подходит вашей семье',
-    heroDescription: 'Изучайте проверенные данные, фильтруйте по ключевым критериям и формируйте экспертный шорт-лист школ Астаны.',
-    heroCta: 'Пройти квиз подбора',
-    heroSecondaryCta: 'Смотреть каталог',
-    heroNote: 'Персональный маршрут выбора: квиз → шорт-лист → сравнение.',
+    heroDescription: 'Изучайте каталог школ, сравнивайте ключевые критерии и проверяйте готовность ребенка к школе.',
+    heroCta: 'Смотреть каталог',
+    heroSecondaryCta: 'Проверить готовность',
+    heroNote: 'Осознанный выбор: каталог → сравнение школ → готовность к школе.',
     astanaSchools: 'школ в каталоге',
-    assistantSteps: ['Укажите район и бюджет', 'Получите подходящие варианты', 'Сравните и сохраните школы'],
+    assistantSteps: ['Откройте каталог школ', 'Сравните важные критерии', 'Проверьте готовность к школе'],
     topTitle: 'Популярные школы',
     topSubtitle: 'Начните с нескольких проверенных вариантов и переходите в каталог для полного списка.',
     tabs: { public: 'Государственные', private: 'Частные' },
     emptyCategory: 'Пока нет школ в этой категории.',
     catalogButton: 'Смотреть каталог',
     toolsTitle: 'Полезные инструменты',
-    tools: [['catalog', 'Каталог школ', '/catalog'], ['map', 'Карта школ', '/map'], ['quiz', 'Подбор школы', '/quiz'], ['readiness', 'Готовность к школе', '/school-readiness'], ['heart', 'Избранное', '/favorites']],
+    tools: [['catalog', 'Каталог школ', '/catalog'], ['readiness', 'Готовность к школе', '/school-readiness'], ['heart', 'Избранное', '/favorites']],
     district: 'Район',
     rating: 'Рейтинг',
     tuition: 'Стоимость',
@@ -56,7 +55,7 @@ const homepageTranslations = {
     language: 'Язык',
     footerDescription: 'Экспертный каталог школ Астаны для осознанного выбора семьи.',
     footerColumns: [
-      ['Навигация', [['Каталог школ', '/catalog'], ['Карта школ', '/map'], ['Подбор школы', '/quiz']]],
+      ['Навигация', [['Каталог школ', '/catalog'], ['Готовность к школе', '/school-readiness'], ['Избранное', '/favorites']]],
       ['Для родителей', [['Как выбрать школу', '/how-to-choose-school'], ['Вопросы и ответы', '/school-readiness'], ['Полезные статьи', '/how-to-choose-school']]],
       ['О проекте', [['О нас', '/about'], ['Добавить школу', '/contribute'], ['Контакты', '/contacts']]]
     ]
@@ -65,27 +64,26 @@ const homepageTranslations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
     catalogLink: 'Мектептер каталогы',
-    mapLink: 'Карта',
-    quizLink: 'Мектеп таңдау',
+    readinessLink: 'Мектепке дайындық',
     addSchoolLink: 'Мектеп қосу',
     aboutLink: 'Жоба туралы',
     contactsLink: 'Байланыс',
     favoritesLink: 'Таңдаулылар',
     footerLabel: 'Сайт навигациясы',
     heroTitle: 'Отбасыңызға сай келетін мектепті табыңыз',
-    heroDescription: 'Тексерілген деректерді зерттеп, негізгі критерийлер бойынша сүзгілеп, Астана мектептерінің сараптамалық қысқа тізімін жасаңыз.',
-    heroCta: 'Таңдау квизінен өту',
-    heroSecondaryCta: 'Каталогты қарау',
-    heroNote: 'Жеке таңдау маршруты: квиз → қысқа тізім → салыстыру.',
+    heroDescription: 'Мектептер каталогын зерттеп, маңызды критерийлерді салыстырып, баланың мектепке дайындығын тексеріңіз.',
+    heroCta: 'Каталогты қарау',
+    heroSecondaryCta: 'Дайындықты тексеру',
+    heroNote: 'Саналы таңдау: каталог → мектептерді салыстыру → мектепке дайындық.',
     astanaSchools: 'мектеп каталогта',
-    assistantSteps: ['Аудан мен бюджетті көрсетіңіз', 'Сәйкес нұсқаларды алыңыз', 'Мектептерді салыстырып сақтаңыз'],
+    assistantSteps: ['Мектептер каталогын ашыңыз', 'Маңызды критерийлерді салыстырыңыз', 'Мектепке дайындықты тексеріңіз'],
     topTitle: 'Танымал мектептер',
     topSubtitle: 'Бірнеше тексерілген нұсқадан бастап, толық тізім үшін каталогқа өтіңіз.',
     tabs: { public: 'Мемлекеттік', private: 'Жеке' },
     emptyCategory: 'Бұл санатта әзірге мектеп жоқ.',
     catalogButton: 'Каталогты қарау',
     toolsTitle: 'Пайдалы құралдар',
-    tools: [['catalog', 'Мектептер каталогы', '/catalog'], ['map', 'Мектептер картасы', '/map'], ['quiz', 'Мектеп таңдау', '/quiz'], ['readiness', 'Мектепке дайындық', '/school-readiness'], ['heart', 'Таңдаулылар', '/favorites']],
+    tools: [['catalog', 'Мектептер каталогы', '/catalog'], ['readiness', 'Мектепке дайындық', '/school-readiness'], ['heart', 'Таңдаулылар', '/favorites']],
     district: 'Аудан',
     rating: 'Рейтинг',
     tuition: 'Құны',
@@ -97,7 +95,7 @@ const homepageTranslations = {
     language: 'Тіл',
     footerDescription: 'Отбасы саналы таңдау жасайтын Астана мектептерінің сараптамалық каталогы.',
     footerColumns: [
-      ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектептер картасы', '/map'], ['Мектеп таңдау', '/quiz']]],
+      ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектепке дайындық', '/school-readiness'], ['Таңдаулылар', '/favorites']]],
       ['Ата-аналарға', [['Мектепті қалай таңдау керек', '/how-to-choose-school'], ['Сұрақтар мен жауаптар', '/school-readiness'], ['Пайдалы мақалалар', '/how-to-choose-school']]],
       ['Жоба туралы', [['Біз туралы', '/about'], ['Мектеп қосу', '/contribute'], ['Байланыс', '/contacts']]]
     ]
@@ -106,27 +104,26 @@ const homepageTranslations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Choose interface language',
     catalogLink: 'Catalog',
-    mapLink: 'Map',
-    quizLink: 'School matcher',
+    readinessLink: 'School readiness',
     addSchoolLink: 'Add school',
     aboutLink: 'About',
     contactsLink: 'Contacts',
     favoritesLink: 'Favorites',
     footerLabel: 'Site navigation',
     heroTitle: 'Find the school that fits your family',
-    heroDescription: 'Explore verified data, filter by key criteria, and build an expert shortlist of Astana schools.',
-    heroCta: 'Take the matching quiz',
-    heroSecondaryCta: 'View catalog',
-    heroNote: 'Your personal route: quiz → shortlist → comparison.',
+    heroDescription: 'Explore the school catalog, compare key criteria, and check school readiness in one focused flow.',
+    heroCta: 'View catalog',
+    heroSecondaryCta: 'Check readiness',
+    heroNote: 'A focused path: catalog → school comparison → school readiness.',
     astanaSchools: 'schools in the catalog',
-    assistantSteps: ['Set district and budget', 'Get suitable options', 'Compare and save schools'],
+    assistantSteps: ['Open the school catalog', 'Compare important criteria', 'Check school readiness'],
     topTitle: 'Popular schools',
     topSubtitle: 'Start with a few trusted options, then open the catalog for the full list.',
     tabs: { public: 'Public', private: 'Private' },
     emptyCategory: 'There are no schools in this category yet.',
     catalogButton: 'View catalog',
     toolsTitle: 'Helpful tools',
-    tools: [['catalog', 'School catalog', '/catalog'], ['map', 'School map', '/map'], ['quiz', 'School matcher', '/quiz'], ['readiness', 'School readiness', '/school-readiness'], ['heart', 'Favorites', '/favorites']],
+    tools: [['catalog', 'School catalog', '/catalog'], ['readiness', 'School readiness', '/school-readiness'], ['heart', 'Favorites', '/favorites']],
     district: 'District',
     rating: 'Rating',
     tuition: 'Tuition',
@@ -138,7 +135,7 @@ const homepageTranslations = {
     language: 'Language',
     footerDescription: 'An expert Astana school catalog for informed family decisions.',
     footerColumns: [
-      ['Navigation', [['School catalog', '/catalog'], ['School map', '/map'], ['School matcher', '/quiz']]],
+      ['Navigation', [['School catalog', '/catalog'], ['School readiness', '/school-readiness'], ['Favorites', '/favorites']]],
       ['For parents', [['How to choose a school', '/how-to-choose-school'], ['Questions and answers', '/school-readiness'], ['Helpful articles', '/how-to-choose-school']]],
       ['About', [['About us', '/about'], ['Add a school', '/contribute'], ['Contacts', '/contacts']]]
     ]
@@ -358,8 +355,7 @@ export default function Home() {
         <a className="site-header__brand" href="#top" aria-label={t.pageTitle}>{brand.name}</a>
         <nav className="site-header__nav" aria-label={t.footerLabel}>
           <a className="site-header__link" href={withLanguage('/catalog', currentLanguage)}>{t.catalogLink}</a>
-          <a className="site-header__link" href={withLanguage('/map', currentLanguage)}>{t.mapLink}</a>
-          <a className="site-header__link" href={withLanguage('/quiz', currentLanguage)}>{t.quizLink}</a>
+          <a className="site-header__link" href={withLanguage('/school-readiness', currentLanguage)}>{t.readinessLink}</a>
           <a className="site-header__link" href={withLanguage('/about', currentLanguage)}>{t.aboutLink}</a>
           <a className="site-header__link" href={withLanguage('/contacts', currentLanguage)}>{t.contactsLink}</a>
         </nav>
@@ -374,8 +370,8 @@ export default function Home() {
           <h1>{t.heroTitle}</h1>
           <p>{t.heroDescription}</p>
           <div className="hero__actions">
-            <a className="hero__cta" href={withLanguage('/quiz', currentLanguage)}>{t.heroCta}</a>
-            <a className="hero__cta hero__cta--secondary" href={withLanguage('/catalog', currentLanguage)}>{t.heroSecondaryCta}</a>
+            <a className="hero__cta" href={withLanguage('/catalog', currentLanguage)}>{t.heroCta}</a>
+            <a className="hero__cta hero__cta--secondary" href={withLanguage('/school-readiness', currentLanguage)}>{t.heroSecondaryCta}</a>
           </div>
           <p className="hero__note">{t.heroNote}</p>
         </div>
