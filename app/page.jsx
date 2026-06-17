@@ -29,6 +29,7 @@ const homepageTranslations = {
     rankingsLink: 'Рейтинг школ',
     addSchoolLink: 'Добавить школу',
     aboutLink: 'О проекте',
+    contactsLink: 'Контакты',
     favoritesLink: 'Избранное',
     footerLabel: 'Навигация по сайту',
     heroTitle: 'Подберите школу для ребенка в Астане',
@@ -53,7 +54,7 @@ const homepageTranslations = {
     footerColumns: [
       ['Навигация', [['Каталог школ', '/catalog'], ['Карта школ', '/map'], ['Подбор школы', '/quiz'], ['Рейтинг школ', '/rankings']]],
       ['Для родителей', [['Как выбрать школу', '/how-to-choose-school'], ['Вопросы и ответы', '/school-readiness'], ['Полезные статьи', '/how-to-choose-school']]],
-      ['О проекте', [['О нас', '/about'], ['Добавить школу', '/contribute'], ['Контакты', '/contribute']]]
+      ['О проекте', [['О нас', '/about'], ['Добавить школу', '/contribute'], ['Контакты', '/contacts']]]
     ]
   },
   kz: {
@@ -65,6 +66,7 @@ const homepageTranslations = {
     rankingsLink: 'Мектеп рейтингі',
     addSchoolLink: 'Мектеп қосу',
     aboutLink: 'Жоба туралы',
+    contactsLink: 'Байланыс',
     favoritesLink: 'Таңдаулылар',
     footerLabel: 'Сайт навигациясы',
     heroTitle: 'Астанада балаңызға мектеп таңдаңыз',
@@ -89,7 +91,7 @@ const homepageTranslations = {
     footerColumns: [
       ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектептер картасы', '/map'], ['Мектеп таңдау', '/quiz'], ['Мектеп рейтингі', '/rankings']]],
       ['Ата-аналарға', [['Мектепті қалай таңдау керек', '/how-to-choose-school'], ['Сұрақтар мен жауаптар', '/school-readiness'], ['Пайдалы мақалалар', '/how-to-choose-school']]],
-      ['Жоба туралы', [['Біз туралы', '/about'], ['Мектеп қосу', '/contribute'], ['Байланыс', '/contribute']]]
+      ['Жоба туралы', [['Біз туралы', '/about'], ['Мектеп қосу', '/contribute'], ['Байланыс', '/contacts']]]
     ]
   },
   en: {
@@ -101,6 +103,7 @@ const homepageTranslations = {
     rankingsLink: 'School rankings',
     addSchoolLink: 'Add school',
     aboutLink: 'About',
+    contactsLink: 'Contacts',
     favoritesLink: 'Favorites',
     footerLabel: 'Site navigation',
     heroTitle: 'Find a school for your child in Astana',
@@ -125,7 +128,7 @@ const homepageTranslations = {
     footerColumns: [
       ['Navigation', [['School catalog', '/catalog'], ['School map', '/map'], ['School matcher', '/quiz'], ['School rankings', '/rankings']]],
       ['For parents', [['How to choose a school', '/how-to-choose-school'], ['Questions and answers', '/school-readiness'], ['Helpful articles', '/how-to-choose-school']]],
-      ['About', [['About us', '/about'], ['Add a school', '/contribute'], ['Contacts', '/contribute']]]
+      ['About', [['About us', '/about'], ['Add a school', '/contribute'], ['Contacts', '/contacts']]]
     ]
   }
 };
@@ -153,6 +156,27 @@ function ToolIcon({ name }) {
     return <svg {...common}><path d="m16 4 3.5 7.1 7.8 1.1-5.6 5.5 1.3 7.7-7-3.7-7 3.7 1.3-7.7-5.6-5.5 7.8-1.1L16 4Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>;
   }
   return <svg {...common}><path d="M16 26s-10-5.8-10-14a5.5 5.5 0 0 1 10-3.1A5.5 5.5 0 0 1 26 12c0 8.2-10 14-10 14Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>;
+}
+
+function SocialIcon({ name }) {
+  const common = { width: '20', height: '20', viewBox: '0 0 24 24', fill: 'none', 'aria-hidden': 'true' };
+  if (name === 'Instagram') {
+    return <svg {...common}><rect x="4" y="4" width="16" height="16" rx="5" stroke="currentColor" strokeWidth="1.8"/><circle cx="12" cy="12" r="3.4" stroke="currentColor" strokeWidth="1.8"/><path d="M16.8 7.2h.01" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"/></svg>;
+  }
+  if (name === 'Telegram') {
+    return <svg {...common}><path d="M20 5 4 11.7l5.8 2.1M20 5l-3 14-7.2-5.2M20 5 9.8 13.8M9.8 13.8 9.5 19l3-3.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+  }
+  return <svg {...common}><path d="M6.4 18.1A8 8 0 1 1 9 19.5L5 20.5l1.4-2.4Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/><path d="M9.4 8.8c.2 3 2.4 5.1 5.5 5.8l1-1.6-1.8-1-1 1c-1.2-.5-2-1.3-2.5-2.5l1-1-.9-1.8-1.3 1.1Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+}
+
+function SocialLinks() {
+  return (
+    <div className="social-links">
+      <a href="#" aria-label="Instagram"><SocialIcon name="Instagram" /></a>
+      <a href="#" aria-label="Telegram"><SocialIcon name="Telegram" /></a>
+      <a href="#" aria-label="WhatsApp"><SocialIcon name="WhatsApp" /></a>
+    </div>
+  );
 }
 
 function LanguageSwitcher({ currentLanguage, onLanguageChange, t }) {
@@ -322,6 +346,7 @@ export default function Home() {
           <a className="site-header__link" href={withLanguage('/quiz', currentLanguage)}>{t.quizLink}</a>
           <a className="site-header__link" href={withLanguage('/rankings', currentLanguage)}>{t.rankingsLink}</a>
           <a className="site-header__link" href={withLanguage('/about', currentLanguage)}>{t.aboutLink}</a>
+          <a className="site-header__link" href={withLanguage('/contacts', currentLanguage)}>{t.contactsLink}</a>
         </nav>
         <div className="site-header__actions">
           <a className="site-header__link site-header__link--favorite" href={withLanguage('/favorites', currentLanguage)}>♡ {t.favoritesLink} ({favoriteCount})</a>
@@ -357,7 +382,7 @@ export default function Home() {
 
 
       <footer className="site-footer site-footer--simple" id="footer">
-        <div className="site-footer__brand"><strong>{brand.name}</strong><p>{t.footerDescription}</p></div>
+        <div className="site-footer__brand"><strong>{brand.name}</strong><p>{t.footerDescription}</p><SocialLinks /></div>
         {t.footerColumns.map(([title, links]) => (
           <nav className="footer-links" key={title} aria-label={title}>
             <h3>{title}</h3>
