@@ -137,6 +137,7 @@ const homepageTranslations = {
 };
 
 const getSchoolCardImage = (school) => getSchoolCoverImage(school);
+const heroImagePath = '/images/hero/astana-hero.jpg';
 
 function withLanguage(href, language) {
   return `${href}${href.includes('?') ? '&' : '?'}lang=${language}`;
@@ -196,6 +197,24 @@ function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStat
         <a className="button-link" href={withLanguage(`/schools/${school.slug ?? school.id}`, currentLanguage)}>{t.details}</a>
       </div>
     </article>
+  );
+}
+
+function HeroVisual() {
+  const [imageFailed, setImageFailed] = useState(false);
+
+  return (
+    <div className="hero__visual" aria-hidden="true">
+      {!imageFailed && (
+        <img
+          src={heroImagePath}
+          alt=""
+          loading="eager"
+          decoding="async"
+          onError={() => setImageFailed(true)}
+        />
+      )}
+    </div>
   );
 }
 
@@ -308,7 +327,7 @@ export default function Home() {
             <a className="hero__cta hero__cta--secondary" href={withLanguage('/catalog', currentLanguage)}>{t.heroSecondaryCta}</a>
           </div>
         </div>
-        <div className="hero__visual" aria-hidden="true"><img src="/images/hero/astana-schools.jpg" alt="" loading="eager" decoding="async" /></div>
+        <HeroVisual />
         <div className="hero-stat-grid" aria-label={t.heroStats.join(', ')}>
           {t.heroStats.map((stat) => <strong key={stat}>{stat}</strong>)}
         </div>
