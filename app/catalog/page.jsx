@@ -57,7 +57,6 @@ const translations = {
     languageSwitcherLabel: 'Выберите язык интерфейса',
     favoritesLink: 'Избранное',
     mapLink: 'Карта',
-    rankingsLink: 'Рейтинги',
     addSchoolLink: 'Добавить школу',
     catalogLink: 'Каталог',
     footerSeoLabel: 'Полезные страницы',
@@ -177,7 +176,6 @@ const translations = {
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
     favoritesLink: 'Таңдаулылар',
     mapLink: 'Карта',
-    rankingsLink: 'Рейтингтер',
     addSchoolLink: 'Мектеп қосу',
     catalogLink: 'Каталог',
     footerSeoLabel: 'Пайдалы беттер',
@@ -297,7 +295,6 @@ const translations = {
     languageSwitcherLabel: 'Choose interface language',
     favoritesLink: 'Favorites',
     mapLink: 'Map',
-    rankingsLink: 'Rankings',
     addSchoolLink: 'Add school',
     favorite: {
       add: 'Add to favorites',
@@ -955,7 +952,6 @@ export default function CatalogPage() {
         </a>
         <div className="site-header__actions">
           <a className="site-header__link" href={`/map?lang=${currentLanguage}`}>{t.mapLink}</a>
-          <a className="site-header__link" href={`/rankings?lang=${currentLanguage}`}>{t.rankingsLink}</a>
           <a className="site-header__link" href={`/contribute?lang=${currentLanguage}`}>{t.addSchoolLink}</a>
           <a className="site-header__link" href={`/favorites?lang=${currentLanguage}`}>♡ {t.favoritesLink} ({favoriteCount})</a>
           <LanguageSwitcher currentLanguage={currentLanguage} onLanguageChange={updateLanguage} t={t} />
@@ -1070,7 +1066,6 @@ export default function CatalogPage() {
         <p>{t.footer}</p>
         <nav className="footer-links" aria-label={t.footerSeoLabel}>
           <a href={`/contribute?lang=${currentLanguage}`}>{t.addSchoolLink}</a>
-          <a href={`/rankings?lang=${currentLanguage}`}>{t.rankingsLink}</a>
           {seoFooterLinks.map((link) => (
             <a key={link.href} href={`${link.href}?lang=${currentLanguage}`}>{link.label[currentLanguage]}</a>
           ))}

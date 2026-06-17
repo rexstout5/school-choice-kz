@@ -26,7 +26,6 @@ const homepageTranslations = {
     catalogLink: 'Каталог школ',
     mapLink: 'Карта',
     quizLink: 'Подбор школы',
-    rankingsLink: 'Рейтинг школ',
     addSchoolLink: 'Добавить школу',
     aboutLink: 'О проекте',
     contactsLink: 'Контакты',
@@ -40,9 +39,12 @@ const homepageTranslations = {
     astanaSchools: 'школ в каталоге',
     assistantSteps: ['Укажите район и бюджет', 'Получите подходящие варианты', 'Сравните и сохраните школы'],
     topTitle: 'Популярные школы',
-    tabs: { all: 'Все', public: 'Государственные', private: 'Частные', international: 'Международные' },
+    topSubtitle: 'Начните с нескольких проверенных вариантов и переходите в каталог для полного списка.',
+    tabs: { public: 'Государственные', private: 'Частные' },
+    emptyCategory: 'Пока нет школ в этой категории.',
+    catalogButton: 'Смотреть каталог',
     toolsTitle: 'Полезные инструменты',
-    tools: [['catalog', 'Каталог школ', '/catalog'], ['map', 'Карта школ', '/map'], ['quiz', 'Подбор школы', '/quiz'], ['star', 'Рейтинг школ', '/rankings']],
+    tools: [['catalog', 'Каталог школ', '/catalog'], ['map', 'Карта школ', '/map'], ['quiz', 'Подбор школы', '/quiz'], ['heart', 'Избранное', '/favorites']],
     district: 'Район',
     rating: 'Рейтинг',
     tuition: 'Стоимость',
@@ -54,7 +56,7 @@ const homepageTranslations = {
     language: 'Язык',
     footerDescription: 'Экспертный каталог школ Астаны для осознанного выбора семьи.',
     footerColumns: [
-      ['Навигация', [['Каталог школ', '/catalog'], ['Карта школ', '/map'], ['Подбор школы', '/quiz'], ['Рейтинг школ', '/rankings']]],
+      ['Навигация', [['Каталог школ', '/catalog'], ['Карта школ', '/map'], ['Подбор школы', '/quiz']]],
       ['Для родителей', [['Как выбрать школу', '/how-to-choose-school'], ['Вопросы и ответы', '/school-readiness'], ['Полезные статьи', '/how-to-choose-school']]],
       ['О проекте', [['О нас', '/about'], ['Добавить школу', '/contribute'], ['Контакты', '/contacts']]]
     ]
@@ -65,7 +67,6 @@ const homepageTranslations = {
     catalogLink: 'Мектептер каталогы',
     mapLink: 'Карта',
     quizLink: 'Мектеп таңдау',
-    rankingsLink: 'Мектеп рейтингі',
     addSchoolLink: 'Мектеп қосу',
     aboutLink: 'Жоба туралы',
     contactsLink: 'Байланыс',
@@ -79,9 +80,12 @@ const homepageTranslations = {
     astanaSchools: 'мектеп каталогта',
     assistantSteps: ['Аудан мен бюджетті көрсетіңіз', 'Сәйкес нұсқаларды алыңыз', 'Мектептерді салыстырып сақтаңыз'],
     topTitle: 'Танымал мектептер',
-    tabs: { all: 'Барлығы', public: 'Мемлекеттік', private: 'Жеке', international: 'Халықаралық' },
+    topSubtitle: 'Бірнеше тексерілген нұсқадан бастап, толық тізім үшін каталогқа өтіңіз.',
+    tabs: { public: 'Мемлекеттік', private: 'Жеке' },
+    emptyCategory: 'Бұл санатта әзірге мектеп жоқ.',
+    catalogButton: 'Каталогты қарау',
     toolsTitle: 'Пайдалы құралдар',
-    tools: [['catalog', 'Мектептер каталогы', '/catalog'], ['map', 'Мектептер картасы', '/map'], ['quiz', 'Мектеп таңдау', '/quiz'], ['star', 'Мектеп рейтингі', '/rankings']],
+    tools: [['catalog', 'Мектептер каталогы', '/catalog'], ['map', 'Мектептер картасы', '/map'], ['quiz', 'Мектеп таңдау', '/quiz'], ['heart', 'Таңдаулылар', '/favorites']],
     district: 'Аудан',
     rating: 'Рейтинг',
     tuition: 'Құны',
@@ -93,7 +97,7 @@ const homepageTranslations = {
     language: 'Тіл',
     footerDescription: 'Отбасы саналы таңдау жасайтын Астана мектептерінің сараптамалық каталогы.',
     footerColumns: [
-      ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектептер картасы', '/map'], ['Мектеп таңдау', '/quiz'], ['Мектеп рейтингі', '/rankings']]],
+      ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектептер картасы', '/map'], ['Мектеп таңдау', '/quiz']]],
       ['Ата-аналарға', [['Мектепті қалай таңдау керек', '/how-to-choose-school'], ['Сұрақтар мен жауаптар', '/school-readiness'], ['Пайдалы мақалалар', '/how-to-choose-school']]],
       ['Жоба туралы', [['Біз туралы', '/about'], ['Мектеп қосу', '/contribute'], ['Байланыс', '/contacts']]]
     ]
@@ -104,7 +108,6 @@ const homepageTranslations = {
     catalogLink: 'Catalog',
     mapLink: 'Map',
     quizLink: 'School matcher',
-    rankingsLink: 'School rankings',
     addSchoolLink: 'Add school',
     aboutLink: 'About',
     contactsLink: 'Contacts',
@@ -118,9 +121,12 @@ const homepageTranslations = {
     astanaSchools: 'schools in the catalog',
     assistantSteps: ['Set district and budget', 'Get suitable options', 'Compare and save schools'],
     topTitle: 'Popular schools',
-    tabs: { all: 'All', public: 'Public', private: 'Private', international: 'International' },
+    topSubtitle: 'Start with a few trusted options, then open the catalog for the full list.',
+    tabs: { public: 'Public', private: 'Private' },
+    emptyCategory: 'There are no schools in this category yet.',
+    catalogButton: 'View catalog',
     toolsTitle: 'Helpful tools',
-    tools: [['catalog', 'School catalog', '/catalog'], ['map', 'School map', '/map'], ['quiz', 'School matcher', '/quiz'], ['star', 'School rankings', '/rankings']],
+    tools: [['catalog', 'School catalog', '/catalog'], ['map', 'School map', '/map'], ['quiz', 'School matcher', '/quiz'], ['heart', 'Favorites', '/favorites']],
     district: 'District',
     rating: 'Rating',
     tuition: 'Tuition',
@@ -132,7 +138,7 @@ const homepageTranslations = {
     language: 'Language',
     footerDescription: 'An expert Astana school catalog for informed family decisions.',
     footerColumns: [
-      ['Navigation', [['School catalog', '/catalog'], ['School map', '/map'], ['School matcher', '/quiz'], ['School rankings', '/rankings']]],
+      ['Navigation', [['School catalog', '/catalog'], ['School map', '/map'], ['School matcher', '/quiz']]],
       ['For parents', [['How to choose a school', '/how-to-choose-school'], ['Questions and answers', '/school-readiness'], ['Helpful articles', '/how-to-choose-school']]],
       ['About', [['About us', '/about'], ['Add a school', '/contribute'], ['Contacts', '/contacts']]]
     ]
@@ -242,12 +248,16 @@ function HeroVisual({ t }) {
 }
 
 function PopularSchools({ groups, moneyFormatter, t, currentLanguage, reviewsBySchool }) {
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('public');
+  const activeSchools = groups[activeTab] ?? [];
 
   return (
     <section className="top-schools" aria-labelledby="top-schools-title">
       <div className="section-heading section-heading--split">
-        <h2 id="top-schools-title">{t.topTitle}</h2>
+        <div>
+          <h2 id="top-schools-title">{t.topTitle}</h2>
+          <p>{t.topSubtitle}</p>
+        </div>
         <div className="tabs" role="tablist" aria-label={t.topTitle}>
           {Object.keys(groups).map((type) => (
             <button key={type} type="button" role="tab" aria-selected={activeTab === type} className={activeTab === type ? 'tab tab--active' : 'tab'} onClick={() => setActiveTab(type)}>
@@ -256,11 +266,18 @@ function PopularSchools({ groups, moneyFormatter, t, currentLanguage, reviewsByS
           ))}
         </div>
       </div>
-      <div className="top-school-grid">
-        {groups[activeTab].map((school, index) => (
-          <HomeSchoolCard key={school.id} rank={index + 1} school={school} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} ratingStats={getSchoolRatingStats(school, getSchoolReviews(reviewsBySchool, school.id))} />
-        ))}
-      </div>
+      {activeSchools.length > 0 ? (
+        <div className="top-school-grid">
+          {activeSchools.map((school, index) => (
+            <HomeSchoolCard key={school.id} rank={index + 1} school={school} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} ratingStats={getSchoolRatingStats(school, getSchoolReviews(reviewsBySchool, school.id))} />
+          ))}
+        </div>
+      ) : (
+        <div className="empty-note top-schools__empty" role="status">
+          <p>{t.emptyCategory}</p>
+          <a className="hero__cta hero__cta--secondary" href={withLanguage('/catalog', currentLanguage)}>{t.catalogButton}</a>
+        </div>
+      )}
     </section>
   );
 }
@@ -308,12 +325,19 @@ export default function Home() {
     [currentLanguage]
   );
 
-  const popularSchoolGroups = useMemo(() => ({
-    all: sortSchools(schools, initialSort, currentLanguage, reviewsBySchool).slice(0, 5),
-    public: sortSchools(schools.filter((school) => school.type === 'public'), initialSort, currentLanguage, reviewsBySchool).slice(0, 5),
-    private: sortSchools(schools.filter((school) => school.type === 'private'), initialSort, currentLanguage, reviewsBySchool).slice(0, 5),
-    international: sortSchools(schools.filter((school) => school.type === 'international'), initialSort, currentLanguage, reviewsBySchool).slice(0, 5)
-  }), [currentLanguage, reviewsBySchool]);
+  const popularSchoolGroups = useMemo(() => {
+    const isInternationalSchool = (school) => {
+      const localizedSchoolType = typeof school.school_type === 'string' ? school.school_type : Object.values(school.school_type ?? {}).join(' ');
+      return school.type === 'international' || localizedSchoolType.toLowerCase().includes('international');
+    };
+    const isPublicSchool = (school) => (school.type === 'public' || school.type === 'specialized') && !isInternationalSchool(school);
+    const isPrivateSchool = (school) => school.type === 'private';
+
+    return {
+      public: sortSchools(schools.filter(isPublicSchool), initialSort, currentLanguage, reviewsBySchool).slice(0, 5),
+      private: sortSchools(schools.filter(isPrivateSchool), initialSort, currentLanguage, reviewsBySchool).slice(0, 5)
+    };
+  }, [currentLanguage, reviewsBySchool]);
 
   const updateLanguage = (language) => {
     setCurrentLanguage(language);
@@ -333,7 +357,6 @@ export default function Home() {
           <a className="site-header__link" href={withLanguage('/catalog', currentLanguage)}>{t.catalogLink}</a>
           <a className="site-header__link" href={withLanguage('/map', currentLanguage)}>{t.mapLink}</a>
           <a className="site-header__link" href={withLanguage('/quiz', currentLanguage)}>{t.quizLink}</a>
-          <a className="site-header__link" href={withLanguage('/rankings', currentLanguage)}>{t.rankingsLink}</a>
           <a className="site-header__link" href={withLanguage('/about', currentLanguage)}>{t.aboutLink}</a>
           <a className="site-header__link" href={withLanguage('/contacts', currentLanguage)}>{t.contactsLink}</a>
         </nav>

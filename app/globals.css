@@ -3925,3 +3925,16 @@ main {
     width: 100%;
   }
 }
+
+.top-schools__empty {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+  padding: 24px;
+}
+
+.top-schools__empty p {
+  margin: 0;
+  color: var(--brand-muted);
+  font-weight: 800;
+}
