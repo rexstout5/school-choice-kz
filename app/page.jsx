@@ -32,11 +32,13 @@ const homepageTranslations = {
     contactsLink: 'Контакты',
     favoritesLink: 'Избранное',
     footerLabel: 'Навигация по сайту',
-    heroTitle: 'Подберите школу для ребенка в Астане',
-    heroDescription: 'Используйте структурированные данные, рейтинги и фильтры, чтобы экспертно сравнить школы Астаны.',
-    heroCta: 'Начать подбор',
+    heroTitle: 'Найдите школу, которая подходит вашей семье',
+    heroDescription: 'Изучайте проверенные данные, фильтруйте по ключевым критериям и формируйте экспертный шорт-лист школ Астаны.',
+    heroCta: 'Пройти квиз подбора',
     heroSecondaryCta: 'Смотреть каталог',
-    heroStats: ['77+ школ', '5 районов', '3 языка обучения'],
+    heroNote: 'Персональный маршрут выбора: квиз → шорт-лист → сравнение.',
+    astanaSchools: 'школ в каталоге',
+    assistantSteps: ['Укажите район и бюджет', 'Получите подходящие варианты', 'Сравните и сохраните школы'],
     topTitle: 'Популярные школы',
     tabs: { all: 'Все', public: 'Государственные', private: 'Частные', international: 'Международные' },
     toolsTitle: 'Полезные инструменты',
@@ -69,13 +71,15 @@ const homepageTranslations = {
     contactsLink: 'Байланыс',
     favoritesLink: 'Таңдаулылар',
     footerLabel: 'Сайт навигациясы',
-    heroTitle: 'Астанада балаңызға мектеп таңдаңыз',
-    heroDescription: 'Астана мектептерін құрылымдалған дерек, рейтинг және сүзгілер арқылы сараптамалық салыстырыңыз.',
-    heroCta: 'Таңдауды бастау',
+    heroTitle: 'Отбасыңызға сай келетін мектепті табыңыз',
+    heroDescription: 'Тексерілген деректерді зерттеп, негізгі критерийлер бойынша сүзгілеп, Астана мектептерінің сараптамалық қысқа тізімін жасаңыз.',
+    heroCta: 'Таңдау квизінен өту',
     heroSecondaryCta: 'Каталогты қарау',
-    heroStats: ['77+ мектеп', '5 аудан', '3 оқу тілі'],
+    heroNote: 'Жеке таңдау маршруты: квиз → қысқа тізім → салыстыру.',
+    astanaSchools: 'мектеп каталогта',
+    assistantSteps: ['Аудан мен бюджетті көрсетіңіз', 'Сәйкес нұсқаларды алыңыз', 'Мектептерді салыстырып сақтаңыз'],
     topTitle: 'Танымал мектептер',
-    tabs: { all: 'Все', public: 'Государственные', private: 'Частные', international: 'Международные' },
+    tabs: { all: 'Барлығы', public: 'Мемлекеттік', private: 'Жеке', international: 'Халықаралық' },
     toolsTitle: 'Пайдалы құралдар',
     tools: [['catalog', 'Мектептер каталогы', '/catalog'], ['map', 'Мектептер картасы', '/map'], ['quiz', 'Мектеп таңдау', '/quiz'], ['star', 'Мектеп рейтингі', '/rankings']],
     district: 'Аудан',
@@ -106,13 +110,15 @@ const homepageTranslations = {
     contactsLink: 'Contacts',
     favoritesLink: 'Favorites',
     footerLabel: 'Site navigation',
-    heroTitle: 'Find a school for your child in Astana',
-    heroDescription: 'Use structured data, ratings, and filters to compare Astana schools with expert context.',
-    heroCta: 'Start matching',
+    heroTitle: 'Find the school that fits your family',
+    heroDescription: 'Explore verified data, filter by key criteria, and build an expert shortlist of Astana schools.',
+    heroCta: 'Take the matching quiz',
     heroSecondaryCta: 'View catalog',
-    heroStats: ['77+ schools', '5 districts', '3 instruction languages'],
+    heroNote: 'Your personal route: quiz → shortlist → comparison.',
+    astanaSchools: 'schools in the catalog',
+    assistantSteps: ['Set district and budget', 'Get suitable options', 'Compare and save schools'],
     topTitle: 'Popular schools',
-    tabs: { all: 'Все', public: 'Государственные', private: 'Частные', international: 'Международные' },
+    tabs: { all: 'All', public: 'Public', private: 'Private', international: 'International' },
     toolsTitle: 'Helpful tools',
     tools: [['catalog', 'School catalog', '/catalog'], ['map', 'School map', '/map'], ['quiz', 'School matcher', '/quiz'], ['star', 'School rankings', '/rankings']],
     district: 'District',
@@ -134,7 +140,6 @@ const homepageTranslations = {
 };
 
 const getSchoolCardImage = (school) => getSchoolCoverImage(school);
-const heroImagePath = '/images/hero/astana-hero.jpg';
 
 function withLanguage(href, language) {
   return `${href}${href.includes('?') ? '&' : '?'}lang=${language}`;
@@ -220,34 +225,18 @@ function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStat
   );
 }
 
-function HeroVisual() {
-  const [imageFailed, setImageFailed] = useState(false);
-
+function HeroVisual({ t }) {
   return (
-    <div className="hero-visual">
-      <div className="hero-visual-shape hero-visual-shape-one"></div>
-      <div className="hero-visual-shape hero-visual-shape-two"></div>
-
-      {!imageFailed && (
-        <div className="hero-image-frame">
-          <img
-            src={heroImagePath}
-            alt="Астана и образование"
-            className="hero-image"
-            loading="eager"
-            decoding="async"
-            onError={() => setImageFailed(true)}
-          />
-        </div>
-      )}
-
-      <div className="hero-badge">
-        <span className="hero-badge-icon" aria-hidden="true">✓</span>
-        <div>
-          <strong>Актуальные данные 2026</strong>
-          <span>Мы обновляем информацию о школах</span>
-        </div>
+    <div className="hero__assistant" aria-label={t.heroNote}>
+      <div className="hero__stat">
+        <strong>{schools.length}</strong>
+        <span>{t.astanaSchools}</span>
       </div>
+      <ol>
+        {t.assistantSteps.map((step) => (
+          <li key={step}>{step}</li>
+        ))}
+      </ol>
     </div>
   );
 }
@@ -362,11 +351,9 @@ export default function Home() {
             <a className="hero__cta" href={withLanguage('/quiz', currentLanguage)}>{t.heroCta}</a>
             <a className="hero__cta hero__cta--secondary" href={withLanguage('/catalog', currentLanguage)}>{t.heroSecondaryCta}</a>
           </div>
-          <div className="hero-stat-grid" aria-label={t.heroStats.join(', ')}>
-            {t.heroStats.map((stat) => <strong key={stat}>{stat}</strong>)}
-          </div>
+          <p className="hero__note">{t.heroNote}</p>
         </div>
-        <HeroVisual />
+        <HeroVisual t={t} />
       </section>
 
       <PopularSchools groups={popularSchoolGroups} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} reviewsBySchool={reviewsBySchool} />
