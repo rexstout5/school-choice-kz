@@ -3874,3 +3874,54 @@ main {
     min-height: auto;
   }
 }
+
+/* Keep hero CTA buttons visible and visually paired across all hero variants. */
+.hero__actions {
+  align-items: stretch;
+}
+
+.hero__cta,
+.hero.hero--landing .hero__cta {
+  min-height: 58px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0 30px;
+  color: #ffffff !important;
+  background: #0D9BA5;
+  font-weight: 900;
+  box-shadow: 0 10px 30px rgba(13, 155, 165, 0.18);
+}
+
+.hero__cta:hover,
+.hero__cta:focus-visible,
+.hero.hero--landing .hero__cta:hover,
+.hero.hero--landing .hero__cta:focus-visible {
+  color: #ffffff !important;
+  background: #0B8A93;
+}
+
+.hero__cta--secondary,
+.hero.hero--landing .hero__cta--secondary {
+  border: 0;
+  color: #ffffff !important;
+  background: #147D8A;
+  box-shadow: 0 10px 30px rgba(13, 155, 165, 0.18);
+}
+
+.hero__cta--secondary:hover,
+.hero__cta--secondary:focus-visible,
+.hero.hero--landing .hero__cta--secondary:hover,
+.hero.hero--landing .hero__cta--secondary:focus-visible {
+  color: #ffffff !important;
+  background: #116D79;
+}
+
+@media (max-width: 560px) {
+  .hero__actions {
+    flex-direction: column;
+  }
+
+  .hero__actions .hero__cta {
+    width: 100%;
+  }
+}
