@@ -4,11 +4,11 @@ import { useMemo, useRef, useState } from 'react';
 import readinessConfig from '../../src/data/schoolReadinessQuestions.json';
 
 const answerOptions = [
-  { value: 0, label: 'Никогда' },
-  { value: 1, label: 'Редко' },
-  { value: 2, label: 'Иногда' },
-  { value: 3, label: 'Часто' },
-  { value: 4, label: 'Всегда' }
+  { value: 4, label: 'Да, уверенно' },
+  { value: 3, label: 'Скорее да' },
+  { value: 2, label: 'Иногда получается' },
+  { value: 1, label: 'Пока с трудом' },
+  { value: 0, label: 'Пока не получается' }
 ];
 const maxAnswerScore = 4;
 const ageOptions = ['5', '6', '7'];
@@ -207,8 +207,8 @@ export default function SchoolReadinessPage() {
 
       {started && !isComplete && !completedDomain && !showResults && currentQuestion && <section className={`readiness-card readiness-card--single-question ${isAdvancing ? 'readiness-card--advancing' : ''}`} aria-labelledby="question-title">
         <div className="readiness-question-meta">
-          <span>Вопрос {currentIndex + 1} из {questions.length}</span>
           <strong>{currentDomainTitle}</strong>
+          <span>Вопрос {currentIndex + 1} из {questions.length}</span>
         </div>
         <div className="readiness-progress-bar" aria-hidden="true"><span style={{ width: `${progressPercent}%` }} /></div>
         <fieldset className="readiness-question readiness-question--featured">
