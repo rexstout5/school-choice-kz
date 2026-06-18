@@ -28,6 +28,11 @@ const translations = {
     match: 'совпадение',
     whyTitle: 'Почему подходит',
     concernsTitle: 'Возможные вопросы',
+    parentHighlightsTitle: 'Что отмечают родители',
+    parentConsiderationsTitle: 'Что стоит учитывать',
+    lastDataUpdateTitle: 'Последнее обновление данных',
+    ratingBasedOnReviews: (count) => `На основе ${count} ${count === 1 ? 'отзыва' : count > 1 && count < 5 ? 'отзывов' : 'отзывов'}`,
+    reviewDataPrepared: 'Схема готова для будущей интеграции отзывов; live-скрейпинг 2GIS не используется.',
     ratingSummary: { excellent: 'Отлично', good: 'Хорошо', average: 'Средне' },
     reviewCount: (count) => `${count} ${count === 1 ? 'отзыв' : count > 1 && count < 5 ? 'отзыва' : 'отзывов'}`,
     insightTags: {
@@ -110,6 +115,11 @@ const translations = {
     match: 'сәйкестік',
     whyTitle: 'Неге сәйкес келеді',
     concernsTitle: 'Мүмкін сұрақтар',
+    parentHighlightsTitle: 'Ата-аналар нені атап өтеді',
+    parentConsiderationsTitle: 'Нені ескеру керек',
+    lastDataUpdateTitle: 'Деректердің соңғы жаңартылуы',
+    ratingBasedOnReviews: (count) => `${count} пікір негізінде`,
+    reviewDataPrepared: 'Схема болашақ пікір интеграциясына дайын; 2GIS live-скрейпингі қолданылмайды.',
     ratingSummary: { excellent: 'Өте жақсы', good: 'Жақсы', average: 'Орташа' },
     reviewCount: (count) => `${count} пікір`,
     insightTags: {
@@ -192,6 +202,11 @@ const translations = {
     match: 'match',
     whyTitle: 'Why it matches',
     concernsTitle: 'Possible concerns',
+    parentHighlightsTitle: 'What parents highlight',
+    parentConsiderationsTitle: 'What to consider',
+    lastDataUpdateTitle: 'Latest data update',
+    ratingBasedOnReviews: (count) => `Based on ${count} ${count === 1 ? 'review' : 'reviews'}`,
+    reviewDataPrepared: 'Schema is ready for future review integrations; live 2GIS scraping is not used.',
     ratingSummary: { excellent: 'Excellent', good: 'Good', average: 'Average' },
     reviewCount: (count) => `${count} ${count === 1 ? 'review' : 'reviews'}`,
     insightTags: {
@@ -333,6 +348,25 @@ const getSchoolImageMetadata = (school) => ({
 
 const getReportContributionUrl = (slug, language) => `/contribute?lang=${language}&tab=correction&school=${encodeURIComponent(slug)}`;
 
+const getReviewIntegrationSummary = (school) => school.reviewSummary && typeof school.reviewSummary === 'object' ? school.reviewSummary : {};
+const getLocalizedList = (items, language) => Array.isArray(items) ? items.map((item) => getLocalizedSchoolValue(item, language) || (typeof item === 'string' ? item : '')).filter(hasValue) : [];
+const getSchoolDisplayRating = (school, ratingStats) => {
+  const summary = getReviewIntegrationSummary(school);
+  const rating = Number.isFinite(Number(summary.rating)) ? Number(summary.rating) : Number.isFinite(Number(school.rating)) ? Number(school.rating) : ratingStats.averageRating;
+  const reviewsCount = Number.isFinite(Number(summary.reviewsCount)) ? Number(summary.reviewsCount) : Number.isFinite(Number(school.reviewsCount)) ? Number(school.reviewsCount) : ratingStats.reviewCount;
+
+  return {
+    rating: Number.isFinite(Number(rating)) && Number(rating) > 0 ? Number(rating) : null,
+    reviewsCount: Number.isFinite(Number(reviewsCount)) && Number(reviewsCount) > 0 ? Number(reviewsCount) : null
+  };
+};
+const formatDataUpdateDate = (date, language) => {
+  if (!hasValue(date)) return '';
+  const parsedDate = new Date(date);
+  if (Number.isNaN(parsedDate.getTime())) return '';
+  return new Intl.DateTimeFormat(language === 'en' ? 'en-US' : language === 'kz' ? 'kk-KZ' : 'ru-RU', { dateStyle: 'long' }).format(parsedDate);
+};
+
 
 const hasLargeClassSize = (classSize) => /25|26|27|28|29|30|large|varies|capacity|мест|орын/i.test(String(classSize));
 
@@ -446,6 +480,11 @@ export default async function SchoolDetailPage({ params, searchParams }) {
   const { imageSource, imageStatus } = getSchoolImageMetadata(school);
   const imageSourceName = getLocalizedSchoolValue(imageSource?.localized_name, language) || imageSource?.name;
   const ratingStats = getSchoolRatingStats(school);
+  const displayRating = getSchoolDisplayRating(school, ratingStats);
+  const reviewSummary = getReviewIntegrationSummary(school);
+  const parentPros = getLocalizedList(reviewSummary.pros, language);
+  const parentCons = getLocalizedList(reviewSummary.cons, language);
+  const lastDataUpdate = formatDataUpdateDate(reviewSummary.lastUpdatedAt ?? school.updatedAt ?? school.metadata?.updatedAt, language);
   const insightKeys = getSchoolInsightKeys(school);
   const recommendationExplanation = getSchoolRecommendationExplanation(school, language, moneyFormatter, t);
   const detailRows = [
@@ -455,8 +494,8 @@ export default async function SchoolDetailPage({ params, searchParams }) {
     [t.fields.schoolFormat, localizedSchoolFormat],
     [t.fields.language, localizedLanguages],
     [t.fields.tuitionFee, formatPrice(school.tuition_fee, moneyFormatter, t)],
-    [t.fields.rating, ratingStats.averageRating === null ? t.reviews.notYetRated : `⭐ ${formatAverageRating(ratingStats.averageRating)} / 5 · ${t.ratingSummary[getRatingSummaryKey(ratingStats.averageRating)]}`],
-    [t.fields.reviews, `📝 ${t.reviewCount(ratingStats.reviewCount)}`],
+    [t.fields.rating, displayRating.rating === null ? t.reviews.notYetRated : `⭐ ${formatAverageRating(displayRating.rating)} / 5 · ${t.ratingSummary[getRatingSummaryKey(displayRating.rating)]}`],
+    [t.fields.reviews, displayRating.reviewsCount === null ? t.reviews.notYetRated : `📝 ${t.reviewCount(displayRating.reviewsCount)}`],
     [t.fields.priceStatus, getLocalizedEnumLabel('priceStatuses', school.price_status, language)],
     [t.fields.dataStatus, getLocalizedEnumLabel('dataStatuses', school.data_status, language)],
     [t.fields.afterSchoolProgram, getLocalizedEnumLabel('yesNoUnknown', school.after_school_program, language)],
@@ -490,6 +529,12 @@ export default async function SchoolDetailPage({ params, searchParams }) {
             <p className="hero__kicker">{t.pageKicker}</p>
             <p className="school-card__eyebrow">{localizedDistrict}</p>
             <h1>{localizedName}</h1>
+            {displayRating.rating !== null ? (
+              <div className="school-detail__rating" aria-label={`${t.fields.rating}: ${formatAverageRating(displayRating.rating)}`}>
+                <strong>⭐ {formatAverageRating(displayRating.rating)}</strong>
+                {displayRating.reviewsCount !== null ? <span>{t.ratingBasedOnReviews(displayRating.reviewsCount)}</span> : null}
+              </div>
+            ) : null}
             <p>{localizedDescription}</p>
             <div className="school-detail__actions">
               <FavoriteButton schoolId={school.id} labels={t.favorite} className="favorite-button--detail" />
@@ -593,6 +638,33 @@ export default async function SchoolDetailPage({ params, searchParams }) {
             </section>
           </div>
         </section>
+
+
+        {parentPros.length > 0 ? (
+          <section className="school-detail__section" aria-labelledby="parent-pros-title">
+            <h2 id="parent-pros-title">{t.parentHighlightsTitle}</h2>
+            <ul className="school-detail__insight-list school-detail__insight-list--pros">
+              {parentPros.map((item) => <li key={item}>{item}</li>)}
+            </ul>
+          </section>
+        ) : null}
+
+        {parentCons.length > 0 ? (
+          <section className="school-detail__section" aria-labelledby="parent-cons-title">
+            <h2 id="parent-cons-title">{t.parentConsiderationsTitle}</h2>
+            <ul className="school-detail__insight-list school-detail__insight-list--cons">
+              {parentCons.map((item) => <li key={item}>{item}</li>)}
+            </ul>
+          </section>
+        ) : null}
+
+        {lastDataUpdate ? (
+          <section className="school-detail__section school-detail__section--data-update" aria-labelledby="data-update-title">
+            <h2 id="data-update-title">{t.lastDataUpdateTitle}</h2>
+            <p className="school-detail__text"><time dateTime={reviewSummary.lastUpdatedAt}>{lastDataUpdate}</time></p>
+            <p className="school-detail__note">{t.reviewDataPrepared}</p>
+          </section>
+        ) : null}
 
         <section className="school-detail__section" aria-labelledby="admission-title">
           <h2 id="admission-title">{t.fields.admissionRequirements}</h2>

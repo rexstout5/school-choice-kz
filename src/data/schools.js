@@ -77,6 +77,33 @@ const parentReviewSamples = [
   { parentName: 'Dana', childGrade: '8', text: { ru: 'Хорошая академическая база, хотелось бы еще больше регулярных обновлений для родителей.', kk: 'Академиялық база жақсы, ата-аналарға тұрақты жаңартулар көбірек болса дейміз.', en: 'The academic foundation is good; we would like even more regular updates for parents.' } }
 ];
 
+const createReviewIntegrationSummary = ({ id, rating, reviewsCount, district, afterSchoolProgram, schoolBus, admissionTest, dataStatus }) => {
+  const pros = [
+    { ru: 'Стабильная академическая база и понятная учебная нагрузка', kk: 'Тұрақты академиялық база және түсінікті оқу жүктемесі', en: 'Steady academic foundation and clear workload' },
+    afterSchoolProgram === 'yes' ? { ru: 'Родители отмечают наличие продленки', kk: 'Ата-аналар сабақтан кейінгі бағдарламаны атап өтеді', en: 'Parents note the available after-school program' } : null,
+    schoolBus === 'yes' ? { ru: 'Есть школьный автобус для семей из района', kk: 'Аудандағы отбасыларға мектеп автобусы бар', en: 'School bus is available for families in the district' } : null,
+    { ru: 'Контакты и основные данные готовы к проверке отзывами', kk: 'Байланыстар мен негізгі деректер пікірлермен тексеруге дайын', en: 'Contacts and core facts are ready to be validated by reviews' }
+  ].filter(Boolean);
+  const cons = [
+    admissionTest === 'yes' ? { ru: 'Стоит заранее уточнить конкурс и вступительные требования', kk: 'Конкурс пен қабылдау талаптарын алдын ала нақтылаған жөн', en: 'Confirm competition and admission requirements in advance' } : null,
+    afterSchoolProgram !== 'yes' ? { ru: 'Продленку нужно уточнить у администрации', kk: 'Сабақтан кейінгі бағдарламаны әкімшіліктен нақтылау керек', en: 'After-school availability should be confirmed with the administration' } : null,
+    schoolBus !== 'yes' ? { ru: 'Маршрут до школы лучше проверить отдельно', kk: 'Мектепке дейінгі бағытты бөлек тексерген дұрыс', en: 'The commute route is worth checking separately' } : null,
+    dataStatus !== 'verified' ? { ru: 'Часть расширенных данных требует дополнительной проверки', kk: 'Кеңейтілген деректердің бір бөлігі қосымша тексеруді қажет етеді', en: 'Some extended data still needs additional verification' } : null
+  ].filter(Boolean);
+
+  return {
+    provider: 'prepared_internal_schema',
+    source: 'seed_profile_data',
+    externalPlaceId: null,
+    rating,
+    reviewsCount,
+    pros,
+    cons,
+    lastUpdatedAt: '2026-06-11',
+    district
+  };
+};
+
 const createSeedReviews = (id, averageRating) => {
   const roundedRating = normalizeReviewRating(averageRating || 4);
 
@@ -590,6 +617,17 @@ const createAstanaPublicSchool = ({
   const resolvedCoordinates = resolveSchoolCoordinates({ id, district, address, coordinates, latitude, longitude, coordinates_status });
   const resolvedRating = rating > 0 ? rating : Number((4 + (id.length % 9) / 10).toFixed(1));
   const resolvedReviews = createSeedReviews(id, resolvedRating);
+  const resolvedReviewsCount = resolvedReviews.length;
+  const reviewSummary = createReviewIntegrationSummary({
+    id,
+    rating: resolvedRating,
+    reviewsCount: resolvedReviewsCount,
+    district,
+    afterSchoolProgram: after_school_program,
+    schoolBus: school_bus,
+    admissionTest: admission_test,
+    dataStatus: data_status
+  });
 
   return ({
   id,
@@ -620,7 +658,9 @@ const createAstanaPublicSchool = ({
   longitude: resolvedCoordinates.longitude,
   coordinates_status: resolvedCoordinates.coordinates_status,
   reviews: resolvedReviews,
-  review_count: resolvedReviews.length,
+  reviewsCount: resolvedReviewsCount,
+  review_count: resolvedReviewsCount,
+  reviewSummary,
   address: localizedAddress,
   website: resolvedWebsite,
   phone: resolvedPhone,
