@@ -21,7 +21,11 @@ const translations = {
     imageSource: 'Источник изображения',
     imageStatus: 'Статус изображения',
     fallbackImageAlt: 'Иллюстрация здания школы',
-    detailsTitle: 'Ключевые сведения',
+    detailsTitle: 'Коротко о школе',
+    benefitsTitle: 'Преимущества',
+    aboutTitle: 'О школе',
+    studentsCount: 'Количество учеников',
+    unknownStudentsCount: 'Уточняется',
     programsTitle: 'Программы',
     suitableTitle: 'Кому подойдет эта школа?',
     recommendationTitle: 'Объяснение рекомендации',
@@ -108,7 +112,11 @@ const translations = {
     imageSource: 'Сурет дереккөзі',
     imageStatus: 'Сурет мәртебесі',
     fallbackImageAlt: 'Мектеп ғимаратының иллюстрациясы',
-    detailsTitle: 'Негізгі мәліметтер',
+    detailsTitle: 'Мектеп туралы қысқаша',
+    benefitsTitle: 'Артықшылықтар',
+    aboutTitle: 'Мектеп туралы',
+    studentsCount: 'Оқушылар саны',
+    unknownStudentsCount: 'Нақтыланады',
     programsTitle: 'Бағдарламалар',
     suitableTitle: 'Бұл мектеп кімге қолайлы?',
     recommendationTitle: 'Ұсыныс түсіндірмесі',
@@ -195,7 +203,11 @@ const translations = {
     imageSource: 'Image source',
     imageStatus: 'Image status',
     fallbackImageAlt: 'Illustration of a school building',
-    detailsTitle: 'Key details',
+    detailsTitle: 'Quick facts',
+    benefitsTitle: 'Advantages',
+    aboutTitle: 'About school',
+    studentsCount: 'Number of students',
+    unknownStudentsCount: 'To be confirmed',
     programsTitle: 'Programs',
     suitableTitle: 'Who is this school suitable for?',
     recommendationTitle: 'Recommendation explanation',
@@ -291,6 +303,21 @@ const hasValue = (value) => {
   return value !== null && value !== undefined && String(value).trim() !== '';
 };
 const getSchoolEmail = (school) => school.email ?? school.contact?.email ?? '';
+const getStudentCount = (school) => school.students_count ?? school.student_count ?? school.studentsCount ?? school.metadata?.students_count ?? school.metadata?.student_count ?? '';
+const languageBadgeLabels = { ru: 'RU', kk: 'KZ', kz: 'KZ', en: 'EN' };
+const getInstructionLanguageBadges = (school) => {
+  const languages = Array.isArray(school.instruction_languages) ? school.instruction_languages : String(school.language_of_instruction ?? school.language ?? '').split(/[,/]/);
+  return [...new Set(languages.map((item) => String(item).trim().toLowerCase()).map((item) => languageBadgeLabels[item] ?? '').filter(Boolean))];
+};
+
+const heroSchoolTypeLabels = {
+  public: { ru: 'Государственная', kz: 'Мемлекеттік', en: 'Public' },
+  specialized: { ru: 'Государственная', kz: 'Мемлекеттік', en: 'Public' },
+  private: { ru: 'Частная', kz: 'Жеке', en: 'Private' },
+  international: { ru: 'Международная', kz: 'Халықаралық', en: 'International' }
+};
+const getHeroSchoolType = (school, language) => heroSchoolTypeLabels[school.type]?.[language] ?? getLocalizedEnumLabel('schoolTypes', school.type, language);
+
 const getTwoGisUrl = (school, address, name) => {
   const coordinates = school.contact?.coordinates ?? school.metadata?.coordinates ?? school.coordinates;
 
@@ -364,9 +391,38 @@ const formatDataUpdateDate = (date, language) => {
   if (!hasValue(date)) return '';
   const parsedDate = new Date(date);
   if (Number.isNaN(parsedDate.getTime())) return '';
-  return new Intl.DateTimeFormat(language === 'en' ? 'en-US' : language === 'kz' ? 'kk-KZ' : 'ru-RU', { dateStyle: 'long' }).format(parsedDate);
+  return new Intl.DateTimeFormat(language === 'en' ? 'en-US' : language === 'kz' ? 'kk-KZ' : 'ru-RU', { month: 'long', year: 'numeric' }).format(parsedDate);
 };
 
+
+
+const getDefaultBenefitCards = (school, language, localizedPrograms) => {
+  const programText = Array.isArray(localizedPrograms) ? localizedPrograms.join(' ').toLowerCase() : '';
+  const hasEnglish = Array.isArray(school.instruction_languages) && school.instruction_languages.includes('en');
+  const hasInternational = school.type === 'international' || /international|ib|cambridge|международ|халықаралық/i.test(programText);
+  const hasStem = /stem|steam|робот|инженер|математ|science|technology/i.test(programText);
+  const cards = {
+    ru: [
+      'Сильный педагогический состав',
+      (hasEnglish || hasInternational) ? 'Углубленное изучение языков' : null,
+      (hasStem || hasInternational || school.type === 'private') ? 'Современная инфраструктура' : null,
+      school.admission_test === 'yes' || school.type === 'specialized' || hasInternational ? 'Хорошая подготовка к поступлению' : null
+    ],
+    kz: [
+      'Күшті педагогикалық құрам',
+      (hasEnglish || hasInternational) ? 'Тілдерді тереңдетіп оқу' : null,
+      (hasStem || hasInternational || school.type === 'private') ? 'Заманауи инфрақұрылым' : null,
+      school.admission_test === 'yes' || school.type === 'specialized' || hasInternational ? 'Оқуға түсуге жақсы дайындық' : null
+    ],
+    en: [
+      'Strong teaching team',
+      (hasEnglish || hasInternational) ? 'Advanced language learning' : null,
+      (hasStem || hasInternational || school.type === 'private') ? 'Modern infrastructure' : null,
+      school.admission_test === 'yes' || school.type === 'specialized' || hasInternational ? 'Good admissions preparation' : null
+    ]
+  };
+  return cards[language].filter(Boolean);
+};
 
 const hasLargeClassSize = (classSize) => /25|26|27|28|29|30|large|varies|capacity|мест|орын/i.test(String(classSize));
 
@@ -475,6 +531,7 @@ export default async function SchoolDetailPage({ params, searchParams }) {
   const twoGisUrl = getTwoGisUrl(school, localizedAddress, localizedName);
   const localizedDistrict = getLocalizedEnumLabel('districts', school.district, language);
   const localizedSchoolType = getLocalizedEnumLabel('schoolTypes', school.type, language);
+  const heroSchoolType = getHeroSchoolType(school, language);
   const schoolImages = getSchoolImages(school, localizedName, t);
   const heroImage = schoolImages[0];
   const { imageSource, imageStatus } = getSchoolImageMetadata(school);
@@ -487,21 +544,24 @@ export default async function SchoolDetailPage({ params, searchParams }) {
   const lastDataUpdate = formatDataUpdateDate(reviewSummary.lastUpdatedAt ?? school.updatedAt ?? school.metadata?.updatedAt, language);
   const insightKeys = getSchoolInsightKeys(school);
   const recommendationExplanation = getSchoolRecommendationExplanation(school, language, moneyFormatter, t);
+  const studentCount = getStudentCount(school);
+  const languageBadges = getInstructionLanguageBadges(school);
+  const tuitionFee = formatPrice(school.tuition_fee, moneyFormatter, t);
   const detailRows = [
-    [t.fields.schoolName, localizedName],
-    [t.fields.district, localizedDistrict],
-    [t.fields.schoolType, localizedSchoolType],
-    [t.fields.schoolFormat, localizedSchoolFormat],
-    [t.fields.language, localizedLanguages],
-    [t.fields.tuitionFee, formatPrice(school.tuition_fee, moneyFormatter, t)],
-    [t.fields.rating, displayRating.rating === null ? t.reviews.notYetRated : `⭐ ${formatAverageRating(displayRating.rating)} / 5 · ${t.ratingSummary[getRatingSummaryKey(displayRating.rating)]}`],
-    [t.fields.reviews, displayRating.reviewsCount === null ? t.reviews.notYetRated : `📝 ${t.reviewCount(displayRating.reviewsCount)}`],
-    [t.fields.priceStatus, getLocalizedEnumLabel('priceStatuses', school.price_status, language)],
-    [t.fields.dataStatus, getLocalizedEnumLabel('dataStatuses', school.data_status, language)],
-    [t.fields.afterSchoolProgram, getLocalizedEnumLabel('yesNoUnknown', school.after_school_program, language)],
-    [t.fields.schoolBus, getLocalizedEnumLabel('yesNoUnknown', school.school_bus, language)],
-    [t.fields.classSize, localizedClassSize]
-  ];
+    ['📍', t.fields.district, localizedDistrict],
+    ['🎓', t.fields.language, localizedLanguages],
+    ['💰', t.fields.tuitionFee, tuitionFee],
+    ['👨‍🎓', t.studentsCount, studentCount],
+    ['🏫', t.fields.schoolType, localizedSchoolType]
+  ].filter(([, , detail]) => hasValue(detail));
+  const benefitCards = [...new Set([...parentPros, ...getDefaultBenefitCards(school, language, localizedPrograms)])].filter(hasValue);
+  const considerationCards = parentCons.filter(hasValue);
+  const contactCards = [
+    [t.fields.address, hasValue(localizedAddress) ? localizedAddress : '', null],
+    [t.fields.phone, school.phone, hasValue(school.phone) ? `tel:${formatPhoneLink(school.phone)}` : null],
+    [t.fields.website, school.website, hasValue(school.website) ? school.website : null],
+    [t.openIn2Gis, t.openIn2Gis, twoGisUrl]
+  ].filter(([, value]) => hasValue(value));
 
   return (
     <main>
@@ -527,15 +587,19 @@ export default async function SchoolDetailPage({ params, searchParams }) {
         <header className="school-detail__hero">
           <div className="school-detail__hero-copy">
             <p className="hero__kicker">{t.pageKicker}</p>
-            <p className="school-card__eyebrow">{localizedDistrict}</p>
+            <p className="school-card__eyebrow">{heroSchoolType}</p>
             <h1>{localizedName}</h1>
+            {languageBadges.length > 0 ? (
+              <div className="school-detail__language-badges" aria-label={t.fields.language}>
+                {languageBadges.map((badge) => <span key={badge}>{badge}</span>)}
+              </div>
+            ) : null}
             {displayRating.rating !== null ? (
               <div className="school-detail__rating" aria-label={`${t.fields.rating}: ${formatAverageRating(displayRating.rating)}`}>
                 <strong>⭐ {formatAverageRating(displayRating.rating)}</strong>
                 {displayRating.reviewsCount !== null ? <span>{t.ratingBasedOnReviews(displayRating.reviewsCount)}</span> : null}
               </div>
             ) : null}
-            <p>{localizedDescription}</p>
             <div className="school-detail__actions">
               <FavoriteButton schoolId={school.id} labels={t.favorite} className="favorite-button--detail" />
               <a className="button-link" href={getReportContributionUrl(slug, language)}>
@@ -586,18 +650,36 @@ export default async function SchoolDetailPage({ params, searchParams }) {
 
         <section className="school-detail__section" aria-labelledby="details-title">
           <h2 id="details-title">{t.detailsTitle}</h2>
-          <dl className="school-card__facts school-detail__facts">
-            {detailRows.map(([term, detail]) => (
+          <dl className="school-detail__quick-facts">
+            {detailRows.map(([icon, term, detail]) => (
               <div key={term}>
-                <dt>{term}</dt>
+                <dt><span aria-hidden="true">{icon}</span>{term}</dt>
                 <dd>{detail}</dd>
               </div>
             ))}
           </dl>
         </section>
 
+        {benefitCards.length > 0 ? (
+          <section className="school-detail__section" aria-labelledby="benefits-title">
+            <h2 id="benefits-title">{t.benefitsTitle}</h2>
+            <div className="school-detail__decision-grid school-detail__decision-grid--pros">
+              {benefitCards.map((item) => <article key={item}>{item}</article>)}
+            </div>
+          </section>
+        ) : null}
+
+        {considerationCards.length > 0 ? (
+          <section className="school-detail__section" aria-labelledby="parent-cons-title">
+            <h2 id="parent-cons-title">{t.parentConsiderationsTitle}</h2>
+            <div className="school-detail__decision-grid school-detail__decision-grid--cons">
+              {considerationCards.map((item) => <article key={item}>{item}</article>)}
+            </div>
+          </section>
+        ) : null}
+
         <section className="school-detail__section" aria-labelledby="description-title">
-          <h2 id="description-title">{t.fields.description}</h2>
+          <h2 id="description-title">{t.aboutTitle}</h2>
           <p className="school-detail__text">{localizedDescription}</p>
         </section>
 
@@ -640,24 +722,6 @@ export default async function SchoolDetailPage({ params, searchParams }) {
         </section>
 
 
-        {parentPros.length > 0 ? (
-          <section className="school-detail__section" aria-labelledby="parent-pros-title">
-            <h2 id="parent-pros-title">{t.parentHighlightsTitle}</h2>
-            <ul className="school-detail__insight-list school-detail__insight-list--pros">
-              {parentPros.map((item) => <li key={item}>{item}</li>)}
-            </ul>
-          </section>
-        ) : null}
-
-        {parentCons.length > 0 ? (
-          <section className="school-detail__section" aria-labelledby="parent-cons-title">
-            <h2 id="parent-cons-title">{t.parentConsiderationsTitle}</h2>
-            <ul className="school-detail__insight-list school-detail__insight-list--cons">
-              {parentCons.map((item) => <li key={item}>{item}</li>)}
-            </ul>
-          </section>
-        ) : null}
-
         {lastDataUpdate ? (
           <section className="school-detail__section school-detail__section--data-update" aria-labelledby="data-update-title">
             <h2 id="data-update-title">{t.lastDataUpdateTitle}</h2>
@@ -675,38 +739,13 @@ export default async function SchoolDetailPage({ params, searchParams }) {
 
         <section className="school-detail__section" aria-labelledby="contacts-title">
           <h2 id="contacts-title">{t.contactsTitle}</h2>
-          <dl className="school-card__facts school-detail__facts">
-            <div>
-              <dt>{t.fields.address}</dt>
-              <dd>{hasValue(localizedAddress) ? localizedAddress : t.missingValue}</dd>
-            </div>
-            <div>
-              <dt>{t.fields.phone}</dt>
-              <dd>
-                {hasValue(school.phone) ? <a href={`tel:${formatPhoneLink(school.phone)}`}>{school.phone}</a> : t.missingValue}
-              </dd>
-            </div>
-            <div>
-              <dt>{t.fields.email}</dt>
-              <dd>{hasValue(schoolEmail) ? <a href={`mailto:${schoolEmail}`}>{schoolEmail}</a> : t.missingValue}</dd>
-            </div>
-            <div>
-              <dt>{t.fields.website}</dt>
-              <dd>
-                {hasValue(school.website) ? (
-                  <a href={school.website} target="_blank" rel="noreferrer">
-                    {school.website}
-                  </a>
-                ) : (
-                  t.missingValue
-                )}
-              </dd>
-            </div>
-          </dl>
-          <div className="school-detail__contact-actions">
-            <a className="button-link" href={twoGisUrl} target="_blank" rel="noreferrer">
-              {t.openIn2Gis}
-            </a>
+          <div className="school-detail__contacts">
+            {contactCards.map(([label, value, href]) => (
+              <article key={label} className="school-detail__contact-card">
+                <span>{label}</span>
+                {href ? <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noreferrer' : undefined}>{value}</a> : <strong>{value}</strong>}
+              </article>
+            ))}
           </div>
         </section>
 
