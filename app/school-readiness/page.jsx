@@ -22,10 +22,43 @@ const domainDisplayNames = {
 };
 
 function getInterpretation(percent) {
-  if (percent < 60) return { key: 'needs', title: 'Требуется подготовка', text: 'Лучше двигаться маленькими регулярными шагами и укреплять базовые навыки через игру.' };
-  if (percent < 80) return { key: 'partial', title: 'Средняя', text: 'У ребенка уже есть опора, но отдельные зоны требуют спокойной ежедневной практики.' };
-  return { key: 'high', title: 'Высокая', text: 'Ребенок уверенно демонстрирует навыки, которые помогают мягко войти в школьный режим.' };
+  if (percent < 60) {
+    return {
+      key: 'needs',
+      icon: '🟠',
+      title: 'Нужна мягкая подготовка',
+      text: 'Ребёнку важно укрепить базовые навыки до школьного старта: лучше двигаться маленькими регулярными шагами через игру и спокойную поддержку взрослого.'
+    };
+  }
+  if (percent < 80) {
+    return {
+      key: 'partial',
+      icon: '🟡',
+      title: 'Формирующаяся готовность',
+      text: 'Ребёнок уже имеет хорошую опору для старта, но отдельные зоны требуют регулярной практики без давления и сравнения с другими детьми.'
+    };
+  }
+  return {
+    key: 'high',
+    icon: '🟢',
+    title: 'Высокая готовность',
+    text: 'Ребёнок демонстрирует большинство навыков, необходимых для успешного старта в школе.'
+  };
 }
+
+const ageRecommendations = {
+  5: 'В 5 лет главный фокус — интерес к обучению, речь, игра по правилам и самостоятельность в быту. Не спешите с академической нагрузкой: лучше укреплять навыки через чтение, конструкторы, прогулки и короткие игровые задания.',
+  6: 'В 6 лет полезно постепенно вводить школьный ритм: задания по 10–15 минут, подготовку рабочего места, самостоятельный сбор вещей и обсуждение эмоций перед новыми ситуациями.',
+  7: 'В 7 лет важно поддержать уверенность ребёнка перед школой: закрепляйте режим дня, тренируйте доведение задания до конца и заранее обсуждайте, как попросить учителя о помощи.'
+};
+
+const strengthTemplates = {
+  cognitive: 'Хорошо развиты любознательность, сравнение, счёт и умение замечать закономерности.',
+  speech: 'Ребёнку легче понимать инструкции, выражать мысли и участвовать в диалоге со взрослым.',
+  attention: 'Есть база для аккуратной работы руками, зрительного контроля и выполнения заданий по образцу.',
+  independence: 'Ребёнок показывает самостоятельность в бытовых действиях и готовность брать небольшую ответственность.',
+  social: 'Ребёнку проще включаться в группу, принимать правила и договариваться со взрослыми или сверстниками.'
+};
 
 function calculateDomainScores(questions, answers) {
   return readinessConfig.domains.map((domain) => {
@@ -61,10 +94,12 @@ export default function SchoolReadinessPage() {
   const isComplete = answeredCount === questions.length;
   const progressPercent = Math.round((answeredCount / questions.length) * 100);
   const interpretation = getInterpretation(overallPercent);
-  const weakDomains = domainScores.filter((domain) => domain.percent < 70);
-  const strongDomains = domainScores.filter((domain) => domain.percent >= 75);
-  const recommendations = (weakDomains.length ? weakDomains : domainScores.slice().sort((a, b) => a.percent - b.percent).slice(0, 2))
-    .flatMap((domain) => domain.recommendations.map((text) => ({ domain: domain.title, text })));
+  const sortedDomainsByStrength = domainScores.slice().sort((a, b) => b.percent - a.percent);
+  const sortedDomainsByNeed = domainScores.slice().sort((a, b) => a.percent - b.percent);
+  const strengths = sortedDomainsByStrength.slice(0, 5).filter((domain, index) => domain.percent >= 70 || index < 3);
+  const focusDomains = sortedDomainsByNeed.slice(0, 5).filter((domain, index) => domain.percent < 80 || index < 3);
+  const recommendations = focusDomains.flatMap((domain) => domain.recommendations.slice(0, 1).map((text) => ({ domain: domain.title, text })));
+  const ageRecommendation = ageRecommendations[selectedAge];
 
   function clearAdvanceTimer() {
     if (advanceTimer.current) {
@@ -224,14 +259,15 @@ export default function SchoolReadinessPage() {
       </section>}
 
       {started && isComplete && showResults && <section className="readiness-results readiness-results--assessment" aria-live="polite">
-        <div className={`readiness-score readiness-score--${interpretation.key}`}><span>Общая готовность</span><strong>{overallPercent}%</strong><p>{interpretation.title}</p></div>
-        <div className="readiness-insights readiness-insights--assessment"><p className="hero__kicker">Итоговый отчет</p><h2>Уровень готовности: {interpretation.title}</h2><p>{interpretation.text}</p><div className="readiness-domain-list">{domainScores.map((domain) => <div className="readiness-domain-score" key={domain.id}><div><strong>{domain.title}</strong><span>{domain.percent}%</span></div><div className="readiness-domain-bar"><span style={{ width: `${domain.percent}%` }} /></div></div>)}</div></div>
+        <div className={`readiness-score readiness-score--${interpretation.key}`}><span>Общий индекс готовности</span><strong>{overallPercent}%</strong><p>{interpretation.icon} {interpretation.title}</p></div>
+        <div className="readiness-insights readiness-insights--assessment"><p className="hero__kicker">Итоговый отчёт</p><h2>Профиль развития ребёнка</h2><p>{interpretation.text}</p><div className="readiness-domain-list">{domainScores.map((domain) => <div className="readiness-domain-score" key={domain.id}><div><strong>{domain.title}</strong><span>{domain.percent}%</span></div><div className="readiness-domain-bar" aria-label={`${domain.title}: ${domain.percent}%`}><span style={{ width: `${domain.percent}%` }} /></div></div>)}</div></div>
       </section>}
 
       {started && isComplete && showResults && <section className="readiness-card readiness-support-grid">
-        <div><h2>Сильные стороны</h2><ul>{(strongDomains.length ? strongDomains : domainScores.slice().sort((a, b) => b.percent - a.percent).slice(0, 2)).map((domain) => <li key={domain.id}>✓ {domain.title}: {domain.percent}%</li>)}</ul></div>
-        <div><h2>Зоны развития</h2><ul>{(weakDomains.length ? weakDomains : domainScores.slice().sort((a, b) => a.percent - b.percent).slice(0, 2)).map((domain) => <li key={domain.id}>↗ {domain.title}: {domain.percent}%</li>)}</ul></div>
-        <div><h2>Рекомендация родителю</h2><p>{interpretation.text} Выберите 1–2 зоны развития и занимайтесь 10–15 минут в день без давления: через игру, бытовые поручения, чтение и спокойное обсуждение успехов.</p><ul>{recommendations.slice(0, 3).map((item) => <li key={`${item.domain}-${item.text}`}>🏠 <strong>{item.domain}:</strong> {item.text}</li>)}</ul></div>
+        <div><h2>Сильные стороны</h2><ul>{strengths.map((domain) => <li key={domain.id}>✓ <strong>{domain.title}</strong><span>{strengthTemplates[domain.id]}</span></li>)}</ul></div>
+        <div><h2>На что обратить внимание</h2><ul>{recommendations.slice(0, 5).map((item) => <li key={`${item.domain}-${item.text}`}>↗ <strong>{item.domain}:</strong><span>{item.text}</span></li>)}</ul></div>
+        <div><h2>Рекомендация для {selectedAge} лет</h2><p>{ageRecommendation}</p><ul><li>🏠 Выберите 1–2 зоны и занимайтесь 10–15 минут в день.</li><li>💬 Хвалите за усилие, а не только за правильный ответ.</li><li>🧩 Используйте игру, чтение, бытовые поручения и спокойное обсуждение успехов.</li></ul></div>
+        <div className="readiness-report-actions"><button className="hero__cta readiness-pdf-button" type="button" disabled>Скачать PDF отчёт</button><span>PDF-экспорт в разработке — сейчас это визуальный макет профессионального отчёта.</span></div>
         <button className="readiness-nav-button readiness-retake" type="button" onClick={restart}>Пройти заново</button>
       </section>}
 
