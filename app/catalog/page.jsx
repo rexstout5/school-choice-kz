@@ -56,7 +56,7 @@ const translations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Выберите язык интерфейса',
     favoritesLink: 'Избранное',
-    readinessLink: 'Оценка готовности к школе',
+    readinessLink: 'Готовность к школе',
     addSchoolLink: 'Добавить школу',
     catalogLink: 'Каталог',
     footerSeoLabel: 'Полезные страницы',
@@ -68,11 +68,11 @@ const translations = {
     heroTitle: 'Найдите школу, которая подходит вашей семье',
     heroDescription:
       'Изучайте проверенные данные, фильтруйте по ключевым критериям и сравнивайте школы Астаны.',
-    heroCta: 'Оценка готовности к школе',
+    heroCta: 'Готовность к школе',
     astanaSchools: 'школ в каталоге',
     heroSecondaryCta: 'Смотреть каталог',
     heroNote: 'Персональный маршрут выбора: каталог → сравнение → готовность к школе.',
-    assistantSteps: ['Выберите фильтры каталога', 'Сравните школы', 'Сохраните избранное'],
+    assistantSteps: ['Найдите подходящие школы', 'Сравните важные критерии', 'Сохраните варианты для семьи'],
     stats: {
       title: 'Каталог, созданный для решения родителей',
       description: 'Мы показываем меньше шума и больше сигналов: район, язык, стоимость, отзывы и действия для следующего шага.',
@@ -175,7 +175,7 @@ const translations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
     favoritesLink: 'Таңдаулылар',
-    readinessLink: 'Мектепке дайындықты бағалау',
+    readinessLink: 'Мектепке дайындық',
     addSchoolLink: 'Мектеп қосу',
     catalogLink: 'Каталог',
     footerSeoLabel: 'Пайдалы беттер',
@@ -187,11 +187,11 @@ const translations = {
     heroTitle: 'Отбасыңызға сай мектепті табыңыз',
     heroDescription:
       'Тексерілген деректерді қарап, негізгі өлшемдер бойынша сүзгіден өткізіп, Астана мектептерін салыстырыңыз.',
-    heroCta: 'Мектепке дайындықты бағалау',
+    heroCta: 'Мектепке дайындық',
     astanaSchools: 'каталогтағы мектеп',
     heroSecondaryCta: 'Каталогты қарау',
     heroNote: 'Таңдаудың жеке маршруты: каталог → салыстыру → мектепке дайындық.',
-    assistantSteps: ['Каталог сүзгілерін таңдаңыз', 'Мектептерді салыстырыңыз', 'Таңдаулыға сақтаңыз'],
+    assistantSteps: ['Сәйкес мектептерді табыңыз', 'Маңызды критерийлерді салыстырыңыз', 'Отбасыңызға арналған нұсқаларды сақтаңыз'],
     stats: {
       title: 'Ата-ананың шешіміне арналған каталог',
       description: 'Біз артық ақпаратты азайтып, маңыздысын көрсетеміз: аудан, тіл, баға, пікірлер және келесі қадамдар.',
@@ -294,7 +294,7 @@ const translations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Choose interface language',
     favoritesLink: 'Favorites',
-    readinessLink: 'School readiness assessment',
+    readinessLink: 'School readiness',
     addSchoolLink: 'Add school',
     favorite: {
       add: 'Add to favorites',
@@ -304,11 +304,11 @@ const translations = {
     heroTitle: 'Find the school that fits your family',
     heroDescription:
       'Review verified data, filter by key criteria, and compare Astana schools.',
-    heroCta: 'School readiness assessment',
+    heroCta: 'School readiness',
     astanaSchools: 'schools in the catalog',
     heroSecondaryCta: 'Browse catalog',
     heroNote: 'A guided path for parents: catalog → comparison → school readiness.',
-    assistantSteps: ['Choose catalog filters', 'Compare schools', 'Save favorites'],
+    assistantSteps: ['Find suitable schools', 'Compare important criteria', 'Save family options'],
     stats: {
       title: 'A catalog designed around parent decisions',
       description: 'We reduce noise and surface the signals families need: location, language, tuition, reviews, and clear next steps.',
