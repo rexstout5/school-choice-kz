@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import readinessConfig from '../../src/data/schoolReadinessQuestions.json';
 
 const answerOptions = [
@@ -11,6 +11,7 @@ const answerOptions = [
   { value: 0, label: 'Пока не получается' }
 ];
 const maxAnswerScore = 4;
+const readinessStorageKey = 'school-choice-kz-readiness-results';
 const ageOptions = ['5', '6', '7'];
 const domainById = Object.fromEntries(readinessConfig.domains.map((domain) => [domain.id, domain]));
 const domainDisplayNames = {
@@ -100,6 +101,26 @@ export default function SchoolReadinessPage() {
   const focusDomains = sortedDomainsByNeed.slice(0, 5).filter((domain, index) => domain.percent < 80 || index < 3);
   const recommendations = focusDomains.flatMap((domain) => domain.recommendations.slice(0, 1).map((text) => ({ domain: domain.title, text })));
   const ageRecommendation = ageRecommendations[selectedAge];
+
+  useEffect(() => {
+    if (!started || !isComplete || !showResults) return;
+
+    const result = {
+      percent: overallPercent,
+      level: interpretation.title,
+      completedAt: new Date().toISOString(),
+      selectedAge,
+      domainScores: domainScores.map(({ id, title, percent }) => ({ id, title, percent }))
+    };
+
+    try {
+      const storedResults = JSON.parse(window.localStorage.getItem(readinessStorageKey) || '[]');
+      const results = Array.isArray(storedResults) ? storedResults : [storedResults].filter(Boolean);
+      window.localStorage.setItem(readinessStorageKey, JSON.stringify([result, ...results].slice(0, 5)));
+    } catch {
+      // The report remains visible for the current session if localStorage is unavailable.
+    }
+  }, [domainScores, interpretation.title, isComplete, overallPercent, selectedAge, showResults, started]);
 
   function clearAdvanceTimer() {
     if (advanceTimer.current) {

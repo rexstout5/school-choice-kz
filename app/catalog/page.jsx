@@ -55,7 +55,7 @@ const translations = {
   ru: {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Выберите язык интерфейса',
-    favoritesLink: 'Избранное',
+    favoritesLink: 'Мой выбор',
     readinessLink: 'Готовность к школе',
     addSchoolLink: 'Добавить школу',
     catalogLink: 'Каталог',
@@ -953,7 +953,7 @@ export default function CatalogPage() {
         <div className="site-header__actions">
           <a className="site-header__link" href={`/school-readiness?lang=${currentLanguage}`}>{t.readinessLink}</a>
           <a className="site-header__link" href={`/contribute?lang=${currentLanguage}`}>{t.addSchoolLink}</a>
-          <a className="site-header__link" href={`/favorites?lang=${currentLanguage}`}>♡ {t.favoritesLink} ({favoriteCount})</a>
+          <a className="site-header__link" href={`/my-choice?lang=${currentLanguage}`}>♡ {t.favoritesLink} ({favoriteCount})</a>
           <LanguageSwitcher currentLanguage={currentLanguage} onLanguageChange={updateLanguage} t={t} />
         </div>
       </header>

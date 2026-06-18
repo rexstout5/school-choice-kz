@@ -28,7 +28,7 @@ const homepageTranslations = {
     addSchoolLink: 'Добавить школу',
     aboutLink: 'О проекте',
     contactsLink: 'Контакты',
-    favoritesLink: 'Избранное',
+    favoritesLink: 'Мой выбор',
     footerLabel: 'Навигация по сайту',
     heroTitle: 'Найдите школу, которая подходит вашей семье',
     heroDescription: 'Изучайте каталог школ, сравнивайте ключевые критерии и проверяйте готовность ребенка к школе.',
@@ -53,7 +53,7 @@ const homepageTranslations = {
     language: 'Язык',
     footerDescription: 'Экспертный каталог школ Астаны для осознанного выбора семьи.',
     footerColumns: [
-      ['Навигация', [['Каталог школ', '/catalog'], ['Готовность к школе', '/school-readiness'], ['Избранное', '/favorites']]],
+      ['Навигация', [['Каталог школ', '/catalog'], ['Готовность к школе', '/school-readiness'], ['Мой выбор', '/my-choice']]],
       ['Для родителей', [['Как выбрать школу', '/how-to-choose-school']]],
       ['О проекте', [['О нас', '/about'], ['Добавить школу', '/contribute'], ['Контакты', '/contacts']]]
     ]
@@ -91,7 +91,7 @@ const homepageTranslations = {
     language: 'Тіл',
     footerDescription: 'Отбасы саналы таңдау жасайтын Астана мектептерінің сараптамалық каталогы.',
     footerColumns: [
-      ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектепке дайындық', '/school-readiness'], ['Таңдаулылар', '/favorites']]],
+      ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектепке дайындық', '/school-readiness'], ['Таңдаулылар', '/my-choice']]],
       ['Ата-аналарға', [['Мектепті қалай таңдау керек', '/how-to-choose-school']]],
       ['Жоба туралы', [['Біз туралы', '/about'], ['Мектеп қосу', '/contribute'], ['Байланыс', '/contacts']]]
     ]
@@ -129,7 +129,7 @@ const homepageTranslations = {
     language: 'Language',
     footerDescription: 'An expert Astana school catalog for informed family decisions.',
     footerColumns: [
-      ['Navigation', [['School catalog', '/catalog'], ['School readiness', '/school-readiness'], ['Favorites', '/favorites']]],
+      ['Navigation', [['School catalog', '/catalog'], ['School readiness', '/school-readiness'], ['Favorites', '/my-choice']]],
       ['For parents', [['How to choose a school', '/how-to-choose-school']]],
       ['About', [['About us', '/about'], ['Add a school', '/contribute'], ['Contacts', '/contacts']]]
     ]
@@ -339,7 +339,7 @@ export default function Home() {
           <a className="site-header__link" href={withLanguage('/contacts', currentLanguage)}>{t.contactsLink}</a>
         </nav>
         <div className="site-header__actions">
-          <a className="site-header__link site-header__link--favorite" href={withLanguage('/favorites', currentLanguage)}>♡ {t.favoritesLink} ({favoriteCount})</a>
+          <a className="site-header__link site-header__link--favorite" href={withLanguage('/my-choice', currentLanguage)}>♡ {t.favoritesLink} ({favoriteCount})</a>
           <LanguageSwitcher currentLanguage={currentLanguage} onLanguageChange={updateLanguage} t={t} />
         </div>
       </header>

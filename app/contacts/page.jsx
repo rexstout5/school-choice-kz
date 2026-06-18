@@ -20,7 +20,7 @@ const translations = {
     success: 'Спасибо! Сообщение сохранено. Мы свяжемся с вами после подключения обработки заявок.', info: 'Пока форма работает в тестовом режиме. Данные сохраняются локально в браузере.',
     topics: ['Обновить данные школы', 'Добавить школу', 'Сотрудничество', 'Вопрос по сайту', 'Другое'], footerDescription: 'Экспертный каталог школ Астаны для осознанного выбора семьи.',
     footerColumns: [
-      ['Навигация', [['Каталог школ', '/catalog'], ['Готовность к школе', '/school-readiness'], ['Избранное', '/favorites']]],
+      ['Навигация', [['Каталог школ', '/catalog'], ['Готовность к школе', '/school-readiness'], ['Мой выбор', '/my-choice']]],
       ['Для родителей', [['Как выбрать школу', '/how-to-choose-school']]],
       ['О проекте', [['О нас', '/about'], ['Добавить школу', '/contribute'], ['Контакты', '/contacts']]]
     ]
@@ -32,7 +32,7 @@ const translations = {
     success: 'Рақмет! Хабарлама сақталды. Өтініштерді өңдеу қосылғаннан кейін сізбен хабарласамыз.', info: 'Әзірге форма тест режимінде жұмыс істейді. Деректер браузерде локалды сақталады.',
     topics: ['Мектеп деректерін жаңарту', 'Мектеп қосу', 'Ынтымақтастық', 'Сайт бойынша сұрақ', 'Басқа'], footerDescription: 'Отбасы саналы таңдау жасайтын Астана мектептерінің сараптамалық каталогы.',
     footerColumns: [
-      ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектепке дайындық', '/school-readiness'], ['Таңдаулылар', '/favorites']]],
+      ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектепке дайындық', '/school-readiness'], ['Таңдаулылар', '/my-choice']]],
       ['Ата-аналарға', [['Мектепті қалай таңдау керек', '/how-to-choose-school']]],
       ['Жоба туралы', [['Біз туралы', '/about'], ['Мектеп қосу', '/contribute'], ['Байланыс', '/contacts']]]
     ]
@@ -44,7 +44,7 @@ const translations = {
     success: 'Thank you! The message has been saved. We will contact you after request processing is connected.', info: 'For now, the form works in test mode. Data is stored locally in your browser.',
     topics: ['Update school data', 'Add a school', 'Partnership', 'Website question', 'Other'], footerDescription: 'An expert Astana school catalog for informed family decisions.',
     footerColumns: [
-      ['Navigation', [['School catalog', '/catalog'], ['School readiness', '/school-readiness'], ['Favorites', '/favorites']]],
+      ['Navigation', [['School catalog', '/catalog'], ['School readiness', '/school-readiness'], ['Favorites', '/my-choice']]],
       ['For parents', [['How to choose a school', '/how-to-choose-school']]],
       ['About', [['About us', '/about'], ['Add a school', '/contribute'], ['Contacts', '/contacts']]]
     ]
