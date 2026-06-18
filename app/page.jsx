@@ -24,7 +24,7 @@ const homepageTranslations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Выберите язык интерфейса',
     catalogLink: 'Каталог школ',
-    readinessLink: 'Оценка готовности к школе',
+    readinessLink: 'Готовность к школе',
     addSchoolLink: 'Добавить школу',
     aboutLink: 'О проекте',
     contactsLink: 'Контакты',
@@ -36,14 +36,12 @@ const homepageTranslations = {
     heroSecondaryCta: 'Проверить готовность',
     heroNote: 'Осознанный выбор: каталог → сравнение школ → готовность к школе.',
     astanaSchools: 'школ в каталоге',
-    assistantSteps: ['Откройте каталог школ', 'Сравните важные критерии', 'Проверьте готовность к школе'],
+    assistantSteps: ['Найдите подходящие школы', 'Сравните важные критерии', 'Сохраните варианты для семьи'],
     topTitle: 'Популярные школы',
     topSubtitle: 'Начните с нескольких проверенных вариантов и переходите в каталог для полного списка.',
     tabs: { public: 'Государственные', private: 'Частные' },
     emptyCategory: 'Пока нет школ в этой категории.',
-    catalogButton: 'Смотреть каталог',
-    toolsTitle: 'Полезные инструменты',
-    tools: [['catalog', 'Каталог школ', '/catalog'], ['readiness', 'Оценка готовности к школе', '/school-readiness'], ['heart', 'Избранное', '/favorites']],
+    catalogButton: 'Смотреть все 77 школ →',
     district: 'Район',
     rating: 'Рейтинг',
     tuition: 'Стоимость',
@@ -55,8 +53,8 @@ const homepageTranslations = {
     language: 'Язык',
     footerDescription: 'Экспертный каталог школ Астаны для осознанного выбора семьи.',
     footerColumns: [
-      ['Навигация', [['Каталог школ', '/catalog'], ['Оценка готовности к школе', '/school-readiness'], ['Избранное', '/favorites']]],
-      ['Для родителей', [['Как выбрать школу', '/how-to-choose-school'], ['Вопросы и ответы', '/school-readiness'], ['Полезные статьи', '/how-to-choose-school']]],
+      ['Навигация', [['Каталог школ', '/catalog'], ['Готовность к школе', '/school-readiness'], ['Избранное', '/favorites']]],
+      ['Для родителей', [['Как выбрать школу', '/how-to-choose-school']]],
       ['О проекте', [['О нас', '/about'], ['Добавить школу', '/contribute'], ['Контакты', '/contacts']]]
     ]
   },
@@ -64,7 +62,7 @@ const homepageTranslations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
     catalogLink: 'Мектептер каталогы',
-    readinessLink: 'Мектепке дайындықты бағалау',
+    readinessLink: 'Мектепке дайындық',
     addSchoolLink: 'Мектеп қосу',
     aboutLink: 'Жоба туралы',
     contactsLink: 'Байланыс',
@@ -76,14 +74,12 @@ const homepageTranslations = {
     heroSecondaryCta: 'Дайындықты тексеру',
     heroNote: 'Саналы таңдау: каталог → мектептерді салыстыру → мектепке дайындық.',
     astanaSchools: 'мектеп каталогта',
-    assistantSteps: ['Мектептер каталогын ашыңыз', 'Маңызды критерийлерді салыстырыңыз', 'Мектепке дайындықты бағалаңыз'],
+    assistantSteps: ['Сәйкес мектептерді табыңыз', 'Маңызды критерийлерді салыстырыңыз', 'Отбасыңызға арналған нұсқаларды сақтаңыз'],
     topTitle: 'Танымал мектептер',
     topSubtitle: 'Бірнеше тексерілген нұсқадан бастап, толық тізім үшін каталогқа өтіңіз.',
     tabs: { public: 'Мемлекеттік', private: 'Жеке' },
     emptyCategory: 'Бұл санатта әзірге мектеп жоқ.',
-    catalogButton: 'Каталогты қарау',
-    toolsTitle: 'Пайдалы құралдар',
-    tools: [['catalog', 'Мектептер каталогы', '/catalog'], ['readiness', 'Мектепке дайындықты бағалау', '/school-readiness'], ['heart', 'Таңдаулылар', '/favorites']],
+    catalogButton: 'Барлық 77 мектепті көру →',
     district: 'Аудан',
     rating: 'Рейтинг',
     tuition: 'Құны',
@@ -95,8 +91,8 @@ const homepageTranslations = {
     language: 'Тіл',
     footerDescription: 'Отбасы саналы таңдау жасайтын Астана мектептерінің сараптамалық каталогы.',
     footerColumns: [
-      ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектепке дайындықты бағалау', '/school-readiness'], ['Таңдаулылар', '/favorites']]],
-      ['Ата-аналарға', [['Мектепті қалай таңдау керек', '/how-to-choose-school'], ['Сұрақтар мен жауаптар', '/school-readiness'], ['Пайдалы мақалалар', '/how-to-choose-school']]],
+      ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектепке дайындық', '/school-readiness'], ['Таңдаулылар', '/favorites']]],
+      ['Ата-аналарға', [['Мектепті қалай таңдау керек', '/how-to-choose-school']]],
       ['Жоба туралы', [['Біз туралы', '/about'], ['Мектеп қосу', '/contribute'], ['Байланыс', '/contacts']]]
     ]
   },
@@ -104,7 +100,7 @@ const homepageTranslations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Choose interface language',
     catalogLink: 'Catalog',
-    readinessLink: 'School readiness assessment',
+    readinessLink: 'School readiness',
     addSchoolLink: 'Add school',
     aboutLink: 'About',
     contactsLink: 'Contacts',
@@ -116,14 +112,12 @@ const homepageTranslations = {
     heroSecondaryCta: 'Check readiness',
     heroNote: 'A focused path: catalog → school comparison → school readiness.',
     astanaSchools: 'schools in the catalog',
-    assistantSteps: ['Open the school catalog', 'Compare important criteria', 'Check school readiness'],
+    assistantSteps: ['Find suitable schools', 'Compare important criteria', 'Save family options'],
     topTitle: 'Popular schools',
     topSubtitle: 'Start with a few trusted options, then open the catalog for the full list.',
     tabs: { public: 'Public', private: 'Private' },
     emptyCategory: 'There are no schools in this category yet.',
-    catalogButton: 'View catalog',
-    toolsTitle: 'Helpful tools',
-    tools: [['catalog', 'School catalog', '/catalog'], ['readiness', 'School readiness assessment', '/school-readiness'], ['heart', 'Favorites', '/favorites']],
+    catalogButton: 'View all 77 schools →',
     district: 'District',
     rating: 'Rating',
     tuition: 'Tuition',
@@ -135,8 +129,8 @@ const homepageTranslations = {
     language: 'Language',
     footerDescription: 'An expert Astana school catalog for informed family decisions.',
     footerColumns: [
-      ['Navigation', [['School catalog', '/catalog'], ['School readiness assessment', '/school-readiness'], ['Favorites', '/favorites']]],
-      ['For parents', [['How to choose a school', '/how-to-choose-school'], ['Questions and answers', '/school-readiness'], ['Helpful articles', '/how-to-choose-school']]],
+      ['Navigation', [['School catalog', '/catalog'], ['School readiness', '/school-readiness'], ['Favorites', '/favorites']]],
+      ['For parents', [['How to choose a school', '/how-to-choose-school']]],
       ['About', [['About us', '/about'], ['Add a school', '/contribute'], ['Contacts', '/contacts']]]
     ]
   }
@@ -148,26 +142,6 @@ function withLanguage(href, language) {
   return `${href}${href.includes('?') ? '&' : '?'}lang=${language}`;
 }
 
-
-function ToolIcon({ name }) {
-  const common = { width: '32', height: '32', viewBox: '0 0 32 32', fill: 'none', 'aria-hidden': 'true' };
-  if (name === 'catalog') {
-    return <svg {...common}><path d="M8 6h11a5 5 0 0 1 5 5v15H11a5 5 0 0 0-5-5V8a2 2 0 0 1 2-2Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/><path d="M11 11h8M11 16h7" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>;
-  }
-  if (name === 'map') {
-    return <svg {...common}><path d="M12 5 4 8v19l8-3 8 3 8-3V5l-8 3-8-3Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/><path d="M12 5v19M20 8v19" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>;
-  }
-  if (name === 'quiz') {
-    return <svg {...common}><path d="M8 8h16M8 16h16M8 24h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><path d="m22 22 2 2 4-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>;
-  }
-  if (name === 'readiness') {
-    return <svg {...common}><path d="M16 5c4 0 7 3 7 7 0 5.5-7 15-7 15S9 17.5 9 12c0-4 3-7 7-7Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/><path d="M13 12.2 15.2 14.4 19.2 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>;
-  }
-  if (name === 'star') {
-    return <svg {...common}><path d="m16 4 3.5 7.1 7.8 1.1-5.6 5.5 1.3 7.7-7-3.7-7 3.7 1.3-7.7-5.6-5.5 7.8-1.1L16 4Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>;
-  }
-  return <svg {...common}><path d="M16 26s-10-5.8-10-14a5.5 5.5 0 0 1 10-3.1A5.5 5.5 0 0 1 26 12c0 8.2-10 14-10 14Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>;
-}
 
 function SocialIcon({ name }) {
   const common = { width: '20', height: '20', viewBox: '0 0 24 24', fill: 'none', 'aria-hidden': 'true' };
@@ -267,11 +241,16 @@ function PopularSchools({ groups, moneyFormatter, t, currentLanguage, reviewsByS
         </div>
       </div>
       {activeSchools.length > 0 ? (
-        <div className="top-school-grid">
-          {activeSchools.map((school, index) => (
-            <HomeSchoolCard key={school.id} rank={index + 1} school={school} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} ratingStats={getSchoolRatingStats(school, getSchoolReviews(reviewsBySchool, school.id))} />
-          ))}
-        </div>
+        <>
+          <div className="top-school-grid">
+            {activeSchools.map((school, index) => (
+              <HomeSchoolCard key={school.id} rank={index + 1} school={school} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} ratingStats={getSchoolRatingStats(school, getSchoolReviews(reviewsBySchool, school.id))} />
+            ))}
+          </div>
+          <div className="top-schools__cta">
+            <a className="hero__cta hero__cta--secondary" href={withLanguage('/catalog', currentLanguage)}>{t.catalogButton}</a>
+          </div>
+        </>
       ) : (
         <div className="empty-note top-schools__empty" role="status">
           <p>{t.emptyCategory}</p>
@@ -334,8 +313,8 @@ export default function Home() {
     const isPrivateSchool = (school) => school.type === 'private';
 
     return {
-      public: sortSchools(schools.filter(isPublicSchool), initialSort, currentLanguage, reviewsBySchool).slice(0, 5),
-      private: sortSchools(schools.filter(isPrivateSchool), initialSort, currentLanguage, reviewsBySchool).slice(0, 5)
+      public: sortSchools(schools.filter(isPublicSchool), initialSort, currentLanguage, reviewsBySchool).slice(0, 3),
+      private: sortSchools(schools.filter(isPrivateSchool), initialSort, currentLanguage, reviewsBySchool).slice(0, 3)
     };
   }, [currentLanguage, reviewsBySchool]);
 
@@ -379,15 +358,6 @@ export default function Home() {
       </section>
 
       <PopularSchools groups={popularSchoolGroups} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} reviewsBySchool={reviewsBySchool} />
-
-      <section className="tool-section" aria-labelledby="tools-title">
-        <div className="section-heading"><h2 id="tools-title">{t.toolsTitle}</h2></div>
-        <div className="tool-card-grid">
-          {t.tools.map(([icon, title, href]) => (
-            <a className="tool-card tool-card--large" key={title} href={withLanguage(href, currentLanguage)}><span><ToolIcon name={icon} /></span><strong>{title}</strong><em>→</em></a>
-          ))}
-        </div>
-      </section>
 
 
       <footer className="site-footer site-footer--simple" id="footer">

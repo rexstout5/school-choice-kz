@@ -14,38 +14,38 @@ const languageOptions = [
 
 const translations = {
   ru: {
-    navLabel: 'Навигация по сайту', catalogLink: 'Каталог школ', readinessLink: 'Оценка готовности к школе', aboutLink: 'О проекте', contactsLink: 'Контакты', languageSwitcherLabel: 'Выберите язык интерфейса',
+    navLabel: 'Навигация по сайту', catalogLink: 'Каталог школ', readinessLink: 'Готовность к школе', aboutLink: 'О проекте', contactsLink: 'Контакты', languageSwitcherLabel: 'Выберите язык интерфейса',
     title: 'Контакты', subtitle: 'Свяжитесь с командой BilimChoice по вопросам сотрудничества, обновления данных или обратной связи.',
     name: 'Имя', email: 'Email', phone: 'Телефон', topic: 'Тема обращения', message: 'Сообщение', button: 'Отправить сообщение',
     success: 'Спасибо! Сообщение сохранено. Мы свяжемся с вами после подключения обработки заявок.', info: 'Пока форма работает в тестовом режиме. Данные сохраняются локально в браузере.',
     topics: ['Обновить данные школы', 'Добавить школу', 'Сотрудничество', 'Вопрос по сайту', 'Другое'], footerDescription: 'Экспертный каталог школ Астаны для осознанного выбора семьи.',
     footerColumns: [
-      ['Навигация', [['Каталог школ', '/catalog'], ['Оценка готовности к школе', '/school-readiness'], ['Избранное', '/favorites']]],
-      ['Для родителей', [['Как выбрать школу', '/how-to-choose-school'], ['Вопросы и ответы', '/school-readiness'], ['Полезные статьи', '/how-to-choose-school']]],
+      ['Навигация', [['Каталог школ', '/catalog'], ['Готовность к школе', '/school-readiness'], ['Избранное', '/favorites']]],
+      ['Для родителей', [['Как выбрать школу', '/how-to-choose-school']]],
       ['О проекте', [['О нас', '/about'], ['Добавить школу', '/contribute'], ['Контакты', '/contacts']]]
     ]
   },
   kz: {
-    navLabel: 'Сайт навигациясы', catalogLink: 'Мектептер каталогы', readinessLink: 'Мектепке дайындықты бағалау', aboutLink: 'Жоба туралы', contactsLink: 'Байланыс', languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
+    navLabel: 'Сайт навигациясы', catalogLink: 'Мектептер каталогы', readinessLink: 'Мектепке дайындық', aboutLink: 'Жоба туралы', contactsLink: 'Байланыс', languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
     title: 'Байланыс', subtitle: 'Ынтымақтастық, деректерді жаңарту немесе кері байланыс бойынша BilimChoice командасына хабарласыңыз.',
     name: 'Аты-жөні', email: 'Email', phone: 'Телефон', topic: 'Өтініш тақырыбы', message: 'Хабарлама', button: 'Хабарлама жіберу',
     success: 'Рақмет! Хабарлама сақталды. Өтініштерді өңдеу қосылғаннан кейін сізбен хабарласамыз.', info: 'Әзірге форма тест режимінде жұмыс істейді. Деректер браузерде локалды сақталады.',
     topics: ['Мектеп деректерін жаңарту', 'Мектеп қосу', 'Ынтымақтастық', 'Сайт бойынша сұрақ', 'Басқа'], footerDescription: 'Отбасы саналы таңдау жасайтын Астана мектептерінің сараптамалық каталогы.',
     footerColumns: [
-      ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектепке дайындықты бағалау', '/school-readiness'], ['Таңдаулылар', '/favorites']]],
-      ['Ата-аналарға', [['Мектепті қалай таңдау керек', '/how-to-choose-school'], ['Сұрақтар мен жауаптар', '/school-readiness'], ['Пайдалы мақалалар', '/how-to-choose-school']]],
+      ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектепке дайындық', '/school-readiness'], ['Таңдаулылар', '/favorites']]],
+      ['Ата-аналарға', [['Мектепті қалай таңдау керек', '/how-to-choose-school']]],
       ['Жоба туралы', [['Біз туралы', '/about'], ['Мектеп қосу', '/contribute'], ['Байланыс', '/contacts']]]
     ]
   },
   en: {
-    navLabel: 'Site navigation', catalogLink: 'Catalog', readinessLink: 'School readiness assessment', aboutLink: 'About', contactsLink: 'Contacts', languageSwitcherLabel: 'Choose interface language',
+    navLabel: 'Site navigation', catalogLink: 'Catalog', readinessLink: 'School readiness', aboutLink: 'About', contactsLink: 'Contacts', languageSwitcherLabel: 'Choose interface language',
     title: 'Contacts', subtitle: 'Contact the BilimChoice team about partnerships, data updates, or feedback.',
     name: 'Name', email: 'Email', phone: 'Phone', topic: 'Topic', message: 'Message', button: 'Send message',
     success: 'Thank you! The message has been saved. We will contact you after request processing is connected.', info: 'For now, the form works in test mode. Data is stored locally in your browser.',
     topics: ['Update school data', 'Add a school', 'Partnership', 'Website question', 'Other'], footerDescription: 'An expert Astana school catalog for informed family decisions.',
     footerColumns: [
-      ['Navigation', [['School catalog', '/catalog'], ['School readiness assessment', '/school-readiness'], ['Favorites', '/favorites']]],
-      ['For parents', [['How to choose a school', '/how-to-choose-school'], ['Questions and answers', '/school-readiness'], ['Helpful articles', '/how-to-choose-school']]],
+      ['Navigation', [['School catalog', '/catalog'], ['School readiness', '/school-readiness'], ['Favorites', '/favorites']]],
+      ['For parents', [['How to choose a school', '/how-to-choose-school']]],
       ['About', [['About us', '/about'], ['Add a school', '/contribute'], ['Contacts', '/contacts']]]
     ]
   }

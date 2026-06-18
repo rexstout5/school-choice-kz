@@ -3,7 +3,7 @@ export const seoFooterLinks = [
   { href: '/private-schools-astana', label: { ru: 'Частные школы Астаны', kk: 'Астанадағы жеке мектептер', en: 'Private schools in Astana' } },
   { href: '/public-schools-astana', label: { ru: 'Государственные школы Астаны', kk: 'Астанадағы мемлекеттік мектептер', en: 'Public schools in Astana' } },
   { href: '/how-to-choose-school', label: { ru: 'Как выбрать школу', kk: 'Мектепті қалай таңдау керек', en: 'How to choose a school' } },
-  { href: '/school-readiness', label: { ru: 'Оценка готовности к школе', kk: 'Мектепке дайындықты бағалау', en: 'School readiness assessment' } }
+  { href: '/school-readiness', label: { ru: 'Готовность к школе', kk: 'Мектепке дайындық', en: 'School readiness' } }
 ];
 
 const sharedCta = {
@@ -60,8 +60,8 @@ export const seoPages = {
   },
   'school-readiness': {
     slug: 'school-readiness', schemaType: 'FAQPage', featuredTypes: ['public', 'private'],
-    h1: { ru: 'Оценка готовности к школе: мягкий чек-лист для родителей', kk: 'Мектепке дайындықты бағалау: ата-аналарға жұмсақ чек-лист', en: 'School readiness assessment: a gentle parent checklist' },
-    intro: { ru: 'Оценка готовности к школе — это не только чтение и счет. Важны сон, самостоятельность, речь, внимание, умение просить помощь и спокойная адаптация к новому режиму.', kk: 'Мектепке дайындықты бағалау тек оқу мен санау емес. Ұйқы, дербестік, сөйлеу, зейін, көмек сұрай білу және жаңа тәртіпке жайлы бейімделу маңызды.', en: 'School readiness assessment is not only reading and counting. Sleep, independence, speech, attention, asking for help, and calm adaptation to routine matter too.' },
+    h1: { ru: 'Готовность к школе: мягкий чек-лист для родителей', kk: 'Мектепке дайындық: ата-аналарға жұмсақ чек-лист', en: 'School readiness: a gentle parent checklist' },
+    intro: { ru: 'Готовность к школе — это не только чтение и счет. Важны сон, самостоятельность, речь, внимание, умение просить помощь и спокойная адаптация к новому режиму.', kk: 'Мектепке дайындық тек оқу мен санау емес. Ұйқы, дербестік, сөйлеу, зейін, көмек сұрай білу және жаңа тәртіпке жайлы бейімделу маңызды.', en: 'School readiness is not only reading and counting. Sleep, independence, speech, attention, asking for help, and calm adaptation to routine matter too.' },
     sections: [
       { title: { ru: 'Бытовая самостоятельность', kk: 'Тұрмыстық дербестік', en: 'Everyday independence' }, body: { ru: 'Ребенку полезно уметь переодеваться, собирать рюкзак, следить за вещами и сообщать взрослому о дискомфорте.', kk: 'Бала киініп-шешінуді, сөмке жинауды, заттарын қадағалауды және жайсыздықты ересекке айтуды білсе пайдалы.', en: 'It helps if the child can change clothes, pack a bag, look after belongings, and tell an adult about discomfort.' } },
       { title: { ru: 'Социальная адаптация', kk: 'Әлеуметтік бейімделу', en: 'Social adjustment' }, body: { ru: 'Потренируйте приветствие, просьбу о помощи, ожидание очереди, спокойное завершение игры и разговор о чувствах после сложного дня.', kk: 'Сәлемдесу, көмек сұрау, кезек күту, ойынды тыныш аяқтау және қиын күннен кейін сезім туралы сөйлесуді жаттықтырыңыз.', en: 'Practice greetings, asking for help, waiting turns, ending play calmly, and talking about feelings after a hard day.' } }
