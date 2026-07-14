@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import Image from 'next/image';
 import { getLocalizedEnumLabel, getLocalizedSchoolValue, schools } from '../src/data/schools.js';
 import SchoolImageWithFallback from '../src/components/SchoolImageWithFallback.jsx';
 import { getSchoolCoverImage, getSchoolPlaceholderImage } from '../src/utils/schoolImages.js';
@@ -31,18 +32,19 @@ const homepageTranslations = {
     contactsLink: 'Контакты',
     favoritesLink: 'Мой выбор',
     footerLabel: 'Навигация по сайту',
-    heroTitle: 'Найдите школу, которая подходит вашей семье',
-    heroDescription: 'Изучайте каталог школ, сравнивайте ключевые критерии и проверяйте готовность ребенка к школе.',
-    heroCta: 'Смотреть каталог',
-    heroSecondaryCta: 'Проверить готовность',
-    heroNote: 'Осознанный выбор: каталог → сравнение школ → готовность к школе.',
+    heroEyebrow: 'ВЫБОР ШКОЛЫ В АСТАНЕ',
+    heroTitle: 'Школа, которая подходит вашему ребёнку',
+    heroDescription: 'Сравнивайте школы, изучайте проверенные данные и получайте персональные рекомендации для вашей семьи.',
+    heroCta: 'Подобрать школу',
+    heroSecondaryCta: 'Смотреть каталог',
+    heroNote: '77 школ · 5 районов · данные регулярно обновляются',
     astanaSchools: 'школ в каталоге',
     assistantSteps: ['Найдите подходящие школы', 'Сравните важные критерии', 'Сохраните варианты для семьи'],
-    topTitle: 'Популярные школы',
-    topSubtitle: 'Начните с нескольких проверенных вариантов и переходите в каталог для полного списка.',
+    topTitle: 'Школы, с которых стоит начать',
+    topSubtitle: 'Несколько популярных вариантов. Полный список доступен в каталоге.',
     tabs: { public: 'Государственные', private: 'Частные' },
     emptyCategory: 'Пока нет школ в этой категории.',
-    catalogButton: 'Смотреть все 77 школ →',
+    catalogButton: 'Смотреть все школы →',
     district: 'Район',
     rating: 'Рейтинг',
     tuition: 'Стоимость',
@@ -52,6 +54,16 @@ const homepageTranslations = {
     priceUnknown: 'Уточняется',
     perMonth: 'в месяц',
     language: 'Язык',
+    toolOneTitle: 'Персональная рекомендация',
+    toolOneText: 'Ответьте на вопросы о семье и ребёнке и получите объяснимый шорт-лист школ.',
+    toolOneCta: 'Подобрать школу',
+    toolTwoTitle: 'Готовность к школе',
+    toolTwoText: 'Оцените навыки ребёнка и получите рекомендации для подготовки к школьному старту.',
+    toolTwoCta: 'Пройти оценку',
+    finalCtaTitle: 'Начните с того, что важно вашей семье',
+    finalCtaText: 'Каталог, сравнение и персональная рекомендация помогут сузить выбор и подготовиться к знакомству со школами.',
+    finalCtaButton: 'Начать подбор',
+    trustItems: ['Проверенные профили школ', 'Сравнение без лишних шагов', 'Сохранение избранного'],
     footerDescription: 'Экспертный каталог школ Астаны для осознанного выбора семьи.',
     footerColumns: [
       ['Навигация', [['Каталог школ', '/catalog'], ['Подобрать школу', '/recommendation'], ['Готовность к школе', '/school-readiness'], ['Мой выбор', '/my-choice']]],
@@ -70,11 +82,12 @@ const homepageTranslations = {
     contactsLink: 'Байланыс',
     favoritesLink: 'Таңдаулылар',
     footerLabel: 'Сайт навигациясы',
-    heroTitle: 'Отбасыңызға сай келетін мектепті табыңыз',
+    heroEyebrow: 'АСТАНАДАҒЫ МЕКТЕП ТАҢДАУ',
+    heroTitle: 'Балаңызға сай келетін мектеп',
     heroDescription: 'Мектептер каталогын зерттеп, маңызды критерийлерді салыстырып, баланың мектепке дайындығын тексеріңіз.',
     heroCta: 'Каталогты қарау',
     heroSecondaryCta: 'Дайындықты тексеру',
-    heroNote: 'Саналы таңдау: каталог → мектептерді салыстыру → мектепке дайындық.',
+    heroNote: '77 мектеп · 5 аудан · деректер тұрақты жаңартылады',
     astanaSchools: 'мектеп каталогта',
     assistantSteps: ['Сәйкес мектептерді табыңыз', 'Маңызды критерийлерді салыстырыңыз', 'Отбасыңызға арналған нұсқаларды сақтаңыз'],
     topTitle: 'Танымал мектептер',
@@ -91,6 +104,16 @@ const homepageTranslations = {
     priceUnknown: 'Нақтыланады',
     perMonth: 'айына',
     language: 'Тіл',
+    toolOneTitle: 'Персональная рекомендация',
+    toolOneText: 'Ответьте на вопросы о семье и ребёнке и получите объяснимый шорт-лист школ.',
+    toolOneCta: 'Подобрать школу',
+    toolTwoTitle: 'Готовность к школе',
+    toolTwoText: 'Оцените навыки ребёнка и получите рекомендации для подготовки к школьному старту.',
+    toolTwoCta: 'Пройти оценку',
+    finalCtaTitle: 'Начните с того, что важно вашей семье',
+    finalCtaText: 'Каталог, сравнение и персональная рекомендация помогут сузить выбор и подготовиться к знакомству со школами.',
+    finalCtaButton: 'Начать подбор',
+    trustItems: ['Проверенные профили школ', 'Сравнение без лишних шагов', 'Сохранение избранного'],
     footerDescription: 'Отбасы саналы таңдау жасайтын Астана мектептерінің сараптамалық каталогы.',
     footerColumns: [
       ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектеп таңдау', '/recommendation'], ['Мектепке дайындық', '/school-readiness'], ['Таңдаулылар', '/my-choice']]],
@@ -109,11 +132,12 @@ const homepageTranslations = {
     contactsLink: 'Contacts',
     favoritesLink: 'Favorites',
     footerLabel: 'Site navigation',
-    heroTitle: 'Find the school that fits your family',
+    heroEyebrow: 'SCHOOL CHOICE IN ASTANA',
+    heroTitle: 'A school that fits your child',
     heroDescription: 'Explore the school catalog, compare key criteria, and check school readiness in one focused flow.',
     heroCta: 'View catalog',
     heroSecondaryCta: 'Check readiness',
-    heroNote: 'A focused path: catalog → school comparison → school readiness.',
+    heroNote: '77 schools · 5 districts · data updated regularly',
     astanaSchools: 'schools in the catalog',
     assistantSteps: ['Find suitable schools', 'Compare important criteria', 'Save family options'],
     topTitle: 'Popular schools',
@@ -130,6 +154,16 @@ const homepageTranslations = {
     priceUnknown: 'To be confirmed',
     perMonth: 'month',
     language: 'Language',
+    toolOneTitle: 'Персональная рекомендация',
+    toolOneText: 'Ответьте на вопросы о семье и ребёнке и получите объяснимый шорт-лист школ.',
+    toolOneCta: 'Подобрать школу',
+    toolTwoTitle: 'Готовность к школе',
+    toolTwoText: 'Оцените навыки ребёнка и получите рекомендации для подготовки к школьному старту.',
+    toolTwoCta: 'Пройти оценку',
+    finalCtaTitle: 'Начните с того, что важно вашей семье',
+    finalCtaText: 'Каталог, сравнение и персональная рекомендация помогут сузить выбор и подготовиться к знакомству со школами.',
+    finalCtaButton: 'Начать подбор',
+    trustItems: ['Проверенные профили школ', 'Сравнение без лишних шагов', 'Сохранение избранного'],
     footerDescription: 'An expert Astana school catalog for informed family decisions.',
     footerColumns: [
       ['Navigation', [['School catalog', '/catalog'], ['Find a School Match', '/recommendation'], ['School readiness', '/school-readiness'], ['Favorites', '/my-choice']]],
@@ -193,36 +227,59 @@ function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStat
   return (
     <article className="top-school-card">
       <div className="top-school-card__image">
-        <span className="top-school-card__rank">#{rank}</span>
         <SchoolImageWithFallback src={cardImage} alt={localizedName} schoolName={localizedName} loading="lazy" decoding="async" size="card" fallbackSrc={fallbackImage} />
       </div>
       <div className="top-school-card__body">
         <h3>{localizedName}</h3>
-        <p className="top-school-card__district">{localizedDistrict}</p>
-        <div className="top-school-card__meta">
-          <span className="top-school-card__rating" aria-label={`${t.rating}: ${rating}`}>⭐ {rating}</span>
-          <span className="top-school-card__tuition">{tuition}</span>
-        </div>
+        <p className="top-school-card__district">{getLocalizedEnumLabel('types', school.type, currentLanguage)} · {localizedDistrict}</p>
+        <dl className="top-school-card__facts">
+          <div><dt>{t.language}</dt><dd>{Array.isArray(school.languages) ? school.languages.join(', ') : getLocalizedSchoolValue(school.languages, currentLanguage) || '—'}</dd></div>
+          <div><dt>{t.tuition}</dt><dd>{tuition}</dd></div>
+          <div><dt>{t.rating}</dt><dd>{rating}</dd></div>
+        </dl>
+        <a className="button-link button-link--quiet" href={withLanguage(`/schools/${school.slug}`, currentLanguage)}>{t.details}</a>
       </div>
     </article>
   );
 }
 
-function HeroVisual({ t }) {
+function HeroMedia({ poster = '/images/hero/astana-hero.jpg', videoSrc }) {
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [canUseVideo, setCanUseVideo] = useState(false);
+
+  useEffect(() => {
+    const desktop = window.matchMedia('(min-width: 901px)').matches;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setCanUseVideo(Boolean(videoSrc && desktop && !reduced));
+  }, [videoSrc]);
+
+  const toggleVideo = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      video.play();
+      setIsPlaying(true);
+    } else {
+      video.pause();
+      setIsPlaying(false);
+    }
+  };
+
   return (
-    <div className="hero__assistant" aria-label={t.heroNote}>
-      <div className="hero__stat">
-        <strong>{schools.length}</strong>
-        <span>{t.astanaSchools}</span>
-      </div>
-      <ol>
-        {t.assistantSteps.map((step) => (
-          <li key={step}>{step}</li>
-        ))}
-      </ol>
-    </div>
+    <figure className="hero-media" aria-label="BilimChoice school selection preview">
+      {canUseVideo ? (
+        <video ref={videoRef} className="hero-media__asset" poster={poster} muted playsInline loop autoPlay onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)}>
+          <source src={videoSrc} type={videoSrc.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
+        </video>
+      ) : (
+        <Image className="hero-media__asset" src={poster} alt="Современные школы Астаны" width={760} height={620} priority />
+      )}
+      {canUseVideo ? <button className="hero-media__control" type="button" onClick={toggleVideo} aria-label={isPlaying ? 'Поставить видео на паузу' : 'Воспроизвести видео'}>{isPlaying ? 'Pause' : 'Play'}</button> : null}
+    </figure>
   );
 }
+
 
 function PopularSchools({ groups, moneyFormatter, t, currentLanguage, reviewsBySchool }) {
   const [activeTab, setActiveTab] = useState('public');
@@ -340,7 +397,6 @@ export default function Home() {
           <a className="site-header__link" href={withLanguage('/recommendation', currentLanguage)}>{t.recommendationLink}</a>
           <a className="site-header__link" href={withLanguage('/school-readiness', currentLanguage)}>{t.readinessLink}</a>
           <a className="site-header__link" href={withLanguage('/about', currentLanguage)}>{t.aboutLink}</a>
-          <a className="site-header__link" href={withLanguage('/contacts', currentLanguage)}>{t.contactsLink}</a>
         </nav>
         <div className="site-header__actions">
           <a className="site-header__link site-header__link--favorite" href={withLanguage('/my-choice', currentLanguage)}>♡ {t.favoritesLink} ({favoriteCount})</a>
@@ -350,19 +406,45 @@ export default function Home() {
 
       <section className="hero hero--landing" id="top">
         <div className="hero__copy">
+          <p className="hero__kicker">{t.heroEyebrow}</p>
           <h1>{t.heroTitle}</h1>
           <p>{t.heroDescription}</p>
           <div className="hero__actions">
-            <a className="hero__cta" href={withLanguage('/catalog', currentLanguage)}>{t.heroCta}</a>
-            <a className="hero__cta hero__cta--secondary" href={withLanguage('/school-readiness', currentLanguage)}>{t.heroSecondaryCta}</a>
+            <a className="hero__cta" href={withLanguage('/recommendation', currentLanguage)}>{t.heroCta}</a>
+            <a className="hero__cta hero__cta--secondary" href={withLanguage('/catalog', currentLanguage)}>{t.heroSecondaryCta}</a>
           </div>
           <p className="hero__note">{t.heroNote}</p>
         </div>
-        <HeroVisual t={t} />
+        <HeroMedia />
+      </section>
+
+
+      <section className="trust-strip" aria-label="BilimChoice trust signals">
+        {t.trustItems.map((item) => <span key={item}>{item}</span>)}
       </section>
 
       <PopularSchools groups={popularSchoolGroups} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} reviewsBySchool={reviewsBySchool} />
 
+      <section className="tool-section" aria-labelledby="tool-section-title">
+        <div className="tool-card-grid tool-card-grid--two">
+          <article className="tool-card--large tool-card--sage">
+            <h2 id="tool-section-title">{t.toolOneTitle}</h2>
+            <p>{t.toolOneText}</p>
+            <a className="button-link" href={withLanguage('/recommendation', currentLanguage)}>{t.toolOneCta}</a>
+          </article>
+          <article className="tool-card--large tool-card--sand">
+            <h2>{t.toolTwoTitle}</h2>
+            <p>{t.toolTwoText}</p>
+            <a className="button-link button-link--quiet" href={withLanguage('/school-readiness', currentLanguage)}>{t.toolTwoCta}</a>
+          </article>
+        </div>
+      </section>
+
+      <section className="final-cta" aria-labelledby="final-cta-title">
+        <h2 id="final-cta-title">{t.finalCtaTitle}</h2>
+        <p>{t.finalCtaText}</p>
+        <a className="hero__cta" href={withLanguage('/recommendation', currentLanguage)}>{t.finalCtaButton}</a>
+      </section>
 
       <footer className="site-footer site-footer--simple" id="footer">
         <div className="site-footer__brand"><strong>{brand.name}</strong><p>{t.footerDescription}</p><SocialLinks /></div>
