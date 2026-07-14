@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getLocalizedEnumLabel, getLocalizedSchoolValue, schools } from '../../../src/data/schools.js';
 import FavoriteButton from '../../../src/components/FavoriteButton.jsx';
+import CompareButton from '../../../src/components/CompareButton.jsx';
 import SchoolReviews from '../../../src/components/SchoolReviews.jsx';
 import { getBrandTitle } from '../../../src/data/brand.js';
 import { formatAverageRating } from '../../../src/lib/reviews.js';
@@ -75,6 +76,9 @@ const translations = {
     freePublicSchool: 'Бесплатная государственная школа',
     priceUnknown: 'Стоимость уточняется',
     perMonth: 'в месяц',
+    passport: {
+      openSourceRating: 'Оценка по открытым источникам', quickSummary: 'Кратко от BilimChoice', quickFacts: 'Основные характеристики', educationProfile: 'Образовательный профиль', parentHighlights: 'Что чаще всего отмечают родители', reviewSummaryNote: 'Саммари подготовлено на основе анализа общедоступных отзывов. Формулировки являются обобщением и не содержат дословных цитат.', considerations: 'Что стоит учитывать', bestFor: 'Кому может подойти эта школа', mayNotFit: 'Когда стоит рассмотреть другие варианты', admission: 'Что может понадобиться при поступлении', contactsAndSources: 'Контакты и источники', sourcesAndFreshness: 'Источники и актуальность', lastVerified: 'Последняя проверка данных', trustNote: 'Данные основаны на официальной информации школы и общедоступных источниках. BilimChoice не является представителем школы.', grades: 'Классы', direction: 'Направленность', officialWebsite: 'Официальный сайт', instagram: 'Instagram', addToCompare: 'Добавить к сравнению', removeFromCompare: 'В сравнении'
+    },
     reviews: {
       kicker: 'Отзывы родителей',
       title: 'Отзывы о школе',
@@ -166,6 +170,9 @@ const translations = {
     freePublicSchool: 'Тегін мемлекеттік мектеп',
     priceUnknown: 'Құны нақтыланады',
     perMonth: 'айына',
+    passport: {
+      openSourceRating: 'Ашық дереккөздердегі баға', quickSummary: 'BilimChoice қысқаша пікірі', quickFacts: 'Негізгі сипаттамалар', educationProfile: 'Білім беру профилі', parentHighlights: 'Ата-аналар жиі атап өтетін жайттар', reviewSummaryNote: 'Саммари жалпыға қолжетімді пікірлерді талдау негізінде дайындалды. Мәтіндер жалпыланған және дословты дәйексөздер жоқ.', considerations: 'Нені ескеру керек', bestFor: 'Бұл мектеп кімге қолайлы болуы мүмкін', mayNotFit: 'Қай кезде басқа нұсқаларды қарастырған жөн', admission: 'Қабылдау кезінде не қажет болуы мүмкін', contactsAndSources: 'Байланыс және дереккөздер', sourcesAndFreshness: 'Дереккөздер және өзектілік', lastVerified: 'Деректер соңғы рет тексерілді', trustNote: 'Деректер мектептің ресми ақпаратына және жалпыға қолжетімді дереккөздерге негізделген. BilimChoice мектеп өкілі емес.', grades: 'Сыныптар', direction: 'Бағыты', officialWebsite: 'Ресми сайт', instagram: 'Instagram', addToCompare: 'Салыстыруға қосу', removeFromCompare: 'Салыстыруда'
+    },
     reviews: {
       kicker: 'Ата-аналар пікірі',
       title: 'Мектеп туралы пікірлер',
@@ -257,6 +264,9 @@ const translations = {
     freePublicSchool: 'Free public school',
     priceUnknown: 'Tuition to be confirmed',
     perMonth: 'month',
+    passport: {
+      openSourceRating: 'Score from open sources', quickSummary: 'BilimChoice summary', quickFacts: 'Key facts', educationProfile: 'Educational profile', parentHighlights: 'What parents most often highlight', reviewSummaryNote: 'This summary is based on analysis of publicly available reviews. Wording is generalized and does not include verbatim quotes.', considerations: 'What to consider', bestFor: 'Who this school may fit', mayNotFit: 'When to consider other options', admission: 'What may be needed for admission', contactsAndSources: 'Contacts and sources', sourcesAndFreshness: 'Sources and freshness', lastVerified: 'Last data check', trustNote: 'Data is based on official school information and publicly available sources. BilimChoice is not a representative of the school.', grades: 'Grades', direction: 'Focus areas', officialWebsite: 'Official website', instagram: 'Instagram', addToCompare: 'Add to comparison', removeFromCompare: 'In comparison'
+    },
     reviews: {
       kicker: 'Parent reviews',
       title: 'School reviews',
@@ -507,6 +517,45 @@ export async function generateMetadata({ params }) {
   };
 }
 
+const getProfileList = (profile, key, language) => getLocalizedList(profile?.[key], language);
+const getProfileText = (profile, key, language) => getLocalizedSchoolValue(profile?.[key], language);
+const normalizeUrl = (url) => (hasValue(url) ? String(url).trim() : '');
+
+function SchoolHero({ school, name, type, district, languages, rating, twoGisUrl, t }) {
+  return <header className="school-passport__hero"><div><p className="hero__kicker">{t.pageKicker}</p><h1>{name}</h1><div className="school-passport__meta">{[type, district, languages].filter(hasValue).map((item) => <span key={item}>{item}</span>)}</div>{rating.rating !== null ? <div className="school-detail__rating"><span>{t.passport.openSourceRating}</span><strong>⭐ {formatAverageRating(rating.rating)}</strong>{rating.reviewsCount !== null ? <span>{t.ratingBasedOnReviews(rating.reviewsCount)}</span> : null}</div> : null}</div><div className="school-detail__actions"><FavoriteButton schoolId={school.id} labels={t.favorite} className="favorite-button--detail" /><CompareButton schoolId={school.id} labels={{ add: t.passport.addToCompare, remove: t.passport.removeFromCompare }} />{normalizeUrl(twoGisUrl) ? <a className="button-link" href={twoGisUrl} target="_blank" rel="noopener noreferrer">{t.openIn2Gis}</a> : null}</div></header>;
+}
+
+function SchoolSummary({ summary, t }) {
+  return hasValue(summary) ? <section className="school-detail__section school-passport__summary" aria-labelledby="summary-title"><h2 id="summary-title">{t.passport.quickSummary}</h2><p>{summary}</p></section> : null;
+}
+
+function SchoolQuickFacts({ facts, t }) {
+  const visibleFacts = facts.filter((fact) => hasValue(fact.value));
+  return visibleFacts.length ? <section className="school-detail__section" aria-labelledby="facts-title"><h2 id="facts-title">{t.passport.quickFacts}</h2><dl className="school-detail__quick-facts">{visibleFacts.map(({ label, value }) => <div key={label}><dt>{label}</dt><dd>{Array.isArray(value) ? value.join(', ') : value}</dd></div>)}</dl></section> : null;
+}
+
+function SchoolProfileTags({ tags, t }) {
+  return tags.length ? <section className="school-detail__section" aria-labelledby="profile-tags-title"><h2 id="profile-tags-title">{t.passport.educationProfile}</h2><div className="program-list">{tags.map((tag) => <span key={tag}>{tag}</span>)}</div></section> : null;
+}
+
+function ParentReviewSummary({ title, items, note, variant = 'positive' }) {
+  return items.length ? <section className="school-detail__section" aria-labelledby={`${variant}-title`}><h2 id={`${variant}-title`}>{title}</h2><div className={`school-detail__decision-grid school-detail__decision-grid--${variant === 'warning' ? 'cons' : 'pros'}`}>{items.map((item) => <article key={item}>{item}</article>)}</div>{note ? <p className="school-detail__note">{note}</p> : null}</section> : null;
+}
+
+function SchoolFitSection({ title, items, variant = 'soft' }) {
+  return items.length ? <section className={`school-detail__section school-fit school-fit--${variant}`} aria-labelledby={`${variant}-fit-title`}><h2 id={`${variant}-fit-title`}>{title}</h2><ul>{items.map((item) => <li key={item}>{item}</li>)}</ul></section> : null;
+}
+
+function AdmissionRequirements({ items, t }) {
+  return items.length ? <SchoolFitSection title={t.passport.admission} items={items} variant="admission" /> : null;
+}
+
+function SchoolSources({ contactCards, sources, lastVerifiedAt, t, language }) {
+  const verified = formatDataUpdateDate(lastVerifiedAt, language) || lastVerifiedAt;
+  if (!contactCards.length && !sources.length && !verified) return null;
+  return <section className="school-detail__section" aria-labelledby="sources-title"><h2 id="sources-title">{t.passport.contactsAndSources}</h2>{contactCards.length ? <div className="school-detail__contacts">{contactCards.map(([label, value, href]) => <article key={label} className="school-detail__contact-card"><span>{label}</span>{href ? <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}>{value}</a> : <strong>{value}</strong>}</article>)}</div> : null}{sources.length || verified ? <div className="school-sources"><h3>{t.passport.sourcesAndFreshness}</h3>{sources.length ? <ul>{sources.map((source) => <li key={`${source.name}-${source.url ?? ''}`}>{source.url ? <a href={source.url} target="_blank" rel="noopener noreferrer">{source.name}</a> : <span>{source.name}</span>}{hasValue(source.rating) ? ` — ${t.fields.rating.toLowerCase()} ${source.rating}` : ''}{hasValue(source.reviewsCount) ? `, ${t.reviewCount(source.reviewsCount)}` : ''}</li>)}</ul> : null}{verified ? <p><strong>{t.passport.lastVerified}:</strong> <time dateTime={lastVerifiedAt}>{verified}</time></p> : null}<p className="school-detail__note">{t.passport.trustNote}</p></div> : null}</section>;
+}
+
 export default async function SchoolDetailPage({ params, searchParams }) {
   const { slug } = await params;
   const resolvedSearchParams = await searchParams;
@@ -556,211 +605,58 @@ export default async function SchoolDetailPage({ params, searchParams }) {
   ].filter(([, , detail]) => hasValue(detail));
   const benefitCards = [...new Set([...parentPros, ...getDefaultBenefitCards(school, language, localizedPrograms)])].filter(hasValue);
   const considerationCards = parentCons.filter(hasValue);
+  const profile = school.profile ?? {};
+  const summary = getProfileText(profile, 'summary', language);
+  const profileTags = [...new Set([...getLocalizedList(school.direction, language), ...getProfileList(profile, 'schoolProfileTags', language)])].filter(hasValue);
+  const parentHighlights = getProfileList(profile, 'parentHighlights', language);
+  const considerations = getProfileList(profile, 'considerations', language);
+  const bestFor = getProfileList(profile, 'bestFor', language);
+  const mayNotFit = getProfileList(profile, 'mayNotFit', language);
+  const admissionItems = getProfileList(profile, 'admissionRequirements', language);
+  const grades = getLocalizedSchoolValue(school.grades, language);
+  const tuition = getLocalizedSchoolValue(school.tuition, language) || tuitionFee;
+  const officialWebsite = normalizeUrl(school.officialWebsite ?? school.website);
+  const instagramUrl = normalizeUrl(school.instagramUrl);
+  const schoolTwoGisUrl = normalizeUrl(school.twoGisUrl) || twoGisUrl;
+  const quickFacts = [
+    { label: t.fields.schoolType, value: localizedSchoolType },
+    { label: t.fields.district, value: localizedDistrict },
+    { label: t.fields.language, value: localizedLanguages },
+    { label: t.passport.grades, value: grades },
+    { label: t.fields.tuitionFee, value: tuition },
+    { label: t.passport.direction, value: profileTags }
+  ];
+  const profileSources = Array.isArray(profile.reviewSources) ? profile.reviewSources.filter((source) => source?.name) : [];
+  const sourceItems = profileSources.length > 0 ? profileSources : (Array.isArray(school.sources) ? school.sources.map((source) => ({ name: getLocalizedSchoolValue(source.localized_name, language) || source.name, url: source.url })) : []);
   const contactCards = [
     [t.fields.address, hasValue(localizedAddress) ? localizedAddress : '', null],
     [t.fields.phone, school.phone, hasValue(school.phone) ? `tel:${formatPhoneLink(school.phone)}` : null],
-    [t.fields.website, school.website, hasValue(school.website) ? school.website : null],
-    [t.openIn2Gis, t.openIn2Gis, twoGisUrl]
+    [t.passport.officialWebsite, officialWebsite, officialWebsite],
+    [t.passport.instagram, instagramUrl, instagramUrl],
+    [t.openIn2Gis, t.openIn2Gis, schoolTwoGisUrl]
   ].filter(([, value]) => hasValue(value));
 
   return (
     <main>
       <nav className="school-detail__topbar" aria-label={t.languageSwitcherLabel}>
-        <a className="back-link" href={`/?lang=${language}`}>
-          ← {t.backToCatalog}
-        </a>
+        <a className="back-link" href={`/?lang=${language}`}>← {t.backToCatalog}</a>
         <div className="language-switcher">
           {languageOptions.map(({ code, label }) => (
-            <a
-              key={code}
-              className={language === code ? 'language-switcher__button language-switcher__button--active' : 'language-switcher__button'}
-              aria-current={language === code ? 'page' : undefined}
-              href={`/schools/${slug}?lang=${code}`}
-            >
-              {label}
-            </a>
+            <a key={code} className={language === code ? 'language-switcher__button language-switcher__button--active' : 'language-switcher__button'} aria-current={language === code ? 'page' : undefined} href={`/schools/${slug}?lang=${code}`}>{label}</a>
           ))}
         </div>
       </nav>
-
-      <article className="school-detail">
-        <header className="school-detail__hero">
-          <div className="school-detail__hero-copy">
-            <p className="hero__kicker">{t.pageKicker}</p>
-            <p className="school-card__eyebrow">{heroSchoolType}</p>
-            <h1>{localizedName}</h1>
-            {languageBadges.length > 0 ? (
-              <div className="school-detail__language-badges" aria-label={t.fields.language}>
-                {languageBadges.map((badge) => <span key={badge}>{badge}</span>)}
-              </div>
-            ) : null}
-            {displayRating.rating !== null ? (
-              <div className="school-detail__rating" aria-label={`${t.fields.rating}: ${formatAverageRating(displayRating.rating)}`}>
-                <strong>⭐ {formatAverageRating(displayRating.rating)}</strong>
-                {displayRating.reviewsCount !== null ? <span>{t.ratingBasedOnReviews(displayRating.reviewsCount)}</span> : null}
-              </div>
-            ) : null}
-            <div className="school-detail__actions">
-              <FavoriteButton schoolId={school.id} labels={t.favorite} className="favorite-button--detail" />
-              <a className="button-link" href={getReportContributionUrl(slug, language)}>
-                {t.reportIncorrectInfo}
-              </a>
-            </div>
-          </div>
-          <figure className={heroImage.isFallback ? 'school-detail__media school-detail__media--fallback' : 'school-detail__media'}>
-            <SchoolImageWithFallback src={heroImage.src} alt={getImageAlt(heroImage, t.fallbackImageAlt, language)} schoolName={localizedName} loading="eager" decoding="async" />
-            {heroImage.isFallback ? <figcaption>{t.imagePlaceholder}</figcaption> : null}
-          </figure>
-        </header>
-
-        <section className="school-detail__section" aria-labelledby="gallery-title">
-          <div className="school-detail__section-heading">
-            <h2 id="gallery-title">{t.galleryTitle}</h2>
-            <p>{t.galleryDescription}</p>
-          </div>
-          <div className="school-gallery">
-            {schoolImages.map((image, index) => (
-              <figure key={`${image.src}-${index}`} className={image.isFallback ? 'school-gallery__item school-gallery__item--fallback' : 'school-gallery__item'}>
-                <SchoolImageWithFallback src={image.src} alt={getImageAlt(image, t.fallbackImageAlt, language)} schoolName={localizedName} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
-                {image.caption ? <figcaption>{getLocalizedSchoolValue(image.caption, language)}</figcaption> : null}
-              </figure>
-            ))}
-          </div>
-          <dl className="image-source-list">
-            <div>
-              <dt>{t.imageStatus}</dt>
-              <dd>{getLocalizedEnumLabel('imageStatuses', imageStatus, language)}</dd>
-            </div>
-            {imageSourceName ? (
-              <div>
-                <dt>{t.imageSource}</dt>
-                <dd>
-                  {imageSource?.url ? (
-                    <a href={imageSource.url} target="_blank" rel="noreferrer">
-                      {imageSourceName}
-                    </a>
-                  ) : (
-                    imageSourceName
-                  )}
-                </dd>
-              </div>
-            ) : null}
-          </dl>
-        </section>
-
-        <section className="school-detail__section" aria-labelledby="details-title">
-          <h2 id="details-title">{t.detailsTitle}</h2>
-          <dl className="school-detail__quick-facts">
-            {detailRows.map(([icon, term, detail]) => (
-              <div key={term}>
-                <dt><span aria-hidden="true">{icon}</span>{term}</dt>
-                <dd>{detail}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-
-        {benefitCards.length > 0 ? (
-          <section className="school-detail__section" aria-labelledby="benefits-title">
-            <h2 id="benefits-title">{t.benefitsTitle}</h2>
-            <div className="school-detail__decision-grid school-detail__decision-grid--pros">
-              {benefitCards.map((item) => <article key={item}>{item}</article>)}
-            </div>
-          </section>
-        ) : null}
-
-        {considerationCards.length > 0 ? (
-          <section className="school-detail__section" aria-labelledby="parent-cons-title">
-            <h2 id="parent-cons-title">{t.parentConsiderationsTitle}</h2>
-            <div className="school-detail__decision-grid school-detail__decision-grid--cons">
-              {considerationCards.map((item) => <article key={item}>{item}</article>)}
-            </div>
-          </section>
-        ) : null}
-
-        <section className="school-detail__section" aria-labelledby="description-title">
-          <h2 id="description-title">{t.aboutTitle}</h2>
-          <p className="school-detail__text">{localizedDescription}</p>
-        </section>
-
-        <section className="school-detail__section" aria-labelledby="programs-title">
-          <h2 id="programs-title">{t.programsTitle}</h2>
-          <div className="program-list">
-            {localizedPrograms.map((program) => (
-              <span key={program}>{program}</span>
-            ))}
-          </div>
-        </section>
-
-        <section className="school-detail__section" aria-labelledby="suitable-title">
-          <h2 id="suitable-title">{t.suitableTitle}</h2>
-          <div className="program-list">
-            {insightKeys.map((key) => (
-              <span key={key}>{t.insightTags[key]}</span>
-            ))}
-          </div>
-        </section>
-
-        <section className="school-detail__section recommendation-card" aria-labelledby="recommendation-title">
-          <div className="recommendation-card__top">
-            <h2 id="recommendation-title">{t.recommendationTitle}</h2>
-            <div className="match-meter" aria-label={`${recommendationExplanation.score}% ${t.match}`}>
-              <strong>{recommendationExplanation.score}%</strong>
-              <span>{t.match}</span>
-            </div>
-          </div>
-          <div className="recommendation-card__lists">
-            <section>
-              <h3>{t.whyTitle}</h3>
-              <ul>{recommendationExplanation.why.map((reason) => <li key={reason}>{reason}</li>)}</ul>
-            </section>
-            <section>
-              <h3>{t.concernsTitle}</h3>
-              <ul>{recommendationExplanation.concerns.map((concern) => <li key={concern}>{concern}</li>)}</ul>
-            </section>
-          </div>
-        </section>
-
-
-        {lastDataUpdate ? (
-          <section className="school-detail__section school-detail__section--data-update" aria-labelledby="data-update-title">
-            <h2 id="data-update-title">{t.lastDataUpdateTitle}</h2>
-            <p className="school-detail__text"><time dateTime={reviewSummary.lastUpdatedAt}>{lastDataUpdate}</time></p>
-            <p className="school-detail__note">{t.reviewDataPrepared}</p>
-          </section>
-        ) : null}
-
-        <section className="school-detail__section" aria-labelledby="admission-title">
-          <h2 id="admission-title">{t.fields.admissionRequirements}</h2>
-          <p className="school-detail__text">{localizedAdmissionRequirements}</p>
-        </section>
-
-        <SchoolReviews school={school} schoolId={school.id} labels={t.reviews} language={language} locale={language === 'kz' ? 'kk-KZ' : language === 'en' ? 'en-US' : 'ru-RU'} />
-
-        <section className="school-detail__section" aria-labelledby="contacts-title">
-          <h2 id="contacts-title">{t.contactsTitle}</h2>
-          <div className="school-detail__contacts">
-            {contactCards.map(([label, value, href]) => (
-              <article key={label} className="school-detail__contact-card">
-                <span>{label}</span>
-                {href ? <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noreferrer' : undefined}>{value}</a> : <strong>{value}</strong>}
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="school-detail__section" aria-labelledby="sources-title">
-          <h2 id="sources-title">{t.sourcesTitle}</h2>
-          <ul className="source-list">
-            {school.sources.map((source) => (
-              <li key={source.url}>
-                <a href={source.url} target="_blank" rel="noreferrer">
-                  {getLocalizedSchoolValue(source.localized_name, language)}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
+      <article className="school-detail school-passport">
+        <SchoolHero school={school} name={localizedName} type={heroSchoolType} district={localizedDistrict} languages={localizedLanguages} rating={displayRating} twoGisUrl={schoolTwoGisUrl} t={t} />
+        <SchoolSummary summary={summary} t={t} />
+        <SchoolQuickFacts facts={quickFacts} t={t} />
+        <SchoolProfileTags tags={profileTags} t={t} />
+        <ParentReviewSummary title={t.passport.parentHighlights} items={parentHighlights} note={t.passport.reviewSummaryNote} />
+        <ParentReviewSummary title={t.passport.considerations} items={considerations} variant="warning" />
+        <SchoolFitSection title={t.passport.bestFor} items={bestFor} variant="best" />
+        <SchoolFitSection title={t.passport.mayNotFit} items={mayNotFit} variant="soft" />
+        <AdmissionRequirements items={admissionItems} t={t} />
+        <SchoolSources contactCards={contactCards} sources={sourceItems} lastVerifiedAt={profile.lastVerifiedAt ?? reviewSummary.lastUpdatedAt ?? school.updatedAt ?? school.metadata?.updatedAt} t={t} language={language} />
       </article>
     </main>
   );
