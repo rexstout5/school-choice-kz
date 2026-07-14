@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node scripts/validate-schools.mjs"
+    "test": "node scripts/validate-schools.mjs && node --test test/*.test.mjs"
   },
   "dependencies": {
     "next": "16.2.9",
