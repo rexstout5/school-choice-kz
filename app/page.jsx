@@ -24,6 +24,7 @@ const homepageTranslations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Выберите язык интерфейса',
     catalogLink: 'Каталог школ',
+    recommendationLink: 'Подобрать школу',
     readinessLink: 'Готовность к школе',
     addSchoolLink: 'Добавить школу',
     aboutLink: 'О проекте',
@@ -53,7 +54,7 @@ const homepageTranslations = {
     language: 'Язык',
     footerDescription: 'Экспертный каталог школ Астаны для осознанного выбора семьи.',
     footerColumns: [
-      ['Навигация', [['Каталог школ', '/catalog'], ['Готовность к школе', '/school-readiness'], ['Мой выбор', '/my-choice']]],
+      ['Навигация', [['Каталог школ', '/catalog'], ['Подобрать школу', '/recommendation'], ['Готовность к школе', '/school-readiness'], ['Мой выбор', '/my-choice']]],
       ['Для родителей', [['Как выбрать школу', '/how-to-choose-school']]],
       ['О проекте', [['О нас', '/about'], ['Добавить школу', '/contribute'], ['Контакты', '/contacts']]]
     ]
@@ -62,6 +63,7 @@ const homepageTranslations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
     catalogLink: 'Мектептер каталогы',
+    recommendationLink: 'Мектеп таңдау',
     readinessLink: 'Мектепке дайындық',
     addSchoolLink: 'Мектеп қосу',
     aboutLink: 'Жоба туралы',
@@ -91,7 +93,7 @@ const homepageTranslations = {
     language: 'Тіл',
     footerDescription: 'Отбасы саналы таңдау жасайтын Астана мектептерінің сараптамалық каталогы.',
     footerColumns: [
-      ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектепке дайындық', '/school-readiness'], ['Таңдаулылар', '/my-choice']]],
+      ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектеп таңдау', '/recommendation'], ['Мектепке дайындық', '/school-readiness'], ['Таңдаулылар', '/my-choice']]],
       ['Ата-аналарға', [['Мектепті қалай таңдау керек', '/how-to-choose-school']]],
       ['Жоба туралы', [['Біз туралы', '/about'], ['Мектеп қосу', '/contribute'], ['Байланыс', '/contacts']]]
     ]
@@ -100,6 +102,7 @@ const homepageTranslations = {
     pageTitle: brand.name,
     languageSwitcherLabel: 'Choose interface language',
     catalogLink: 'Catalog',
+    recommendationLink: 'Find a School Match',
     readinessLink: 'School readiness',
     addSchoolLink: 'Add school',
     aboutLink: 'About',
@@ -129,7 +132,7 @@ const homepageTranslations = {
     language: 'Language',
     footerDescription: 'An expert Astana school catalog for informed family decisions.',
     footerColumns: [
-      ['Navigation', [['School catalog', '/catalog'], ['School readiness', '/school-readiness'], ['Favorites', '/my-choice']]],
+      ['Navigation', [['School catalog', '/catalog'], ['Find a School Match', '/recommendation'], ['School readiness', '/school-readiness'], ['Favorites', '/my-choice']]],
       ['For parents', [['How to choose a school', '/how-to-choose-school']]],
       ['About', [['About us', '/about'], ['Add a school', '/contribute'], ['Contacts', '/contacts']]]
     ]
@@ -334,6 +337,7 @@ export default function Home() {
         <a className="site-header__brand" href="#top" aria-label={t.pageTitle}>{brand.name}</a>
         <nav className="site-header__nav" aria-label={t.footerLabel}>
           <a className="site-header__link" href={withLanguage('/catalog', currentLanguage)}>{t.catalogLink}</a>
+          <a className="site-header__link" href={withLanguage('/recommendation', currentLanguage)}>{t.recommendationLink}</a>
           <a className="site-header__link" href={withLanguage('/school-readiness', currentLanguage)}>{t.readinessLink}</a>
           <a className="site-header__link" href={withLanguage('/about', currentLanguage)}>{t.aboutLink}</a>
           <a className="site-header__link" href={withLanguage('/contacts', currentLanguage)}>{t.contactsLink}</a>
