@@ -5318,3 +5318,112 @@ main {
   .my-choice-comparison .hero__cta,
   .my-choice-empty .button-link { width: 100%; justify-content: center; text-align: center; }
 }
+
+.school-passport__hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: start;
+  border: 1px solid var(--brand-border);
+  border-radius: 30px;
+  padding: clamp(24px, 5vw, 44px);
+  background: linear-gradient(135deg, #ffffff 0%, #f4fbfb 100%);
+  box-shadow: 0 18px 45px rgba(29, 47, 73, 0.08);
+}
+
+.school-passport__hero h1 {
+  max-width: 920px;
+  margin: 0;
+  color: var(--brand-ink-strong);
+  font-size: clamp(2rem, 6vw, 4.4rem);
+  line-height: 1.02;
+  overflow-wrap: anywhere;
+}
+
+.school-passport__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.school-passport__meta span {
+  border: 1px solid rgba(11, 127, 134, 0.16);
+  border-radius: 999px;
+  padding: 8px 12px;
+  color: var(--brand-primary-dark);
+  background: #ffffff;
+  font-weight: 850;
+}
+
+.school-passport__summary {
+  border-color: rgba(11, 127, 134, 0.22);
+  background: linear-gradient(135deg, #eef9fb, #ffffff);
+}
+
+.school-passport__summary p,
+.school-fit li {
+  color: var(--brand-ink-strong);
+  font-size: 1.06rem;
+  line-height: 1.7;
+}
+
+.compare-button,
+.school-detail__actions .button-link,
+.school-detail__actions .favorite-button--detail {
+  min-height: 44px;
+}
+
+.school-fit ul,
+.school-sources ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.school-fit--soft {
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+}
+
+.school-fit--admission {
+  background: linear-gradient(135deg, #ffffff, #f6fbfa);
+}
+
+.school-sources {
+  margin-top: 20px;
+  border-top: 1px solid var(--brand-border);
+  padding-top: 18px;
+}
+
+.school-sources h3 {
+  margin: 0 0 12px;
+  color: var(--brand-ink-strong);
+}
+
+.school-sources a {
+  color: var(--brand-primary-dark);
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.school-sources a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 760px) {
+  .school-passport__hero {
+    grid-template-columns: 1fr;
+    border-radius: 22px;
+    padding: 22px;
+  }
+
+  .school-passport__hero .school-detail__actions {
+    width: 100%;
+  }
+
+  .school-passport__hero .school-detail__actions > * {
+    width: 100%;
+    justify-content: center;
+  }
+}

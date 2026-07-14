@@ -5,6 +5,27 @@
  * academics, metadata, and source objects make each record easier to expand
  * with admissions, catchment, coordinates, curriculum, fee, and review data.
  */
+
+/**
+ * @typedef {Object} ReviewSource
+ * @property {string} name
+ * @property {string=} url
+ * @property {number|null=} rating
+ * @property {number|null=} reviewsCount
+ * @property {string=} checkedAt
+ *
+ * @typedef {Object} SchoolProfile
+ * @property {string|Object=} summary
+ * @property {string[]|Object=} schoolProfileTags
+ * @property {string[]|Object=} parentHighlights
+ * @property {string[]|Object=} considerations
+ * @property {string[]|Object=} bestFor
+ * @property {string[]|Object=} mayNotFit
+ * @property {string[]|Object=} admissionRequirements
+ * @property {ReviewSource[]=} reviewSources
+ * @property {string=} lastVerifiedAt
+ */
+
 const ASTANA_PUBLIC_SCHOOL_SOURCE = {
   name: 'Electronic government of the Republic of Kazakhstan: contacts of secondary schools',
   localized_name: {
@@ -570,7 +591,14 @@ const createAstanaPublicSchool = ({
   image_status,
   official_name_language = 'en',
   preserve_brand_name = false,
-  audit = AUDIT_RESULT
+  audit = AUDIT_RESULT,
+  direction,
+  grades,
+  tuition,
+  officialWebsite,
+  instagramUrl,
+  twoGisUrl,
+  profile
 }) => {
   const localizedName = preserve_brand_name
     ? { ru: official_name, kk: official_name, en: official_name }
@@ -659,6 +687,13 @@ const createAstanaPublicSchool = ({
   coordinates_status: resolvedCoordinates.coordinates_status,
   reviews: resolvedReviews,
   reviewsCount: resolvedReviewsCount,
+  direction,
+  grades,
+  tuition,
+  officialWebsite,
+  instagramUrl,
+  twoGisUrl,
+  profile,
   review_count: resolvedReviewsCount,
   reviewSummary,
   address: localizedAddress,
@@ -764,7 +799,7 @@ const privateSources = [
   source('WE Project: 10 private educational institutions in Astana', 'https://weproject.media/en/articles/detail/which-school-in-astana-to-choose-for-your-child-10-private-educational-institutions/')
 ];
 
-const createAstanaPrivateSchool = ({ id, name, official_name, district, address, phone = '', instruction_languages, school_type, type, tuition_fee = null, price_status = 'unknown', data_status = 'partially_verified', website = '', programs, description, after_school_program = 'unknown', school_bus = 'unknown', admission_test = 'yes', verification_status = 'partially_verified', coordinates, main_image = null, gallery = [], main_image_url = null, gallery_images = null, image_source = null, image_status, official_name_language = 'en', preserve_brand_name = true, sources = privateSources }) =>
+const createAstanaPrivateSchool = ({ id, name, official_name, district, address, phone = '', instruction_languages, school_type, type, tuition_fee = null, price_status = 'unknown', data_status = 'partially_verified', website = '', programs, description, after_school_program = 'unknown', school_bus = 'unknown', admission_test = 'yes', verification_status = 'partially_verified', coordinates, main_image = null, gallery = [], main_image_url = null, gallery_images = null, image_source = null, image_status, official_name_language = 'en', preserve_brand_name = true, sources = privateSources, direction, grades, tuition, officialWebsite, instagramUrl, twoGisUrl, profile }) =>
   createAstanaPublicSchool({
     id,
     number: 0,
@@ -799,6 +834,13 @@ const createAstanaPrivateSchool = ({ id, name, official_name, district, address,
     image_source,
     image_status,
     verification_status,
+    direction,
+    grades,
+    tuition,
+    officialWebsite,
+    instagramUrl,
+    twoGisUrl,
+    profile,
     sources,
     audit: PRIVATE_SCHOOL_AUDIT
   });
@@ -1397,6 +1439,50 @@ export const schools = [
     after_school_program: 'yes',
     tuition_fee: 450000,
     price_status: 'estimated',
+    direction: ['STEM', 'English language', 'Mathematics', 'Natural sciences', 'Modern technology'],
+    officialWebsite: 'https://quantum.edu.kz/',
+    profile: {
+      summary: {
+        ru: 'Частная школа с акцентом на STEM, английский язык и современные образовательные технологии. Может подойти мотивированным детям, готовым к интенсивной академической программе.',
+        kk: 'STEM, ағылшын тілі және заманауи білім беру технологияларына басымдық беретін жеке мектеп. Қарқынды академиялық бағдарламаға дайын, ынталы балаларға қолайлы болуы мүмкін.',
+        en: 'A private school focused on STEM, English, and modern educational technology. It may suit motivated children ready for an intensive academic programme.'
+      },
+      schoolProfileTags: {
+        ru: ['STEM', 'Английский язык', 'Математика', 'Естественные науки', 'Современные технологии'],
+        kk: ['STEM', 'Ағылшын тілі', 'Математика', 'Жаратылыстану ғылымдары', 'Заманауи технологиялар'],
+        en: ['STEM', 'English language', 'Mathematics', 'Natural sciences', 'Modern technology']
+      },
+      parentHighlights: {
+        ru: ['Сильный преподавательский состав', 'Современная инфраструктура', 'Высокий уровень академической подготовки', 'Англоязычная образовательная среда'],
+        kk: ['Күшті оқытушылар құрамы', 'Заманауи инфрақұрылым', 'Жоғары академиялық дайындық деңгейі', 'Ағылшын тілді білім беру ортасы'],
+        en: ['Strong teaching staff', 'Modern infrastructure', 'High level of academic preparation', 'English-speaking learning environment']
+      },
+      considerations: {
+        ru: ['Интенсивная учебная нагрузка', 'Высокая стоимость обучения', 'Программа может требовать высокой самостоятельности ребенка'],
+        kk: ['Қарқынды оқу жүктемесі', 'Оқу ақысы жоғары', 'Бағдарлама баладан жоғары дербестікті талап етуі мүмкін'],
+        en: ['Intensive workload', 'High tuition cost', 'The programme may require strong child independence']
+      },
+      bestFor: {
+        ru: ['Детям, которым интересны математика и естественные науки', 'Семьям, которым важен английский язык', 'Мотивированным и самостоятельным детям', 'Семьям, рассматривающим зарубежное образование'],
+        kk: ['Математика мен жаратылыстануға қызығатын балаларға', 'Ағылшын тілі маңызды отбасыларға', 'Ынталы және дербес балаларға', 'Шетелдік білімді қарастыратын отбасыларға'],
+        en: ['Children interested in mathematics and natural sciences', 'Families who value English', 'Motivated and independent children', 'Families considering education abroad']
+      },
+      mayNotFit: {
+        ru: ['Если ребенку нужен спокойный темп обучения', 'Если семья ищет бюджетный вариант', 'Если ребенок тяжело переносит интенсивную нагрузку'],
+        kk: ['Балаға оқу қарқыны баяулау қажет болса', 'Отбасы бюджеттік нұсқа іздесе', 'Бала қарқынды жүктемені ауыр қабылдаса'],
+        en: ['If a child needs a calmer learning pace', 'If the family is looking for a budget option', 'If the child struggles with intensive workload']
+      },
+      admissionRequirements: {
+        ru: ['Уточнить условия приема у школы', 'Возможно вступительное тестирование или собеседование'],
+        kk: ['Қабылдау шарттарын мектептен нақтылау', 'Кіру тесті немесе сұхбат болуы мүмкін'],
+        en: ['Confirm admission terms with the school', 'Entrance testing or an interview may be required']
+      },
+      reviewSources: [
+        { name: '2ГИС', url: '', rating: null, reviewsCount: null, checkedAt: '2026-07' },
+        { name: 'Официальный сайт школы', url: '', checkedAt: '2026-07' }
+      ],
+      lastVerifiedAt: '2026-07'
+    },
     sources: [source('Quantum STEM School contact page', 'https://quantumstem.edupage.org/contact/')]
   }),
   createAstanaPrivateSchool({
