@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
-const comparisonStorageKey = 'school-choice-kz-comparison';
+export const comparisonStorageKey = 'school-choice-kz-comparison';
+export const comparisonChangedEventName = 'school-choice-kz-comparison-changed';
 const maxComparedSchools = 3;
 
 const getStoredComparedSchoolIds = () => {
@@ -33,6 +34,7 @@ export default function CompareButton({ schoolId, labels, className = '' }) {
 
     try {
       window.localStorage.setItem(comparisonStorageKey, JSON.stringify(nextIds));
+      window.dispatchEvent(new CustomEvent(comparisonChangedEventName, { detail: nextIds }));
     } catch {
       // Keep the button usable in the current render even if localStorage is unavailable.
     }
