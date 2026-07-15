@@ -39,7 +39,7 @@ export const getSchoolPlaceholderType = (school) => {
   return 'public';
 };
 
-export const getSchoolPlaceholderImage = (school) => schoolPlaceholderImages[getSchoolPlaceholderType(school)] ?? schoolPlaceholderImages.public;
+export const getSchoolPlaceholderImage = (school) => createSchoolImagePlaceholder(getLocalizedText(school?.name) || 'BilimChoice', 'card');
 
 const getImageSrc = (image) => {
   if (typeof image === 'string') return image;
@@ -61,11 +61,12 @@ export const getSchoolCoverImage = (school) => {
 };
 
 export const createSchoolImagePlaceholder = (schoolName, size = 'large') => {
-  const safeSchoolName = schoolName || 'School image placeholder';
+  const safeLabel = schoolName || 'BilimChoice school image placeholder';
   const viewBox = size === 'card' ? '0 0 640 360' : '0 0 1200 800';
-  const textY = size === 'card' ? 318 : 735;
-  const fontSize = size === 'card' ? 26 : 42;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" role="img" aria-label="${escapeSvgText(safeSchoolName)}"><defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#f6fbfa"/><stop offset="1" stop-color="#fff4d8"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/><path d="M50 178h220V94L160 42 50 94z" transform="${size === 'card' ? 'scale(1.65) translate(34 -2)' : 'scale(3.75) translate(0 10)'}" fill="#0b7f86"/><path d="M75 178v-68h170v68z" transform="${size === 'card' ? 'scale(1.65) translate(34 -2)' : 'scale(3.75) translate(0 10)'}" fill="#fff" opacity=".94"/><rect x="138" y="134" width="44" height="44" rx="8" transform="${size === 'card' ? 'scale(1.65) translate(34 -2)' : 'scale(3.75) translate(0 10)'}" fill="#0b2f35"/><text x="50%" y="${textY}" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="${fontSize}" font-weight="800" fill="#0b2f35">${escapeSvgText(safeSchoolName)}</text></svg>`;
+  const logoX = size === 'card' ? 38 : 70;
+  const logoY = size === 'card' ? 42 : 76;
+  const logoSize = size === 'card' ? 28 : 48;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" role="img" aria-label="${escapeSvgText(safeLabel)}"><rect width="100%" height="100%" fill="#EAF3FA"/><circle cx="78%" cy="18%" r="22%" fill="#DDEFE7"/><circle cx="14%" cy="88%" r="28%" fill="#FFF9F4"/><path d="M120 265C210 190 300 190 390 265S570 340 660 265 840 190 930 265" fill="none" stroke="#17324D" stroke-width="7" stroke-linecap="round" opacity=".16" transform="${size === 'card' ? 'scale(.62) translate(18 -24)' : 'scale(1.08) translate(28 60)'}"/><path d="M160 120h220M160 185h340M160 250h280" fill="none" stroke="#E9684A" stroke-width="8" stroke-linecap="round" opacity=".28" transform="${size === 'card' ? 'scale(.72) translate(260 40)' : 'scale(1.35) translate(430 130)'}"/><g transform="translate(${logoX} ${logoY})"><rect width="${logoSize}" height="${logoSize}" rx="12" fill="#17324D"/><path d="M${logoSize * 0.28} ${logoSize * 0.58}l${logoSize * 0.16} ${logoSize * 0.16} ${logoSize * 0.3}-${logoSize * 0.36}" fill="none" stroke="#fff" stroke-width="${Math.max(3, logoSize * 0.09)}" stroke-linecap="round" stroke-linejoin="round"/></g><text x="${logoX + logoSize + 14}" y="${logoY + logoSize * 0.66}" font-family="Manrope,Arial,sans-serif" font-size="${size === 'card' ? 24 : 42}" font-weight="700" fill="#17324D">BilimChoice</text></svg>`;
 
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 };
