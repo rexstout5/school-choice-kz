@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getLocalizedEnumLabel, getLocalizedSchoolValue, schools } from '../src/data/schools.js';
 import SchoolImageWithFallback from '../src/components/SchoolImageWithFallback.jsx';
 import { getSchoolCoverImage, getSchoolPlaceholderImage } from '../src/utils/schoolImages.js';
@@ -46,6 +46,7 @@ const homepageTranslations = {
     catalogButton: 'Смотреть все школы →',
     district: 'Район',
     rating: 'Рейтинг',
+    reviewCount: (count) => `${count} оценок`,
     tuition: 'Стоимость',
     details: 'Подробнее',
     notYetRated: 'Пока нет оценки',
@@ -96,6 +97,7 @@ const homepageTranslations = {
     catalogButton: 'Барлық 77 мектепті көру →',
     district: 'Аудан',
     rating: 'Рейтинг',
+    reviewCount: (count) => `${count} пікір`,
     tuition: 'Құны',
     details: 'Толығырақ',
     notYetRated: 'Әзірге баға жоқ',
@@ -146,6 +148,7 @@ const homepageTranslations = {
     catalogButton: 'View all 77 schools →',
     district: 'District',
     rating: 'Rating',
+    reviewCount: (count) => `${count} reviews`,
     tuition: 'Tuition',
     details: 'Details',
     notYetRated: 'Not yet rated',
@@ -225,7 +228,8 @@ function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStat
     : school.tuition_fee === 0
       ? t.freePublicSchool
       : `${moneyFormatter.format(school.tuition_fee)} / ${t.perMonth}`;
-  const rating = ratingStats.averageRating === null ? t.notYetRated : `${formatAverageRating(ratingStats.averageRating)} / 5`;
+  const hasRating = ratingStats.averageRating !== null && ratingStats.averageRating !== undefined && ratingStats.reviewCount > 0;
+  const rating = hasRating ? `★ ${formatAverageRating(ratingStats.averageRating)} · ${t.reviewCount(ratingStats.reviewCount)}` : '';
   return (
     <article className="top-school-card">
       <div className="top-school-card__image">
@@ -233,34 +237,17 @@ function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStat
       </div>
       <div className="top-school-card__body">
         <h3>{localizedName}</h3>
-        <p className="top-school-card__district">{getLocalizedEnumLabel('types', school.type, currentLanguage)} · {localizedDistrict}</p>
-        <dl className="top-school-card__facts">
-          <div><dt>{t.language}</dt><dd>{Array.isArray(school.languages) ? school.languages.join(', ') : getLocalizedSchoolValue(school.languages, currentLanguage) || '—'}</dd></div>
-          <div><dt>{t.tuition}</dt><dd>{tuition}</dd></div>
-          <div><dt>{t.rating}</dt><dd>{rating}</dd></div>
-        </dl>
+        <p className="top-school-card__district">{getLocalizedEnumLabel('schoolTypes', school.type, currentLanguage)} · {localizedDistrict}</p>
+        <ul className="top-school-card__facts">
+          <li><span aria-hidden="true">🌐</span>{Array.isArray(school.languages) ? school.languages.join(', ') : getLocalizedSchoolValue(school.languages, currentLanguage) || '—'}</li>
+          <li><span aria-hidden="true">₸</span>{tuition}</li>
+          {hasRating ? <li><span aria-hidden="true">★</span>{rating}</li> : null}
+        </ul>
         <a className="button-link button-link--quiet" href={withLanguage(`/schools/${school.slug}`, currentLanguage)}>{t.details}</a>
       </div>
     </article>
   );
 }
-
-function HeroPreview() {
-  return (
-    <div className="hero-preview" aria-label="Пример персонального подбора">
-      <div>
-        <span className="hero-preview__eyebrow">Персональный подбор</span>
-        <strong>Совпадение 92%</strong>
-      </div>
-      <div className="hero-preview__tags" aria-hidden="true">
-        <span>Английский язык</span>
-        <span>Район Есиль</span>
-        <span>STEM</span>
-      </div>
-    </div>
-  );
-}
-
 
 function PopularSchools({ groups, moneyFormatter, t, currentLanguage, reviewsBySchool }) {
   const [activeTab, setActiveTab] = useState('public');
@@ -396,13 +383,8 @@ export default function Home() {
           </div>
           <p className="hero__note">{t.heroNote}</p>
         </div>
-        <HeroPreview />
       </section>
 
-
-      <section className="trust-strip" aria-label="BilimChoice trust signals">
-        {t.trustItems.map((item) => <span key={item} aria-label={item}>✓ {item}</span>)}
-      </section>
 
       <PopularSchools groups={popularSchoolGroups} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} reviewsBySchool={reviewsBySchool} />
 

@@ -643,8 +643,8 @@ const createAstanaPublicSchool = ({
   });
   const resolvedImageStatus = image_status ?? (resolvedMainImageUrl ? 'needs_review' : 'missing');
   const resolvedCoordinates = resolveSchoolCoordinates({ id, district, address, coordinates, latitude, longitude, coordinates_status });
-  const resolvedRating = rating > 0 ? rating : Number((4 + (id.length % 9) / 10).toFixed(1));
-  const resolvedReviews = createSeedReviews(id, resolvedRating);
+  const resolvedRating = rating > 0 ? rating : 0;
+  const resolvedReviews = rating > 0 ? createSeedReviews(id, resolvedRating) : [];
   const resolvedReviewsCount = resolvedReviews.length;
   const reviewSummary = createReviewIntegrationSummary({
     id,
