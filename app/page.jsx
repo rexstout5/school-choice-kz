@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import Image from 'next/image';
 import { getLocalizedEnumLabel, getLocalizedSchoolValue, schools } from '../src/data/schools.js';
 import SchoolImageWithFallback from '../src/components/SchoolImageWithFallback.jsx';
 import { getSchoolCoverImage, getSchoolPlaceholderImage } from '../src/utils/schoolImages.js';
@@ -246,14 +245,19 @@ function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStat
   );
 }
 
-function HeroMedia({ imageSrc = '/images/hero/astana-hero.jpg', posterSrc = '/images/hero/astana-hero.jpg', videoSrc }) {
-  const mediaSrc = imageSrc || posterSrc;
-
+function HeroPreview() {
   return (
-    <figure className="hero-media" aria-label="BilimChoice school selection preview" data-video-ready={Boolean(videoSrc)}>
-      <Image className="hero-media__asset" src={mediaSrc} alt="Современные школы Астаны" width={760} height={620} priority />
-      <figcaption>Выбор начинается с понимания потребностей семьи</figcaption>
-    </figure>
+    <div className="hero-preview" aria-label="Пример персонального подбора">
+      <div>
+        <span className="hero-preview__eyebrow">Персональный подбор</span>
+        <strong>Совпадение 92%</strong>
+      </div>
+      <div className="hero-preview__tags" aria-hidden="true">
+        <span>Английский язык</span>
+        <span>Район Есиль</span>
+        <span>STEM</span>
+      </div>
+    </div>
   );
 }
 
@@ -392,7 +396,7 @@ export default function Home() {
           </div>
           <p className="hero__note">{t.heroNote}</p>
         </div>
-        <HeroMedia />
+        <HeroPreview />
       </section>
 
 
@@ -420,20 +424,24 @@ export default function Home() {
       </section>
 
       <section className="final-cta" aria-labelledby="final-cta-title">
-        <h2 id="final-cta-title">{t.finalCtaTitle}</h2>
-        <p>{t.finalCtaText}</p>
+        <div className="final-cta__content">
+          <h2 id="final-cta-title">{t.finalCtaTitle}</h2>
+          <p>{t.finalCtaText}</p>
+        </div>
         <a className="hero__cta" href={withLanguage('/recommendation', currentLanguage)}>{t.finalCtaButton}</a>
       </section>
 
       <footer className="site-footer site-footer--simple" id="footer">
         <div className="site-footer__brand"><strong>{brand.name}</strong><p>{t.footerDescription}</p><SocialLinks /></div>
         {t.footerColumns.map(([title, links]) => (
-          <nav className="footer-links" key={title} aria-label={title}>
-            <h3>{title}</h3>
-            {links.map(([label, href]) => (
-              <a key={label} href={href.startsWith('#') ? href : withLanguage(href, currentLanguage)}>{label}</a>
-            ))}
-          </nav>
+          <details className="footer-links" key={title}>
+            <summary>{title}</summary>
+            <nav aria-label={title}>
+              {links.map(([label, href]) => (
+                <a key={label} href={href.startsWith('#') ? href : withLanguage(href, currentLanguage)}>{label}</a>
+              ))}
+            </nav>
+          </details>
         ))}
       </footer>
     </main>
