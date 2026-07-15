@@ -597,9 +597,8 @@ function SchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStats, i
 
       <dl className="school-card__facts school-card__facts--compact">
         {[
-          [t.schoolCard.rating, ratingStats.averageRating === null ? t.notYetRated : `⭐ ${formatAverageRating(ratingStats.averageRating)} / 5 · ${t.ratingSummary[getRatingSummaryKey(ratingStats.averageRating)]}`],
-          [t.schoolCard.schoolType, localizedSchoolType],
-          ['📝', t.reviewCount(ratingStats.reviewCount)]
+          ...(ratingStats.averageRating !== null && ratingStats.averageRating !== undefined && ratingStats.reviewCount > 0 ? [[t.schoolCard.rating, `★ ${formatAverageRating(ratingStats.averageRating)} · ${t.reviewCount(ratingStats.reviewCount)}`]] : []),
+          [t.schoolCard.schoolType, localizedSchoolType]
         ].map(([term, detail]) => (
           <div key={term}>
             <dt>{term}</dt>
