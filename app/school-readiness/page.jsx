@@ -80,7 +80,6 @@ export default function SchoolReadinessPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedValue, setSelectedValue] = useState(null);
   const [isAdvancing, setIsAdvancing] = useState(false);
-  const [completedDomain, setCompletedDomain] = useState(null);
   const [showResults, setShowResults] = useState(false);
   const advanceTimer = useRef(null);
 
@@ -138,7 +137,6 @@ export default function SchoolReadinessPage() {
     setCurrentIndex(0);
     setSelectedValue(null);
     setIsAdvancing(false);
-    setCompletedDomain(null);
     setShowResults(false);
   }
 
@@ -147,26 +145,12 @@ export default function SchoolReadinessPage() {
     setCurrentIndex(0);
     setSelectedValue(null);
     setIsAdvancing(false);
-    setCompletedDomain(null);
     setShowResults(false);
     setStarted(true);
   }
 
-  function continueAfterDomain() {
-    setCompletedDomain(null);
-    setSelectedValue(null);
-    setIsAdvancing(false);
-    if (isComplete) {
-      setShowResults(true);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-    setCurrentIndex((index) => Math.min(index + 1, questions.length - 1));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
   function handleAnswer(value) {
-    if (!currentQuestion || isAdvancing || completedDomain) return;
+    if (!currentQuestion || isAdvancing) return;
     clearAdvanceTimer();
     setSelectedValue(value);
     setIsAdvancing(true);
@@ -174,38 +158,22 @@ export default function SchoolReadinessPage() {
 
     advanceTimer.current = setTimeout(() => {
       const nextQuestion = questions[currentIndex + 1];
-      const finishedDomain = !nextQuestion || nextQuestion.domainId !== currentQuestion.domainId;
-      if (finishedDomain) {
-        setCompletedDomain(domainDisplayNames[currentQuestion.domainId] ?? domainById[currentQuestion.domainId].title);
-        setIsAdvancing(false);
-        if (nextQuestion) {
-          advanceTimer.current = setTimeout(continueAfterDomain, 900);
-        } else {
-          advanceTimer.current = setTimeout(() => {
-            setCompletedDomain(null);
-            setShowResults(true);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }, 900);
-        }
-        return;
-      }
       setSelectedValue(null);
       setIsAdvancing(false);
-      if (nextQuestion) setCurrentIndex((index) => index + 1);
+      if (nextQuestion) {
+        setCurrentIndex((index) => index + 1);
+      } else {
+        setShowResults(true);
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 450);
+    }, 200);
   }
 
   function goBack() {
     clearAdvanceTimer();
     if (showResults) {
       setShowResults(false);
-      setCompletedDomain(domainDisplayNames[questions[questions.length - 1].domainId] ?? domainById[questions[questions.length - 1].domainId].title);
-      return;
-    }
-    if (completedDomain) {
-      setCompletedDomain(null);
-      setSelectedValue(answers[currentQuestion.id] ?? null);
+      setCurrentIndex(questions.length - 1);
       return;
     }
     if (currentIndex === 0) {
@@ -227,32 +195,24 @@ export default function SchoolReadinessPage() {
     <AppShell>
       <InternalHeader lang="ru" labels={{ catalog: 'Каталог', recommendation: 'Подбор', readiness: 'Готовность', contribute: 'Добавить школу', favorites: 'Мой выбор' }} />
       <PageContainer flow={started && !showResults}>
-      {!started ? <PageIntro eyebrow="ГОТОВНОСТЬ К ШКОЛЕ" title="Оцените готовность ребёнка к школьному старту" description="Пошаговая оценка охватывает познавательные, речевые, социальные навыки, самостоятельность и внимание." /> : null}
+      {!started ? <PageIntro title="Оцените готовность ребёнка к школьному старту" description="Пошаговая оценка охватывает познавательные, речевые, социальные навыки, самостоятельность и внимание." /> : null}
 
       {!started && <FormCard className="readiness-start-card" aria-labelledby="start-title">
         <div>
-          <p className="hero__kicker">Первый экран</p>
           <h2 id="start-title">Расскажите немного о ребенке</h2>
-          <p>После выбора возраста начнется guided-flow: один вопрос на экране, крупные карточки ответов и паузы между разделами.</p>
+          <p>После выбора возраста начнётся пошаговая оценка. На каждом экране будет один вопрос.</p>
         </div>
         <div className="readiness-form-grid">
           <label><span>Возраст ребенка</span><select value={selectedAge} onChange={(event) => resetAssessment(event.target.value)}>{ageOptions.map((age) => <option key={age} value={age}>{age} лет</option>)}</select></label>
           <label><span>Посещает детский сад</span><select value={goesToKindergarten} onChange={(event) => setGoesToKindergarten(event.target.value)}><option value="">Выберите</option><option>Да</option><option>Нет</option><option>Иногда</option></select></label>
           <label><span>Посещает подготовку к школе</span><select value={goesToPreparation} onChange={(event) => setGoesToPreparation(event.target.value)}><option value="">Выберите</option><option>Да</option><option>Нет</option><option>Планируем начать</option></select></label>
         </div>
-        <button className="hero__cta readiness-start-button" type="button" onClick={startAssessment} disabled={!goesToKindergarten || !goesToPreparation}>Начать тест</button>
+        <button className="hero__cta readiness-start-button" type="button" onClick={startAssessment} disabled={!goesToKindergarten || !goesToPreparation}>Начать оценку</button>
       </FormCard>}
 
       {!started ? <InfoCard className="readiness-assessed"><strong>Что оцениваем</strong><div><span>Познавательное развитие</span><span>Речь и коммуникация</span><span>Внимание и память</span><span>Самостоятельность</span><span>Социально-эмоциональная готовность</span></div></InfoCard> : null}
 
-      {started && completedDomain && !showResults && <section className="readiness-card readiness-domain-complete" aria-live="polite">
-        <span>Раздел завершён</span>
-        <h2>{completedDomain}</h2>
-        <p>Отлично, двигаемся дальше. Следующий раздел откроется автоматически.</p>
-        <div className="readiness-progress-bar"><span style={{ width: `${progressPercent}%` }} /></div>
-      </section>}
-
-      {started && !isComplete && !completedDomain && !showResults && currentQuestion && <FormCard className={`guided-flow-card readiness-card--single-question ${isAdvancing ? 'readiness-card--advancing' : ''}`} aria-labelledby="question-title">
+      {started && !isComplete && !showResults && currentQuestion && <FormCard className={`guided-flow-card readiness-card--single-question ${isAdvancing ? 'readiness-card--advancing' : ''}`} aria-labelledby="question-title">
         <div className="readiness-question-meta"><strong>{currentDomainTitle}</strong></div><ProgressHeader label={`Вопрос ${currentIndex + 1} из ${questions.length}`} progress={progressPercent} />
         <fieldset className="readiness-question readiness-question--featured">
           <legend id="question-title">{currentQuestion.text}</legend>
@@ -277,12 +237,12 @@ export default function SchoolReadinessPage() {
         <button className="readiness-nav-button readiness-retake" type="button" onClick={restart}>Пройти заново</button>
       </section>}
 
-      <InfoCard className="readiness-disclaimer"><span aria-hidden="true">ℹ</span><p>Результат носит информационный характер и не является медицинским, психологическим или педагогическим заключением.</p></InfoCard>
+      {(!started || (started && isComplete && showResults)) ? <InfoCard className="readiness-disclaimer"><span aria-hidden="true">ℹ</span><p>Результат носит информационный характер и не является медицинским, психологическим или педагогическим заключением.</p></InfoCard> : null}
 
-      <section className="readiness-card readiness-drawing-analysis" aria-labelledby="drawing-analysis-title">
+      {(!started || (started && isComplete && showResults)) ? <section className="readiness-card readiness-drawing-analysis" aria-labelledby="drawing-analysis-title">
         <div className="readiness-drawing-analysis__content"><p className="hero__kicker">Скоро</p><h2 id="drawing-analysis-title">ИИ-анализ рисунков и раскрасок</h2><p>Скоро можно будет загрузить рисунок или раскраску ребенка, чтобы получить мягкие рекомендации по развитию мелкой моторики, внимания и аккуратности.</p></div>
         <div className="readiness-drawing-analysis__action"><button className="hero__cta readiness-upload-button" type="button" disabled>Загрузить рисунок</button><p>Функция не ставит диагнозы и не заменяет консультацию специалиста.</p></div>
-      </section>
+      </section> : null}
       </PageContainer>
     </AppShell>
   );

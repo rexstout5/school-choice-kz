@@ -47,14 +47,29 @@ const hasAny = (blob, needles = []) => needles.some((needle) => blob.includes(no
 const schoolLanguages = (school) => (school.instruction_languages ?? school.language_of_instruction ?? []).map(normalize);
 const isAnyType = (types = []) => types.length === 0 || types.includes('any');
 const typeMatches = (school, type) => type === 'public' ? ['public', 'specialized'].includes(school.type) : school.type === type || normalize(getText(school.school_type)).includes(type);
-const hasUnknownPrice = (school) => school.tuition_fee === null || school.tuition_fee === undefined;
-const priceFits = (school, range) => !range || range === 'unknown' || (range === 'free' ? school.tuition_fee === 0 : hasUnknownPrice(school) || school.tuition_fee <= budgetLimits[range]);
+export const normalizeMonthlyTuition = (school = {}) => {
+  if (school.tuition_fee === 0 || school.monthlyTuition === 0 || school.annualTuition === 0) return 0;
+  const monthly = school.monthlyTuition ?? school.monthly_tuition ?? school.tuition_fee ?? school.monthly_price;
+  if (typeof monthly === 'number' && Number.isFinite(monthly)) return monthly;
+  const annual = school.annualTuition ?? school.annual_tuition ?? school.tuition_annual;
+  if (typeof annual === 'number' && Number.isFinite(annual)) return annual / 12;
+  return null;
+};
+const hasUnknownPrice = (school) => normalizeMonthlyTuition(school) === null;
+export const priceFits = (school, range) => {
+  const monthlyTuition = normalizeMonthlyTuition(school);
+  if (!range || range === 'unknown') return true;
+  if (monthlyTuition === null) return false;
+  if (range === 'free') return monthlyTuition === 0;
+  if (range === '500plus') return monthlyTuition > 500000;
+  return monthlyTuition <= budgetLimits[range];
+};
 
 export function evaluateHardFilters(school, preference = {}) {
   const reasons = [];
   if (!isAnyType(preference.schoolTypes) && !preference.schoolTypes.some((type) => typeMatches(school, type))) reasons.push('Тип школы не совпадает с обязательным выбором.');
   if ((preference.requiredLanguages ?? []).length && !preference.requiredLanguages.some((language) => schoolLanguages(school).includes(normalize(language)))) reasons.push('Обязательный язык обучения отсутствует в данных школы.');
-  if (preference.budgetRange === 'free' && school.tuition_fee !== 0) reasons.push('Вы выбрали только бесплатные школы.');
+  if (preference.budgetRange && preference.budgetRange !== 'unknown' && !priceFits(school, preference.budgetRange)) reasons.push(hasUnknownPrice(school) ? 'Стоимость требует уточнения.' : 'Стоимость не входит в указанный бюджет.');
   if (!preference.neighboringDistrictsAllowed && (preference.preferredDistricts ?? []).length && !preference.preferredDistricts.includes(school.district)) reasons.push('Школа находится не в выбранном районе.');
   if (preference.childAge && Array.isArray(school.accepted_ages) && !school.accepted_ages.includes(preference.childAge)) reasons.push('Школа точно не принимает указанный возраст.');
   return { passed: reasons.length === 0, reasons };
@@ -69,8 +84,8 @@ export function matchSchool(school, preference = {}) {
   score = add(score, 20, (preference.preferredDistricts ?? []).includes(school.district), matchedReasons, 'Находится в выбранном районе и может подойти по локации.');
   const requiredOrPreferred = unique([...(preference.requiredLanguages ?? []), ...(preference.preferredLanguages ?? [])]);
   score = add(score, requiredOrPreferred.length ? 15 : 7, requiredOrPreferred.length ? requiredOrPreferred.some((l) => schoolLanguages(school).includes(normalize(l))) : true, matchedReasons, 'Язык обучения совпадает с вашими предпочтениями.');
-  if (hasUnknownPrice(school)) missingData.push('Стоимость требует уточнения.'); else score = add(score, 15, priceFits(school, preference.budgetRange), matchedReasons, school.tuition_fee === 0 ? 'Бесплатная школа совпадает с бюджетом.' : 'Стоимость может подойти под указанный бюджет.');
-  const priorityHits = (preference.priorities ?? []).filter((p) => p.weight > 1 && hasAny(blob, priorityTagMap[p.key] ?? [p.key]));
+  if (hasUnknownPrice(school)) missingData.push('Стоимость требует уточнения.'); else score = add(score, 15, priceFits(school, preference.budgetRange), matchedReasons, 'Подходит по указанному бюджету.');
+  const priorityHits = (preference.priorities ?? []).filter((p) => hasAny(blob, priorityTagMap[p.key] ?? [p.key]));
   if ((preference.priorities ?? []).some((p) => p.key === 'smallClasses') && !hasAny(blob, priorityTagMap.smallClasses)) missingData.push('Размер классов требует уточнения.');
   if ((preference.priorities ?? []).length && !priorityHits.length) missingData.push('Профильные теги требуют уточнения.');
   if (priorityHits.length) { score += Math.min(20, priorityHits.reduce((sum, p) => sum + p.weight * 4, 0)); matchedReasons.push('Образовательный профиль совпадает с выбранными приоритетами.'); }
