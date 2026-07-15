@@ -19,6 +19,7 @@ import { getRatingSummaryKey, getSchoolRatingStats, sortOptionValues, sortSchool
 import { favoritesChangedEventName, getStoredFavoriteSchoolIds } from '../../src/lib/favorites.js';
 import { seoFooterLinks } from '../../src/data/seoPages.js';
 import { brand } from '../../src/data/brand.js';
+import { AppShell, InternalHeader, PageContainer, PageIntro, SelectField, Pagination as ProductPagination } from '../../src/components/internal/InternalUI.jsx';
 
 const initialFilters = {
   type: 'all',
@@ -516,46 +517,32 @@ function LanguageSwitcher({ currentLanguage, onLanguageChange, t }) {
 
 function FilterControl({ id, label, value, options, allLabel, optionLabels = {}, onChange }) {
   return (
-    <label className="filter-control" htmlFor={id}>
-      <span>{label}</span>
-      <select id={id} value={value} onChange={(event) => onChange(event.target.value)}>
-        <option value="all">{allLabel}</option>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {optionLabels[option] ?? option}
-          </option>
-        ))}
-      </select>
-    </label>
+    <SelectField id={id} label={label} value={value} onChange={onChange}>
+      <option value="all">{allLabel}</option>
+      {options.map((option) => (
+        <option key={option} value={option}>{optionLabels[option] ?? option}</option>
+      ))}
+    </SelectField>
   );
 }
 
 function PriceFilter({ value, onChange, t }) {
   return (
-    <label className="filter-control" htmlFor="price">
-      <span>{t.maxMonthlyPrice}</span>
-      <select id="price" value={value} onChange={(event) => onChange(event.target.value)}>
-        {priceOptionValues.map((optionValue) => (
-          <option key={optionValue} value={optionValue}>
-            {t.priceOptions[optionValue]}
-          </option>
-        ))}
-      </select>
-    </label>
+    <SelectField id="price" label={t.maxMonthlyPrice} value={value} onChange={onChange}>
+      {priceOptionValues.map((optionValue) => (
+        <option key={optionValue} value={optionValue}>{t.priceOptions[optionValue]}</option>
+      ))}
+    </SelectField>
   );
 }
 
-
 function SortControl({ value, onChange, t }) {
   return (
-    <label className="filter-control" htmlFor="sort">
-      <span>{t.sortBy}</span>
-      <select id="sort" value={value} onChange={(event) => onChange(event.target.value)}>
-        {sortOptionValues.map((optionValue) => (
-          <option key={optionValue} value={optionValue}>{t.sortOptions[optionValue]}</option>
-        ))}
-      </select>
-    </label>
+    <SelectField id="sort" label={t.sortBy} value={value} onChange={onChange}>
+      {sortOptionValues.map((optionValue) => (
+        <option key={optionValue} value={optionValue}>{t.sortOptions[optionValue]}</option>
+      ))}
+    </SelectField>
   );
 }
 
@@ -944,132 +931,53 @@ export default function CatalogPage() {
   };
 
   return (
-    <main>
-      <header className="site-header">
-        <a className="site-header__brand" href="#top" aria-label={t.pageTitle}>
-          {t.pageTitle}
-        </a>
-        <div className="site-header__actions">
-          <a className="site-header__link" href={`/school-readiness?lang=${currentLanguage}`}>{t.readinessLink}</a>
-          <a className="site-header__link" href={`/contribute?lang=${currentLanguage}`}>{t.addSchoolLink}</a>
-          <a className="site-header__link" href={`/my-choice?lang=${currentLanguage}`}>♡ {t.favoritesLink} ({favoriteCount})</a>
-          <LanguageSwitcher currentLanguage={currentLanguage} onLanguageChange={updateLanguage} t={t} />
-        </div>
-      </header>
-
-      <section className="hero" id="top">
-        <div className="hero__copy">
-          <p className="hero__kicker">{t.heroKicker}</p>
-          <h1>{t.heroTitle}</h1>
-          <p>{t.heroDescription}</p>
-          <div className="hero__actions">
-            <a className="hero__cta" href={`/school-readiness?lang=${currentLanguage}`}>{t.heroCta}</a>
-            <a className="hero__cta hero__cta--secondary" href="#catalog">{t.heroSecondaryCta}</a>
-          </div>
-          <p className="hero__note">{t.heroNote}</p>
-        </div>
-        <div className="hero__assistant" aria-label={t.heroNote}>
-          <div className="hero__stat">
-            <strong>{schools.length}</strong>
-            <span>{t.astanaSchools}</span>
-          </div>
-          <ol>
-            {t.assistantSteps.map((step) => (
-              <li key={step}>{step}</li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      <StatsSection t={t} favoriteCount={favoriteCount} />
-
-      <section className="filters" id="catalog" aria-label={t.filtersAria}>
-        <FilterControl
-          id="type"
-          label={t.type}
-          value={filters.type}
-          options={schoolTypes}
-          allLabel={t.all}
-          optionLabels={getEnumOptionLabels('schoolTypes', schoolTypes, currentLanguage)}
-          onChange={(value) => updateFilter('type', value)}
-        />
-        <FilterControl
-          id="language"
-          label={t.language}
-          value={filters.language}
-          options={schoolLanguages}
-          allLabel={t.all}
-          optionLabels={getEnumOptionLabels('instructionLanguages', schoolLanguages, currentLanguage)}
-          onChange={(value) => updateFilter('language', value)}
-        />
-        <FilterControl
-          id="district"
-          label={t.district}
-          value={filters.district}
-          options={schoolDistricts}
-          allLabel={t.all}
-          optionLabels={districtOptionLabels}
-          onChange={(value) => updateFilter('district', value)}
-        />
-        <PriceFilter value={filters.maxPrice} onChange={(value) => updateFilter('maxPrice', value)} t={t} />
-        <SortControl value={sortBy} onChange={(value) => { setSortBy(value); setCurrentPage(1); }} t={t} />
-      </section>
-
-      <section className="results-heading" aria-live="polite">
-        <h2>{t.schoolsMatch(filteredSchools.length)}</h2>
-        <button type="button" onClick={resetFilters}>
-          {t.resetFilters}
-        </button>
-      </section>
-
-      {filteredSchools.length > 0 ? (
-        <>
-          <section className="school-grid" aria-label={t.filteredSchoolsAria}>
-            {visibleSchools.map((school) => (
-              <SchoolCard
-                key={school.id}
-                school={school}
-                moneyFormatter={moneyFormatter}
-                t={t}
-                currentLanguage={currentLanguage}
-                ratingStats={getSchoolRatingStats(school, getSchoolReviews(reviewsBySchool, school.id))}
-                isCompared={comparedSchoolIds.includes(school.id)}
-                isCompareDisabled={comparedSchoolIds.length >= maxComparedSchools && !comparedSchoolIds.includes(school.id)}
-                onCompareToggle={toggleComparedSchool}
-              />
-            ))}
-          </section>
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={updatePage} t={t} />
-        </>
-      ) : (
-        <section className="empty-state" aria-live="polite">
-          <h2>{t.noResultsTitle}</h2>
-          <p>{t.noResultsDescription}</p>
-          <button type="button" onClick={resetFilters}>
-            {t.resetFilters}
-          </button>
-        </section>
-      )}
-
-      <ComparisonBar
-        selectedSchools={selectedSchools}
-        currentLanguage={currentLanguage}
-        onRemove={removeComparedSchool}
-        onClear={() => updateComparedSchoolIds([])}
-        t={t}
+    <AppShell>
+      <InternalHeader
+        lang={currentLanguage}
+        onLanguageChange={updateLanguage}
+        favoriteCount={favoriteCount}
+        labels={{ catalog: t.catalogLink, readiness: t.readinessLink, contribute: t.addSchoolLink, favorites: t.favoritesLink, recommendation: currentLanguage === 'kz' ? 'Іріктеу' : currentLanguage === 'en' ? 'Recommendation' : 'Подбор' }}
       />
+      <PageContainer>
+        <PageIntro
+          eyebrow={t.catalogKicker}
+          title={t.heroTitle}
+          description={t.heroDescription}
+          secondary={t.heroNote}
+          actions={<a className="hero__cta" href={`/recommendation?lang=${currentLanguage}`}>{currentLanguage === 'kz' ? 'Жеке іріктеу' : currentLanguage === 'en' ? 'Personal recommendation' : 'Персональный подбор'}</a>}
+        />
 
-      <FeedbackForm t={t} currentLanguage={currentLanguage} />
+        <section className="catalog-summary" aria-label={t.stats.title}>
+          <span>{schools.length} {t.stats.schools}</span><span>{schoolDistricts.length} {t.stats.districts}</span><span>{schoolLanguages.length} {t.stats.languages}</span>
+        </section>
 
-      <footer className="site-footer">
-        <p>{t.footer}</p>
-        <nav className="footer-links" aria-label={t.footerSeoLabel}>
-          <a href={`/contribute?lang=${currentLanguage}`}>{t.addSchoolLink}</a>
-          {seoFooterLinks.map((link) => (
-            <a key={link.href} href={`${link.href}?lang=${currentLanguage}`}>{link.label[currentLanguage]}</a>
-          ))}
-        </nav>
-      </footer>
-    </main>
+        <section className="filter-panel" id="catalog" aria-label={t.filtersAria}>
+          <div className="filter-panel__grid">
+            <FilterControl id="type" label={t.type} value={filters.type} options={schoolTypes} allLabel={t.all} optionLabels={getEnumOptionLabels('schoolTypes', schoolTypes, currentLanguage)} onChange={(value) => updateFilter('type', value)} />
+            <FilterControl id="language" label={t.language} value={filters.language} options={schoolLanguages} allLabel={t.all} optionLabels={getEnumOptionLabels('instructionLanguages', schoolLanguages, currentLanguage)} onChange={(value) => updateFilter('language', value)} />
+            <FilterControl id="district" label={t.district} value={filters.district} options={schoolDistricts} allLabel={t.all} optionLabels={districtOptionLabels} onChange={(value) => updateFilter('district', value)} />
+            <PriceFilter value={filters.maxPrice} onChange={(value) => updateFilter('maxPrice', value)} t={t} />
+            <SortControl value={sortBy} onChange={(value) => { setSortBy(value); setCurrentPage(1); }} t={t} />
+          </div>
+          <button type="button" className="button-secondary filter-panel__reset" onClick={resetFilters}>{t.resetFilters}</button>
+        </section>
+
+        <section className="results-toolbar" aria-live="polite">
+          <h2>{t.schoolsMatch(filteredSchools.length)}</h2>
+          <span>{t.pageStatus(currentPage, totalPages)}</span>
+        </section>
+
+        {filteredSchools.length > 0 ? (<>
+          <section className="school-grid" aria-label={t.filteredSchoolsAria}>
+            {visibleSchools.map((school) => (<SchoolCard key={school.id} school={school} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} ratingStats={getSchoolRatingStats(school, getSchoolReviews(reviewsBySchool, school.id))} isCompared={comparedSchoolIds.includes(school.id)} isCompareDisabled={comparedSchoolIds.length >= maxComparedSchools && !comparedSchoolIds.includes(school.id)} onCompareToggle={toggleComparedSchool} />))}
+          </section>
+          <ProductPagination currentPage={currentPage} totalPages={totalPages} onPageChange={updatePage} labels={{ previous: t.previousPage, next: t.nextPage, aria: t.paginationAria, status: t.pageStatus }} />
+        </>) : (<section className="empty-state" aria-live="polite"><h2>{t.noResultsTitle}</h2><p>{t.noResultsDescription}</p><button type="button" onClick={resetFilters}>{t.resetFilters}</button></section>)}
+
+        <ComparisonBar selectedSchools={selectedSchools} currentLanguage={currentLanguage} onRemove={removeComparedSchool} onClear={() => updateComparedSchoolIds([])} t={t} />
+
+        <section className="compact-final-cta"><p>{currentLanguage === 'kz' ? 'Қажетті ақпаратты таппадыңыз ба?' : currentLanguage === 'en' ? 'Did not find what you need?' : 'Не нашли нужную информацию?'}</p><a href={`/contacts?lang=${currentLanguage}`}>{currentLanguage === 'kz' ? 'Бізге хабарлаңыз' : currentLanguage === 'en' ? 'Tell us' : 'Сообщить нам'}</a></section>
+      </PageContainer>
+    </AppShell>
   );
 }

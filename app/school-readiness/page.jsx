@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import readinessConfig from '../../src/data/schoolReadinessQuestions.json';
+import { AppShell, InternalHeader, PageContainer, PageIntro, FormCard, InfoCard, ProgressHeader, BottomActions } from '../../src/components/internal/InternalUI.jsx';
 
 const answerOptions = [
   { value: 4, label: 'Да, уверенно' },
@@ -223,24 +224,12 @@ export default function SchoolReadinessPage() {
   }
 
   return (
-    <main>
-      <nav className="school-detail__topbar" aria-label="Навигация">
-        <a className="back-link" href="/">← На главную</a>
-      </nav>
+    <AppShell>
+      <InternalHeader lang="ru" labels={{ catalog: 'Каталог', recommendation: 'Подбор', readiness: 'Готовность', contribute: 'Добавить школу', favorites: 'Мой выбор' }} />
+      <PageContainer flow={started && !showResults}>
+      {!started ? <PageIntro eyebrow="ГОТОВНОСТЬ К ШКОЛЕ" title="Оцените готовность ребёнка к школьному старту" description="Пошаговая оценка охватывает познавательные, речевые, социальные навыки, самостоятельность и внимание." /> : null}
 
-      <section className="readiness-hero readiness-hero--assessment">
-        <div>
-          <p className="hero__kicker">Рекомендательный инструмент для родителей</p>
-          <h1>Готовность к школе</h1>
-          <p>Пошаговый маршрут помогает мягко оценить готовность ребенка 5, 6 или 7 лет к школьному старту по пяти доменам развития.</p>
-        </div>
-        <div className="readiness-progress" aria-label={`${answeredCount} из ${questions.length} отвечено`}>
-          <strong>{started ? `${progressPercent}%` : questions.length}</strong>
-          <span>{started ? `${answeredCount} из ${questions.length} отвечено` : `вопросов для ${selectedAge} лет`}</span>
-        </div>
-      </section>
-
-      {!started && <section className="readiness-card readiness-start-card" aria-labelledby="start-title">
+      {!started && <FormCard className="readiness-start-card" aria-labelledby="start-title">
         <div>
           <p className="hero__kicker">Первый экран</p>
           <h2 id="start-title">Расскажите немного о ребенке</h2>
@@ -252,7 +241,9 @@ export default function SchoolReadinessPage() {
           <label><span>Посещает подготовку к школе</span><select value={goesToPreparation} onChange={(event) => setGoesToPreparation(event.target.value)}><option value="">Выберите</option><option>Да</option><option>Нет</option><option>Планируем начать</option></select></label>
         </div>
         <button className="hero__cta readiness-start-button" type="button" onClick={startAssessment} disabled={!goesToKindergarten || !goesToPreparation}>Начать тест</button>
-      </section>}
+      </FormCard>}
+
+      {!started ? <InfoCard className="readiness-assessed"><strong>Что оцениваем</strong><div><span>Познавательное развитие</span><span>Речь и коммуникация</span><span>Внимание и память</span><span>Самостоятельность</span><span>Социально-эмоциональная готовность</span></div></InfoCard> : null}
 
       {started && completedDomain && !showResults && <section className="readiness-card readiness-domain-complete" aria-live="polite">
         <span>Раздел завершён</span>
@@ -261,23 +252,17 @@ export default function SchoolReadinessPage() {
         <div className="readiness-progress-bar"><span style={{ width: `${progressPercent}%` }} /></div>
       </section>}
 
-      {started && !isComplete && !completedDomain && !showResults && currentQuestion && <section className={`readiness-card readiness-card--single-question ${isAdvancing ? 'readiness-card--advancing' : ''}`} aria-labelledby="question-title">
-        <div className="readiness-question-meta">
-          <strong>{currentDomainTitle}</strong>
-          <span>Вопрос {currentIndex + 1} из {questions.length}</span>
-        </div>
-        <div className="readiness-progress-bar" aria-hidden="true"><span style={{ width: `${progressPercent}%` }} /></div>
+      {started && !isComplete && !completedDomain && !showResults && currentQuestion && <FormCard className={`guided-flow-card readiness-card--single-question ${isAdvancing ? 'readiness-card--advancing' : ''}`} aria-labelledby="question-title">
+        <div className="readiness-question-meta"><strong>{currentDomainTitle}</strong></div><ProgressHeader label={`Вопрос ${currentIndex + 1} из ${questions.length}`} progress={progressPercent} />
         <fieldset className="readiness-question readiness-question--featured">
           <legend id="question-title">{currentQuestion.text}</legend>
-          <div className="readiness-options readiness-options--cards">{answerOptions.map((option) => {
+          <div className="selection-grid selection-grid--single">{answerOptions.map((option) => {
             const isSelected = selectedValue === option.value || answers[currentQuestion.id] === option.value;
-            return <button key={option.value} type="button" className={isSelected ? 'readiness-answer-card readiness-answer-card--selected' : 'readiness-answer-card'} onClick={() => handleAnswer(option.value)} disabled={isAdvancing} aria-pressed={isSelected}>{option.label}</button>;
+            return <button key={option.value} type="button" className={isSelected ? 'selection-card selection-card--selected' : 'selection-card'} onClick={() => handleAnswer(option.value)} disabled={isAdvancing} aria-pressed={isSelected}>{option.label}</button>;
           })}</div>
         </fieldset>
-        <div className="readiness-navigation">
-          <button className="readiness-nav-button" type="button" onClick={goBack}>← Назад</button>
-        </div>
-      </section>}
+        <BottomActions><button className="button-secondary" type="button" onClick={goBack}>← Назад</button></BottomActions>
+      </FormCard>}
 
       {started && isComplete && showResults && <section className="readiness-results readiness-results--assessment" aria-live="polite">
         <div className={`readiness-score readiness-score--${interpretation.key}`}><span>Общий индекс готовности</span><strong>{overallPercent}%</strong><p>{interpretation.icon} {interpretation.title}</p></div>
@@ -292,12 +277,13 @@ export default function SchoolReadinessPage() {
         <button className="readiness-nav-button readiness-retake" type="button" onClick={restart}>Пройти заново</button>
       </section>}
 
-      <section className="readiness-card readiness-disclaimer"><strong>Важно:</strong> Результаты носят информационный характер и не являются психологическим, педагогическим или медицинским заключением. Для профессиональной оценки рекомендуется обратиться к профильному специалисту.</section>
+      <InfoCard className="readiness-disclaimer"><span aria-hidden="true">ℹ</span><p>Результат носит информационный характер и не является медицинским, психологическим или педагогическим заключением.</p></InfoCard>
 
       <section className="readiness-card readiness-drawing-analysis" aria-labelledby="drawing-analysis-title">
-        <div className="readiness-drawing-analysis__content"><p className="hero__kicker">Будущая функция</p><h2 id="drawing-analysis-title">ИИ-анализ рисунков и раскрасок</h2><p>Скоро можно будет загрузить рисунок или раскраску ребенка, чтобы получить мягкие рекомендации по развитию мелкой моторики, внимания и аккуратности.</p></div>
+        <div className="readiness-drawing-analysis__content"><p className="hero__kicker">Скоро</p><h2 id="drawing-analysis-title">ИИ-анализ рисунков и раскрасок</h2><p>Скоро можно будет загрузить рисунок или раскраску ребенка, чтобы получить мягкие рекомендации по развитию мелкой моторики, внимания и аккуратности.</p></div>
         <div className="readiness-drawing-analysis__action"><button className="hero__cta readiness-upload-button" type="button" disabled>Загрузить рисунок</button><p>Функция не ставит диагнозы и не заменяет консультацию специалиста.</p></div>
       </section>
-    </main>
+      </PageContainer>
+    </AppShell>
   );
 }
