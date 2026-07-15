@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { createSchoolImagePlaceholder } from '../utils/schoolImages.js';
+import SchoolImagePlaceholder from './SchoolImagePlaceholder.jsx';
 
 export default function SchoolImageWithFallback({ src, alt, schoolName, className = '', loading = 'lazy', decoding = 'async', size = 'large', fallbackSrc: providedFallbackSrc }) {
   const generatedFallbackSrc = useMemo(() => createSchoolImagePlaceholder(schoolName || alt, size), [alt, schoolName, size]);
@@ -13,6 +14,10 @@ export default function SchoolImageWithFallback({ src, alt, schoolName, classNam
   useEffect(() => {
     setCurrentSrc(src || fallbackSrc);
   }, [fallbackSrc, src]);
+
+  if (isFallback) {
+    return <SchoolImagePlaceholder className={className} schoolName={schoolName || alt} size={size} />;
+  }
 
   return (
     <img

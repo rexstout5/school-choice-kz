@@ -173,7 +173,10 @@ const homepageTranslations = {
   }
 };
 
-const getSchoolCardImage = (school) => getSchoolCoverImage(school);
+const getSchoolCardImage = (school) => {
+  const image = getSchoolCoverImage(school);
+  return image && !image.includes('/images/placeholders/') ? image : '';
+};
 
 function withLanguage(href, language) {
   return `${href}${href.includes('?') ? '&' : '?'}lang=${language}`;
@@ -243,39 +246,13 @@ function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStat
   );
 }
 
-function HeroMedia({ poster = '/images/hero/astana-hero.jpg', videoSrc }) {
-  const videoRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [canUseVideo, setCanUseVideo] = useState(false);
-
-  useEffect(() => {
-    const desktop = window.matchMedia('(min-width: 901px)').matches;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    setCanUseVideo(Boolean(videoSrc && desktop && !reduced));
-  }, [videoSrc]);
-
-  const toggleVideo = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (video.paused) {
-      video.play();
-      setIsPlaying(true);
-    } else {
-      video.pause();
-      setIsPlaying(false);
-    }
-  };
+function HeroMedia({ imageSrc = '/images/hero/astana-hero.jpg', posterSrc = '/images/hero/astana-hero.jpg', videoSrc }) {
+  const mediaSrc = imageSrc || posterSrc;
 
   return (
-    <figure className="hero-media" aria-label="BilimChoice school selection preview">
-      {canUseVideo ? (
-        <video ref={videoRef} className="hero-media__asset" poster={poster} muted playsInline loop autoPlay onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)}>
-          <source src={videoSrc} type={videoSrc.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
-        </video>
-      ) : (
-        <Image className="hero-media__asset" src={poster} alt="Современные школы Астаны" width={760} height={620} priority />
-      )}
-      {canUseVideo ? <button className="hero-media__control" type="button" onClick={toggleVideo} aria-label={isPlaying ? 'Поставить видео на паузу' : 'Воспроизвести видео'}>{isPlaying ? 'Pause' : 'Play'}</button> : null}
+    <figure className="hero-media" aria-label="BilimChoice school selection preview" data-video-ready={Boolean(videoSrc)}>
+      <Image className="hero-media__asset" src={mediaSrc} alt="Современные школы Астаны" width={760} height={620} priority />
+      <figcaption>Выбор начинается с понимания потребностей семьи</figcaption>
     </figure>
   );
 }
@@ -420,7 +397,7 @@ export default function Home() {
 
 
       <section className="trust-strip" aria-label="BilimChoice trust signals">
-        {t.trustItems.map((item) => <span key={item}>{item}</span>)}
+        {t.trustItems.map((item) => <span key={item} aria-label={item}>✓ {item}</span>)}
       </section>
 
       <PopularSchools groups={popularSchoolGroups} moneyFormatter={moneyFormatter} t={t} currentLanguage={currentLanguage} reviewsBySchool={reviewsBySchool} />
@@ -428,11 +405,13 @@ export default function Home() {
       <section className="tool-section" aria-labelledby="tool-section-title">
         <div className="tool-card-grid tool-card-grid--two">
           <article className="tool-card--large tool-card--sage">
+            <span className="tool-card__icon" aria-hidden="true">⌁</span>
             <h2 id="tool-section-title">{t.toolOneTitle}</h2>
             <p>{t.toolOneText}</p>
             <a className="button-link" href={withLanguage('/recommendation', currentLanguage)}>{t.toolOneCta}</a>
           </article>
           <article className="tool-card--large tool-card--sand">
+            <span className="tool-card__icon" aria-hidden="true">✓</span>
             <h2>{t.toolTwoTitle}</h2>
             <p>{t.toolTwoText}</p>
             <a className="button-link button-link--quiet" href={withLanguage('/school-readiness', currentLanguage)}>{t.toolTwoCta}</a>
