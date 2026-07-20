@@ -25,7 +25,72 @@ BilimChoice помогает родителям подобрать школу п
 
 ![Assessment](docs/screenshots/readiness.png)
 
-## Scripts
+## Возможности
+
+✔ каталог школ
+
+✔ фильтрация
+
+✔ сравнение школ
+
+✔ карточка школы
+
+✔ оценка готовности ребёнка
+
+✔ рекомендации школ
+
+## My Role
+
+Product Owner
+
+Business Analyst
+
+UX Research
+
+Requirements Engineering
+
+AI-assisted Development
+
+Project Management
+
+## Roadmap
+
+✅ MVP
+
+✅ Каталог
+
+✅ Поиск
+
+✅ Карточки
+
+🚧 Сравнение школ
+
+🚧 Личный кабинет
+
+🚧 Отзывы родителей
+
+⬜ Android
+
+⬜ iOS
+
+
+## Tech Stack
+
+Next.js
+
+React
+
+JavaScript
+
+GitHub
+
+GitHub Actions
+
+Codex
+
+Claude
+
+ChatGPT
 
 ```bash
 npm run dev
