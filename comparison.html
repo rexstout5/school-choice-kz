@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compare Schools | School Choice KZ</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header compact">
+    <div>
+      <p class="eyebrow">Comparison</p>
+      <h1>Compare selected schools</h1>
+      <p class="subtitle">Review ratings, language options, monthly price, class size, and programs for up to three schools.</p>
+    </div>
+    <a class="compare-link secondary" href="index.html">Back to school list</a>
+  </header>
+
+  <main>
+    <section class="comparison-actions">
+      <p id="comparison-summary" aria-live="polite"></p>
+      <button type="button" id="clear-comparison">Clear comparison</button>
+    </section>
+
+    <section id="empty-state" class="empty-state" hidden>
+      <h2>No schools selected yet</h2>
+      <p>Go back to the school list and choose up to three schools to compare.</p>
+      <a class="compare-link" href="index.html">Choose schools</a>
+    </section>
+
+    <section id="comparison-table-wrapper" class="comparison-table-wrapper" aria-label="School comparison table"></section>
+  </main>
+
+  <script src="schools.js"></script>
+  <script src="comparison.js"></script>
+</body>
+</html>
