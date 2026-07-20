@@ -1,6 +1,29 @@
 # BilimChoice
 
-A Next.js school-selection website for comparing structured Astana school options by type, district, language, price, rating, and programs.
+Цифровая платформа выбора и сравнения школ Казахстана.
+
+## О проекте
+
+BilimChoice помогает родителям подобрать школу по району, языку обучения,
+стоимости, рейтингу, программам и другим параметрам.
+
+## Скриншоты
+
+### Главная страница
+
+![Главная](docs/screenshots/home.png)
+
+### Каталог школ
+
+![Каталог](docs/screenshots/catalog.png)
+
+### Карточка школы
+
+![School](docs/screenshots/school.png)
+
+### Оценка готовности к школе
+
+![Assessment](docs/screenshots/readiness.png)
 
 ## Scripts
 
