@@ -10,11 +10,12 @@ import {
 } from '../../src/data/schools.js';
 import { doesSchoolMatchCatalogFilters } from '../../src/lib/schoolFilters.js';
 import { doesSchoolMatchBudgetFilter, normalizePriceFilterValue } from '../../src/lib/priceFilters.js';
+import { readJsonStorage, storageKeys, writeJsonStorage } from '../../src/lib/browserStorage.js';
 
 const defaultLanguage = 'ru';
 const languageStorageKey = 'school-choice-kz-language';
-const quizStorageKey = 'school-choice-kz-quiz-answers';
-const comparisonStorageKey = 'school-choice-kz-comparison';
+const quizStorageKey = storageKeys.recommendationProfile;
+const comparisonStorageKey = storageKeys.comparison;
 const maxComparedSchools = 3;
 
 const initialAnswers = {
@@ -341,9 +342,7 @@ const normalizeComparedSchoolIds = (schoolIds) =>
 
 const getStoredComparedSchoolIds = () => {
   try {
-    const storedComparison = window.localStorage.getItem(comparisonStorageKey);
-    const parsedComparison = storedComparison ? JSON.parse(storedComparison) : [];
-    return Array.isArray(parsedComparison) ? normalizeComparedSchoolIds(parsedComparison) : [];
+    return normalizeComparedSchoolIds(readJsonStorage(comparisonStorageKey, [], { validate: Array.isArray }));
   } catch {
     return [];
   }
@@ -351,7 +350,7 @@ const getStoredComparedSchoolIds = () => {
 
 const saveComparedSchoolIds = (schoolIds) => {
   try {
-    window.localStorage.setItem(comparisonStorageKey, JSON.stringify(normalizeComparedSchoolIds(schoolIds)));
+    writeJsonStorage(comparisonStorageKey, normalizeComparedSchoolIds(schoolIds));
   } catch {
     // Comparison still works for the current session if localStorage is unavailable.
   }
@@ -359,8 +358,7 @@ const saveComparedSchoolIds = (schoolIds) => {
 
 const getStoredQuizAnswers = () => {
   try {
-    const storedAnswers = window.localStorage.getItem(quizStorageKey);
-    const parsedAnswers = storedAnswers ? JSON.parse(storedAnswers) : null;
+    const parsedAnswers = readJsonStorage(quizStorageKey, null, { validate: (value) => value !== null && typeof value === 'object' && !Array.isArray(value) });
     return parsedAnswers && typeof parsedAnswers === 'object' ? { ...initialAnswers, ...parsedAnswers } : initialAnswers;
   } catch {
     return initialAnswers;
@@ -631,7 +629,7 @@ export default function QuizPage() {
     event.preventDefault();
 
     try {
-      window.localStorage.setItem(quizStorageKey, JSON.stringify(answers));
+      writeJsonStorage(quizStorageKey, answers);
       setStatusMessage(t.saved);
     } catch {
       setStatusMessage('');

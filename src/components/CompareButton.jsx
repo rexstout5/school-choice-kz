@@ -1,19 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { readJsonStorage, storageKeys, writeJsonStorage } from '../lib/browserStorage.js';
 
-export const comparisonStorageKey = 'school-choice-kz-comparison';
+export const comparisonStorageKey = storageKeys.comparison;
 export const comparisonChangedEventName = 'school-choice-kz-comparison-changed';
 const maxComparedSchools = 3;
 
 const getStoredComparedSchoolIds = () => {
-  try {
-    const storedComparison = window.localStorage.getItem(comparisonStorageKey);
-    const parsedComparison = storedComparison ? JSON.parse(storedComparison) : [];
-    return Array.isArray(parsedComparison) ? parsedComparison.slice(0, maxComparedSchools) : [];
-  } catch {
-    return [];
-  }
+  return readJsonStorage(comparisonStorageKey, [], { validate: Array.isArray }).slice(0, maxComparedSchools);
 };
 
 export default function CompareButton({ schoolId, labels, className = '' }) {
@@ -33,7 +28,7 @@ export default function CompareButton({ schoolId, labels, className = '' }) {
       : [...currentIds, schoolId].slice(0, maxComparedSchools);
 
     try {
-      window.localStorage.setItem(comparisonStorageKey, JSON.stringify(nextIds));
+      writeJsonStorage(comparisonStorageKey, nextIds);
       window.dispatchEvent(new CustomEvent(comparisonChangedEventName, { detail: nextIds }));
     } catch {
       // Keep the button usable in the current render even if localStorage is unavailable.

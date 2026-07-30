@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import readinessConfig from '../../src/data/schoolReadinessQuestions.json';
 import { AppShell, InternalHeader, PageContainer, PageIntro, FormCard, InfoCard, ProgressHeader, BottomActions } from '../../src/components/internal/InternalUI.jsx';
+import { readJsonStorage, storageKeys, writeJsonStorage } from '../../src/lib/browserStorage.js';
 
 const answerOptions = [
   { value: 4, label: 'Да, уверенно' },
@@ -12,7 +13,7 @@ const answerOptions = [
   { value: 0, label: 'Пока не получается' }
 ];
 const maxAnswerScore = 4;
-const readinessStorageKey = 'school-choice-kz-readiness-results';
+const readinessStorageKey = storageKeys.readiness;
 const ageOptions = ['5', '6', '7'];
 const domainById = Object.fromEntries(readinessConfig.domains.map((domain) => [domain.id, domain]));
 const domainDisplayNames = {
@@ -114,9 +115,8 @@ export default function SchoolReadinessPage() {
     };
 
     try {
-      const storedResults = JSON.parse(window.localStorage.getItem(readinessStorageKey) || '[]');
-      const results = Array.isArray(storedResults) ? storedResults : [storedResults].filter(Boolean);
-      window.localStorage.setItem(readinessStorageKey, JSON.stringify([result, ...results].slice(0, 5)));
+      const results = readJsonStorage(readinessStorageKey, [], { validate: Array.isArray });
+      writeJsonStorage(readinessStorageKey, [result, ...results].slice(0, 5));
     } catch {
       // The report remains visible for the current session if localStorage is unavailable.
     }
