@@ -51,6 +51,7 @@ h2 { font-size: clamp(30px, 3.4vw, 44px); }
 .privacy-controls { display:flex; min-height:52px; align-items:center; justify-content:center; gap:12px; padding:12px 20px; border-top:1px solid var(--border); background:var(--surface-soft); color:var(--text-secondary); font-size:.85rem; }
 .privacy-controls__button { min-height:44px; border:0; background:transparent; color:var(--brand-navy); text-decoration:underline; cursor:pointer; }
 *:focus-visible { outline:3px solid #1d70b8; outline-offset:3px; }
+.visually-hidden { position:absolute!important; width:1px!important; height:1px!important; overflow:hidden!important; clip:rect(0 0 0 0)!important; white-space:nowrap!important; }
 html, body { max-width:100%; overflow-x:clip; }
 @media (max-width: 430px) { .privacy-controls { flex-direction:column; text-align:center; } }
 .hero.hero--landing { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: auto; margin-inline: calc(50% - 50vw); padding: 72px max(20px, calc((100vw - 780px)/2)) 64px; text-align: center; background: radial-gradient(circle at 20% 10%, rgba(221,235,244,.8), transparent 38%), radial-gradient(circle at 85% 25%, rgba(225,239,233,.75), transparent 34%), #FFFFFF; }
@@ -228,8 +229,41 @@ select,input,textarea { width:100%; border:1px solid var(--border); border-radiu
 @media (max-width:760px){ .internal-page-container{width:calc(100% - 32px);padding-block:24px 56px}.flow-container{padding-block:24px 56px}.page-intro h1{font-size:clamp(32px,9vw,40px)}.filter-panel__grid,.school-grid,.readiness-form-grid{grid-template-columns:1fr}.filter-panel__reset,.bottom-actions .hero__cta,.bottom-actions .button-secondary{width:100%}.results-toolbar,.compact-final-cta,.readiness-drawing-analysis{display:grid}.recommendation-intro-card,.guided-flow-card,.readiness-start-card{padding:22px}.bottom-actions{position:sticky;bottom:0;z-index:5;display:grid;margin: 18px -22px -22px;padding:14px 22px;background:#fff;border-radius:0 0 24px 24px}.selection-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.selection-grid--single{grid-template-columns:1fr}.internal-header__nav a{font-size:.92rem}.language-switcher__button{min-width:40px} }
 @media (max-width:380px){ .selection-grid{grid-template-columns:1fr}.internal-header__actions{display:grid}.internal-header__choice{justify-content:center}.language-switcher{justify-content:center} }
 
-.recommendation-page-actions { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin: 20px 0 28px; }
-.recommendation-page-actions .button-link--disabled { opacity:.55; pointer-events:none; }
-.recommendation-results .recommendation-result { margin-top: 18px; }
-@media (min-width:761px){ .recommendation-page-actions { position:static; } .recommendation-page-actions .button-link { margin-left:auto; } }
-@media (max-width:760px){ .recommendation-page-actions { display:flex; flex-direction:column; align-items:stretch; } .recommendation-page-actions .button-link, .recommendation-page-actions button { width:100%; min-height:44px; } .recommendation-page-actions .button-link { order:-1; margin-left:0; } }
+.recommendation-results { width:min(1120px,calc(100% - 40px)); margin-inline:auto; padding-block:40px 80px; }
+.recommendation-results-shell { width:100%; padding:0; }
+.recommendation-results-shell > .guided-back { display:none; }
+.recommendation-results__header { max-width:780px; margin-bottom:24px; }
+.recommendation-results__header h1 { margin:0; font-size:clamp(36px,5vw,54px); line-height:1.08; }
+.recommendation-results__header p { margin:12px 0 0; color:var(--text-secondary); font-size:1.06rem; }
+.recommendation-results__header .recommendation-results__limited { font-size:.94rem; }
+.recommendation-toolbar { display:flex; justify-content:space-between; gap:12px; margin-bottom:32px; padding:14px; border:1px solid var(--border); border-radius:18px; background:var(--surface); }
+.recommendation-toolbar__group { display:flex; gap:10px; }
+.recommendation-toolbar .is-disabled { opacity:.5; pointer-events:none; }
+.recommendation-results__score-help { max-width:760px; margin:0 auto 18px; color:var(--text-secondary); font-size:.92rem; }
+.recommended-school-list { display:grid; gap:24px; max-width:1020px; margin-inline:auto; }
+.recommended-school-card { min-width:0; padding:30px 32px; border:1px solid var(--border); border-radius:22px; background:#fff; box-shadow:var(--shadow-card); }
+.recommended-school-card__rank { display:flex; justify-content:space-between; align-items:center; gap:12px; color:var(--brand-navy); font-size:.9rem; font-weight:750; }
+.match-score-badge { flex:0 0 auto; border-radius:999px; padding:7px 11px; color:var(--brand-navy); background:var(--brand-blue-soft); font-size:.86rem; }
+.recommended-school-card h2 { max-width:820px; margin:18px 0 12px; overflow-wrap:anywhere; font-size:clamp(28px,3.2vw,36px); line-height:1.13; }
+.recommended-school-card__facts { display:grid; gap:5px; margin:0; padding:0; color:var(--text-secondary); list-style:none; }
+.recommended-school-card__details { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px; margin-top:24px; padding-top:22px; border-top:1px solid var(--border-soft); }
+.recommended-school-card__details h3 { margin:0 0 10px; font-size:1.05rem; }
+.recommended-school-card__details ul { display:grid; gap:8px; margin:0; padding:0; list-style:none; }
+.match-reasons li { display:flex; gap:9px; }
+.match-reasons li span { color:var(--brand-navy); font-weight:800; }
+.considerations-list li { position:relative; padding-left:16px; color:var(--text-secondary); }
+.considerations-list li::before { position:absolute; left:0; content:'•'; color:var(--brand-coral); }
+.school-action-buttons { display:flex; gap:10px; margin-top:26px; }
+.school-action-buttons > * { min-height:44px; }
+.school-action-buttons .button-link { min-width:150px; }
+.recommended-school-card__freshness { margin:18px 0 0; padding-top:14px; border-top:1px solid var(--border-soft); color:var(--text-secondary); font-size:.82rem; }
+.recommendation-more,.recommendation-empty-state,.recommendation-disclaimer { max-width:1020px; margin:24px auto 0; border:1px solid var(--border); border-radius:18px; padding:22px 24px; background:var(--surface-soft); }
+.recommendation-more h2,.recommendation-empty-state h2,.recommendation-disclaimer h2 { margin:0 0 8px; font-size:1.25rem; }
+.recommendation-more div,.recommendation-empty-state div { display:flex; gap:10px; margin-top:16px; }
+.recommendation-empty-state { padding:34px; background:#fff; text-align:center; }
+.recommendation-empty-state div { justify-content:center; }
+.recommendation-disclaimer { background:transparent; box-shadow:none; }
+.recommendation-disclaimer p,.recommendation-empty-state p { margin:0; color:var(--text-secondary); }
+@media (max-width:900px){ .recommendation-toolbar { align-items:stretch; } .recommendation-toolbar__group { flex-wrap:wrap; } .recommended-school-card__details { grid-template-columns:1fr; } }
+@media (max-width:760px){ .recommendation-results { width:calc(100% - 32px); padding-block:24px 56px; } .recommendation-results__header h1 { font-size:clamp(32px,9vw,40px); } .recommendation-toolbar { display:flex; flex-direction:column; padding:12px; } .recommendation-toolbar__group { display:grid; gap:10px; } .recommendation-toolbar__selection { order:-1; } .recommendation-toolbar__selection .recommendation-toolbar__compare { order:-1; } .recommendation-toolbar a,.recommendation-toolbar button { width:100%; } .recommended-school-card { padding:22px 20px; } .recommended-school-card h2 { font-size:clamp(26px,8vw,30px); } .recommended-school-card__rank { align-items:flex-start; flex-wrap:wrap; } .school-action-buttons { display:grid; grid-template-columns:1fr 1fr; } .school-action-buttons .button-link { grid-column:1/-1; width:100%; } .recommendation-more div,.recommendation-empty-state div { display:grid; } }
+@media (max-width:380px){ .school-action-buttons { grid-template-columns:1fr; } .school-action-buttons .button-link { grid-column:auto; } }

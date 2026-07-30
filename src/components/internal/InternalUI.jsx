@@ -5,7 +5,7 @@ import { brand } from '../../data/brand.js';
 export const languageOptions = [{ code: 'ru', label: 'RU' }, { code: 'kz', label: 'KZ' }, { code: 'en', label: 'EN' }];
 
 export function AppShell({ children }) { return <div className="app-shell">{children}</div>; }
-export function PageContainer({ children, flow = false }) { return <main className={flow ? 'flow-container' : 'internal-page-container'}>{children}</main>; }
+export function PageContainer({ children, flow = false, className = '' }) { return <main className={`${flow ? 'flow-container' : 'internal-page-container'} ${className}`.trim()}>{children}</main>; }
 export function InternalHeader({ lang = 'ru', onLanguageChange, favoriteCount = 0, labels = {} }) {
   const l = { catalog: 'Каталог', recommendation: 'Подбор', readiness: 'Готовность', contribute: 'Добавить школу', favorites: 'Мой выбор', ...labels };
   const suffix = `?lang=${lang}`;
