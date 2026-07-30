@@ -1,12 +1,11 @@
 import './globals.css';
-import { Manrope } from 'next/font/google';
 import { brand } from '../src/data/brand.js';
-
-const manrope = Manrope({ subsets: ['latin', 'cyrillic'], weight: ['400', '500', '600', '700'], display: 'swap' });
+import PrivacyControls from '../src/components/PrivacyControls.jsx';
 
 export const metadata = {
   title: { default: brand.name, template: brand.titleTemplate },
   description: brand.description.ru,
+  alternates: { canonical: '/' },
   metadataBase: new URL(brand.url),
   openGraph: {
     title: brand.name,
@@ -20,8 +19,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ru" className={manrope.className}>
-      <body>{children}</body>
+    <html lang="ru">
+      <body>{children}<PrivacyControls /></body>
     </html>
   );
 }

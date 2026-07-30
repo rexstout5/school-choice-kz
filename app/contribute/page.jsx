@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { getLocalizedEnumLabel, getLocalizedSchoolValue, schools, schoolTypes } from '../../src/data/schools.js';
-import { saveSubmission, submissionTypes } from '../../src/lib/submissions.js';
+import { submissionTypes } from '../../src/lib/submissions.js';
 
 const defaultLanguage = 'ru';
 const languageStorageKey = 'school-choice-kz-language';
@@ -18,13 +18,13 @@ const initialCorrection = { school: '', incorrectInformation: '', correctInforma
 
 const translations = {
   ru: {
-    pageTitle: 'Вклад родителей', back: '← Назад к каталогу', kicker: 'Помогите улучшить каталог', title: 'Добавьте школу или исправьте информацию', description: 'Заявки пока сохраняются только в localStorage этого браузера.', addSchool: 'Add school', reportIncorrect: 'Report incorrect information', saved: 'Спасибо — заявка сохранена локально.', error: 'Не удалось сохранить заявку.', submitAdd: 'Add school', submitReport: 'Report incorrect information', selectSchool: 'Выберите школу', selectType: 'Выберите тип школы', fields: { schoolName: 'Название школы', address: 'Адрес', phone: 'Телефон', website: 'Сайт', schoolType: 'Тип школы', tuitionFee: 'Стоимость обучения', comment: 'Комментарий', parentContact: 'Контакт родителя', school: 'Школа', incorrectInformation: 'Что неверно', correctInformation: 'Правильная информация' }
+    pageTitle: 'Вклад родителей', back: '← Назад к каталогу', kicker: 'Помогите улучшить каталог', title: 'Добавьте школу или исправьте информацию', description: 'Форма временно недоступна: канал обработки заявок ещё не подключён. Данные не сохраняются и не отправляются.', addSchool: 'Добавить школу', reportIncorrect: 'Исправить информацию', saved: '', error: '', submitAdd: 'Форма временно недоступна', submitReport: 'Форма временно недоступна', selectSchool: 'Выберите школу', selectType: 'Выберите тип школы', fields: { schoolName: 'Название школы', address: 'Адрес', phone: 'Телефон', website: 'Сайт', schoolType: 'Тип школы', tuitionFee: 'Стоимость обучения', comment: 'Комментарий', parentContact: 'Контакт родителя', school: 'Школа', incorrectInformation: 'Что неверно', correctInformation: 'Правильная информация' }
   },
   kz: {
-    pageTitle: 'Ата-аналар үлесі', back: '← Каталогқа оралу', kicker: 'Каталогты жақсартуға көмектесіңіз', title: 'Мектеп қосыңыз немесе ақпаратты түзетіңіз', description: 'Өтінімдер әзірге тек осы браузердің localStorage қоймасында сақталады.', addSchool: 'Add school', reportIncorrect: 'Report incorrect information', saved: 'Рақмет — өтінім жергілікті сақталды.', error: 'Өтінімді сақтау мүмкін болмады.', submitAdd: 'Add school', submitReport: 'Report incorrect information', selectSchool: 'Мектепті таңдаңыз', selectType: 'Мектеп түрін таңдаңыз', fields: { schoolName: 'Мектеп атауы', address: 'Мекенжай', phone: 'Телефон', website: 'Сайт', schoolType: 'Мектеп түрі', tuitionFee: 'Оқу ақысы', comment: 'Комментарий', parentContact: 'Ата-ананың байланысы', school: 'Мектеп', incorrectInformation: 'Қандай ақпарат қате', correctInformation: 'Дұрыс ақпарат' }
+    pageTitle: 'Ата-аналар үлесі', back: '← Каталогқа оралу', kicker: 'Каталогты жақсартуға көмектесіңіз', title: 'Мектеп қосыңыз немесе ақпаратты түзетіңіз', description: 'Өтінімдерді өңдеу арнасы әлі қосылмағандықтан, форма уақытша қолжетімсіз. Деректер сақталмайды және жіберілмейді.', addSchool: 'Мектеп қосу', reportIncorrect: 'Ақпаратты түзету', saved: '', error: '', submitAdd: 'Форма уақытша қолжетімсіз', submitReport: 'Форма уақытша қолжетімсіз', selectSchool: 'Мектепті таңдаңыз', selectType: 'Мектеп түрін таңдаңыз', fields: { schoolName: 'Мектеп атауы', address: 'Мекенжай', phone: 'Телефон', website: 'Сайт', schoolType: 'Мектеп түрі', tuitionFee: 'Оқу ақысы', comment: 'Түсініктеме', parentContact: 'Ата-ананың байланысы', school: 'Мектеп', incorrectInformation: 'Қандай ақпарат қате', correctInformation: 'Дұрыс ақпарат' }
   },
   en: {
-    pageTitle: 'Parent contributions', back: '← Back to catalog', kicker: 'Help improve the catalog', title: 'Add a school or correct information', description: 'Submissions are stored only in this browser localStorage for now.', addSchool: 'Add school', reportIncorrect: 'Report incorrect information', saved: 'Thank you — your submission was saved locally.', error: 'Could not save your submission.', submitAdd: 'Add school', submitReport: 'Report incorrect information', selectSchool: 'Select a school', selectType: 'Select school type', fields: { schoolName: 'School name', address: 'Address', phone: 'Phone', website: 'Website', schoolType: 'School type', tuitionFee: 'Tuition fee', comment: 'Comment', parentContact: 'Parent contact', school: 'School', incorrectInformation: 'What is incorrect', correctInformation: 'Correct information' }
+    pageTitle: 'Parent contributions', back: '← Back to catalog', kicker: 'Help improve the catalog', title: 'Add a school or correct information', description: 'The form is temporarily unavailable because no request endpoint is connected. Data is neither stored nor sent.', addSchool: 'Add school', reportIncorrect: 'Correct information', saved: '', error: '', submitAdd: 'Form temporarily unavailable', submitReport: 'Form temporarily unavailable', selectSchool: 'Select a school', selectType: 'Select school type', fields: { schoolName: 'School name', address: 'Address', phone: 'Phone', website: 'Website', schoolType: 'School type', tuitionFee: 'Tuition fee', comment: 'Comment', parentContact: 'Parent contact', school: 'School', incorrectInformation: 'What is incorrect', correctInformation: 'Correct information' }
   }
 };
 
@@ -53,7 +53,7 @@ export default function ContributePage() {
 
   const schoolOptions = useMemo(() => schools.map((school) => ({ slug: getSchoolSlug(school), name: getLocalizedSchoolValue(school.name, language) })), [language]);
   const updateLanguage = (nextLanguage) => { setLanguage(nextLanguage); try { window.localStorage.setItem(languageStorageKey, nextLanguage); } catch {} };
-  const handleSave = (event, type) => { event.preventDefault(); try { saveSubmission({ type, language, data: type === submissionTypes.addSchool ? addSchool : correction }); setStatusMessage(t.saved); setAddSchool(initialAddSchool); setCorrection(initialCorrection); } catch { setStatusMessage(t.error); } };
+  const handleSave = (event) => { event.preventDefault(); setStatusMessage(t.description); };
 
   return <main>
     <nav className="school-detail__topbar" aria-label={t.pageTitle}>
@@ -75,13 +75,13 @@ export default function ContributePage() {
         <TextField id="tuition-fee" label={t.fields.tuitionFee} value={addSchool.tuitionFee} onChange={(value) => setAddSchool({ ...addSchool, tuitionFee: value })} />
         <label className="contribution-field" htmlFor="comment"><span>{t.fields.comment}</span><textarea id="comment" rows="4" value={addSchool.comment} onChange={(event) => setAddSchool({ ...addSchool, comment: event.target.value })} /></label>
         <TextField id="parent-contact" label={t.fields.parentContact} value={addSchool.parentContact} onChange={(value) => setAddSchool({ ...addSchool, parentContact: value })} />
-        <button type="submit">{t.submitAdd}</button>
+        <button type="submit" disabled aria-disabled="true">{t.submitAdd}</button>
       </form> : <form className="contribution-form" onSubmit={(event) => handleSave(event, submissionTypes.correction)}>
         <label className="contribution-field" htmlFor="correction-school"><span>{t.fields.school}</span><select id="correction-school" value={correction.school} onChange={(event) => setCorrection({ ...correction, school: event.target.value })} required><option value="">{t.selectSchool}</option>{schoolOptions.map((school) => <option key={school.slug} value={school.slug}>{school.name}</option>)}</select></label>
         <label className="contribution-field" htmlFor="incorrect-information"><span>{t.fields.incorrectInformation}</span><textarea id="incorrect-information" rows="4" value={correction.incorrectInformation} onChange={(event) => setCorrection({ ...correction, incorrectInformation: event.target.value })} required /></label>
         <label className="contribution-field" htmlFor="correct-information"><span>{t.fields.correctInformation}</span><textarea id="correct-information" rows="4" value={correction.correctInformation} onChange={(event) => setCorrection({ ...correction, correctInformation: event.target.value })} required /></label>
         <TextField id="correction-parent-contact" label={t.fields.parentContact} value={correction.parentContact} onChange={(value) => setCorrection({ ...correction, parentContact: value })} />
-        <button type="submit">{t.submitReport}</button>
+        <button type="submit" disabled aria-disabled="true">{t.submitReport}</button>
       </form>}
       <p role="status" aria-live="polite" className="contribution-status">{statusMessage}</p>
     </section>

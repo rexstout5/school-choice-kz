@@ -22,7 +22,7 @@
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; min-width: 320px; color: var(--text-primary); background: var(--page-bg); font-size: 17px; line-height: 1.65; font-weight: 400; }
+body { margin: 0; min-width: 320px; color: var(--text-primary); background: var(--page-bg); font-family: Manrope, Inter, system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 17px; line-height: 1.65; font-weight: 400; }
 body, button, input, select, textarea { font-family: inherit; }
 a { color: var(--brand-navy); }
 a:hover { color: var(--brand-navy-hover); }
@@ -48,6 +48,11 @@ h2 { font-size: clamp(30px, 3.4vw, 44px); }
 .language-switcher__button { min-width: 44px; height: 40px; border: 0; border-radius: 9px; padding: 0 10px; color: var(--text-secondary); background: transparent; font-size: .82rem; font-weight: 700; }
 .language-switcher__button:hover { color:var(--brand-navy); background: var(--brand-blue-soft); }
 .language-switcher__button--active, .language-switcher__button[aria-pressed="true"] { color: var(--text-inverse); background: var(--brand-navy); }
+.privacy-controls { display:flex; min-height:52px; align-items:center; justify-content:center; gap:12px; padding:12px 20px; border-top:1px solid var(--border); background:var(--surface-soft); color:var(--text-secondary); font-size:.85rem; }
+.privacy-controls__button { min-height:44px; border:0; background:transparent; color:var(--brand-navy); text-decoration:underline; cursor:pointer; }
+*:focus-visible { outline:3px solid #1d70b8; outline-offset:3px; }
+html, body { max-width:100%; overflow-x:clip; }
+@media (max-width: 430px) { .privacy-controls { flex-direction:column; text-align:center; } }
 .hero.hero--landing { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: auto; margin-inline: calc(50% - 50vw); padding: 72px max(20px, calc((100vw - 780px)/2)) 64px; text-align: center; background: radial-gradient(circle at 20% 10%, rgba(221,235,244,.8), transparent 38%), radial-gradient(circle at 85% 25%, rgba(225,239,233,.75), transparent 34%), #FFFFFF; }
 .hero__copy { max-width: 780px; margin-inline:auto; }
 .hero__kicker { margin: 0 0 12px; color: var(--brand-coral); font-size: .78rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }

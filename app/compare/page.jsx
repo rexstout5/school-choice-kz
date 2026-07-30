@@ -4,10 +4,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { getLocalizedEnumLabel, getLocalizedSchoolValue, schools } from '../../src/data/schools.js';
 import { formatAverageRating } from '../../src/lib/reviews.js';
 import { getRatingSummaryKey, getSchoolRatingStats } from '../../src/lib/schoolDiscovery.js';
+import { readJsonStorage, storageKeys, writeJsonStorage } from '../../src/lib/browserStorage.js';
 
 const defaultLanguage = 'ru';
 const languageStorageKey = 'school-choice-kz-language';
-const comparisonStorageKey = 'school-choice-kz-comparison';
+const comparisonStorageKey = storageKeys.comparison;
 const maxComparedSchools = 3;
 
 const languageOptions = [
@@ -137,9 +138,7 @@ const normalizeComparedSchoolIds = (schoolIds) =>
 
 const getStoredComparedSchoolIds = () => {
   try {
-    const storedComparison = window.localStorage.getItem(comparisonStorageKey);
-    const parsedComparison = storedComparison ? JSON.parse(storedComparison) : [];
-    return Array.isArray(parsedComparison) ? normalizeComparedSchoolIds(parsedComparison) : [];
+    return normalizeComparedSchoolIds(readJsonStorage(comparisonStorageKey, [], { validate: Array.isArray }));
   } catch {
     return [];
   }
@@ -147,7 +146,7 @@ const getStoredComparedSchoolIds = () => {
 
 const saveComparedSchoolIds = (schoolIds) => {
   try {
-    window.localStorage.setItem(comparisonStorageKey, JSON.stringify(normalizeComparedSchoolIds(schoolIds)));
+    writeJsonStorage(comparisonStorageKey, normalizeComparedSchoolIds(schoolIds));
   } catch {
     // Comparison still works for the current session if localStorage is unavailable.
   }

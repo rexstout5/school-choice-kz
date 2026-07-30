@@ -16,8 +16,8 @@ const translations = {
   ru: {
     navLabel: 'Навигация по сайту', catalogLink: 'Каталог школ', readinessLink: 'Готовность к школе', aboutLink: 'О проекте', contactsLink: 'Контакты', languageSwitcherLabel: 'Выберите язык интерфейса',
     title: 'Контакты', subtitle: 'Свяжитесь с командой BilimChoice по вопросам сотрудничества, обновления данных или обратной связи.',
-    name: 'Имя', email: 'Email', phone: 'Телефон', topic: 'Тема обращения', message: 'Сообщение', button: 'Отправить сообщение',
-    success: 'Спасибо! Сообщение сохранено. Мы свяжемся с вами после подключения обработки заявок.', info: 'Пока форма работает в тестовом режиме. Данные сохраняются локально в браузере.',
+    name: 'Имя', email: 'Email', phone: 'Телефон', topic: 'Тема обращения', message: 'Сообщение', button: 'Форма временно недоступна',
+    success: '', info: 'Форма временно недоступна: канал обработки обращений ещё не подключён. Мы не сохраняем и не отправляем введённые данные.',
     topics: ['Обновить данные школы', 'Добавить школу', 'Сотрудничество', 'Вопрос по сайту', 'Другое'], footerDescription: 'Экспертный каталог школ Астаны для осознанного выбора семьи.',
     footerColumns: [
       ['Навигация', [['Каталог школ', '/catalog'], ['Готовность к школе', '/school-readiness'], ['Мой выбор', '/my-choice']]],
@@ -28,8 +28,8 @@ const translations = {
   kz: {
     navLabel: 'Сайт навигациясы', catalogLink: 'Мектептер каталогы', readinessLink: 'Мектепке дайындық', aboutLink: 'Жоба туралы', contactsLink: 'Байланыс', languageSwitcherLabel: 'Интерфейс тілін таңдаңыз',
     title: 'Байланыс', subtitle: 'Ынтымақтастық, деректерді жаңарту немесе кері байланыс бойынша BilimChoice командасына хабарласыңыз.',
-    name: 'Аты-жөні', email: 'Email', phone: 'Телефон', topic: 'Өтініш тақырыбы', message: 'Хабарлама', button: 'Хабарлама жіберу',
-    success: 'Рақмет! Хабарлама сақталды. Өтініштерді өңдеу қосылғаннан кейін сізбен хабарласамыз.', info: 'Әзірге форма тест режимінде жұмыс істейді. Деректер браузерде локалды сақталады.',
+    name: 'Аты-жөні', email: 'Email', phone: 'Телефон', topic: 'Өтініш тақырыбы', message: 'Хабарлама', button: 'Форма уақытша қолжетімсіз',
+    success: '', info: 'Өтініштерді өңдеу арнасы әлі қосылмағандықтан, форма уақытша қолжетімсіз. Енгізілген деректер сақталмайды және жіберілмейді.',
     topics: ['Мектеп деректерін жаңарту', 'Мектеп қосу', 'Ынтымақтастық', 'Сайт бойынша сұрақ', 'Басқа'], footerDescription: 'Отбасы саналы таңдау жасайтын Астана мектептерінің сараптамалық каталогы.',
     footerColumns: [
       ['Навигация', [['Мектептер каталогы', '/catalog'], ['Мектепке дайындық', '/school-readiness'], ['Таңдаулылар', '/my-choice']]],
@@ -40,8 +40,8 @@ const translations = {
   en: {
     navLabel: 'Site navigation', catalogLink: 'Catalog', readinessLink: 'School readiness', aboutLink: 'About', contactsLink: 'Contacts', languageSwitcherLabel: 'Choose interface language',
     title: 'Contacts', subtitle: 'Contact the BilimChoice team about partnerships, data updates, or feedback.',
-    name: 'Name', email: 'Email', phone: 'Phone', topic: 'Topic', message: 'Message', button: 'Send message',
-    success: 'Thank you! The message has been saved. We will contact you after request processing is connected.', info: 'For now, the form works in test mode. Data is stored locally in your browser.',
+    name: 'Name', email: 'Email', phone: 'Phone', topic: 'Topic', message: 'Message', button: 'Form temporarily unavailable',
+    success: '', info: 'The form is temporarily unavailable because no request endpoint is connected. Entered data is neither stored nor sent.',
     topics: ['Update school data', 'Add a school', 'Partnership', 'Website question', 'Other'], footerDescription: 'An expert Astana school catalog for informed family decisions.',
     footerColumns: [
       ['Navigation', [['School catalog', '/catalog'], ['School readiness', '/school-readiness'], ['Favorites', '/my-choice']]],
@@ -64,7 +64,7 @@ function SocialIcon({ name }) {
   return <svg {...common}><path d="M6.4 18.1A8 8 0 1 1 9 19.5L5 20.5l1.4-2.4Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/><path d="M9.4 8.8c.2 3 2.4 5.1 5.5 5.8l1-1.6-1.8-1-1 1c-1.2-.5-2-1.3-2.5-2.5l1-1-.9-1.8-1.3 1.1Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 }
 
-function SocialLinks() { return <div className="social-links"><a href="#" aria-label="Instagram"><SocialIcon name="Instagram" /></a><a href="#" aria-label="Telegram"><SocialIcon name="Telegram" /></a><a href="#" aria-label="WhatsApp"><SocialIcon name="WhatsApp" /></a></div>; }
+function SocialLinks() { return null; }
 
 export default function ContactsPage() {
   const [currentLanguage, setCurrentLanguage] = useState(defaultLanguage);
@@ -85,18 +85,7 @@ export default function ContactsPage() {
 
   const updateLanguage = (language) => { setCurrentLanguage(language); try { window.localStorage.setItem(languageStorageKey, language); } catch {} };
   const updateField = (field) => (event) => { setForm((prev) => ({ ...prev, [field]: event.target.value })); setSubmitted(false); };
-  const submitForm = (event) => {
-    event.preventDefault();
-    const payload = { ...form, language: currentLanguage, submittedAt: new Date().toISOString() };
-    try {
-      const stored = JSON.parse(window.localStorage.getItem(contactMessagesStorageKey) || '[]');
-      window.localStorage.setItem(contactMessagesStorageKey, JSON.stringify([payload, ...stored]));
-    } catch {
-      window.localStorage.setItem(contactMessagesStorageKey, JSON.stringify([payload]));
-    }
-    setSubmitted(true);
-    setForm({ name: '', email: '', phone: '', topic: t.topics[0], message: '' });
-  };
+  const submitForm = (event) => event.preventDefault();
 
   return <main>
     <header className="site-header">
@@ -115,7 +104,7 @@ export default function ContactsPage() {
         <label><span>{t.topic}</span><select value={form.topic} onChange={updateField('topic')}>{t.topics.map((topic) => <option key={topic} value={topic}>{topic}</option>)}</select></label>
         <label className="contact-form__message"><span>{t.message}</span><textarea value={form.message} onChange={updateField('message')} rows="6" required /></label>
         {submitted && <p className="contact-form__success" role="status">{t.success}</p>}
-        <button type="submit">{t.button}</button>
+        <button type="submit" disabled aria-disabled="true">{t.button}</button>
       </form>
     </section>
     <footer className="site-footer site-footer--simple" id="footer"><div className="site-footer__brand"><strong>{brand.name}</strong><p>{t.footerDescription}</p><SocialLinks /></div>{t.footerColumns.map(([title, links]) => <nav className="footer-links" key={title} aria-label={title}><h3>{title}</h3>{links.map(([label, href]) => <a key={label} href={withLanguage(href, currentLanguage)}>{label}</a>)}</nav>)}</footer>
