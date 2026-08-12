@@ -8,6 +8,7 @@ import { formatAverageRating, getSchoolReviews, getStoredReviewsBySchool } from 
 import { getSchoolRatingStats, sortSchools } from '../src/lib/schoolDiscovery.js';
 import { favoritesChangedEventName, getStoredFavoriteSchoolIds } from '../src/lib/favorites.js';
 import { brand } from '../src/data/brand.js';
+import LucideIcon from '../src/components/LucideIcons.jsx';
 
 const languageStorageKey = 'school-choice-kz-language';
 const defaultLanguage = 'ru';
@@ -185,23 +186,12 @@ function withLanguage(href, language) {
 }
 
 
-function SocialIcon({ name }) {
-  const common = { width: '20', height: '20', viewBox: '0 0 24 24', fill: 'none', 'aria-hidden': 'true' };
-  if (name === 'Instagram') {
-    return <svg {...common}><rect x="4" y="4" width="16" height="16" rx="5" stroke="currentColor" strokeWidth="1.8"/><circle cx="12" cy="12" r="3.4" stroke="currentColor" strokeWidth="1.8"/><path d="M16.8 7.2h.01" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"/></svg>;
-  }
-  if (name === 'Telegram') {
-    return <svg {...common}><path d="M20 5 4 11.7l5.8 2.1M20 5l-3 14-7.2-5.2M20 5 9.8 13.8M9.8 13.8 9.5 19l3-3.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>;
-  }
-  return <svg {...common}><path d="M6.4 18.1A8 8 0 1 1 9 19.5L5 20.5l1.4-2.4Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/><path d="M9.4 8.8c.2 3 2.4 5.1 5.5 5.8l1-1.6-1.8-1-1 1c-1.2-.5-2-1.3-2.5-2.5l1-1-.9-1.8-1.3 1.1Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
-}
-
 function SocialLinks() {
   return (
     <div className="social-links">
-      <a href="#" aria-label="Instagram"><SocialIcon name="Instagram" /></a>
-      <a href="#" aria-label="Telegram"><SocialIcon name="Telegram" /></a>
-      <a href="#" aria-label="WhatsApp"><SocialIcon name="WhatsApp" /></a>
+      <a href="#" aria-label="Instagram"><LucideIcon name="instagram" /></a>
+      <a href="#" aria-label="Telegram"><LucideIcon name="send" /></a>
+      <a href="#" aria-label="WhatsApp"><LucideIcon name="messageCircle" /></a>
     </div>
   );
 }
@@ -239,9 +229,9 @@ function HomeSchoolCard({ school, moneyFormatter, t, currentLanguage, ratingStat
         <h3>{localizedName}</h3>
         <p className="top-school-card__district">{getLocalizedEnumLabel('schoolTypes', school.type, currentLanguage)} · {localizedDistrict}</p>
         <ul className="top-school-card__facts">
-          <li><span aria-hidden="true">🌐</span>{Array.isArray(school.languages) ? school.languages.join(', ') : getLocalizedSchoolValue(school.languages, currentLanguage) || '—'}</li>
-          <li><span aria-hidden="true">₸</span>{tuition}</li>
-          {hasRating ? <li><span aria-hidden="true">★</span>{rating}</li> : null}
+          <li><span aria-hidden="true"><LucideIcon name="globe" size={17} /></span>{Array.isArray(school.languages) ? school.languages.join(', ') : getLocalizedSchoolValue(school.languages, currentLanguage) || '—'}</li>
+          <li><span aria-hidden="true"><LucideIcon name="banknote" size={17} /></span>{tuition}</li>
+          {hasRating ? <li><span aria-hidden="true"><LucideIcon name="star" size={17} /></span>{rating}</li> : null}
         </ul>
         <a className="button-link button-link--quiet" href={withLanguage(`/schools/${school.slug}`, currentLanguage)}>{t.details}</a>
       </div>
@@ -367,7 +357,7 @@ export default function Home() {
           <a className="site-header__link" href={withLanguage('/about', currentLanguage)}>{t.aboutLink}</a>
         </nav>
         <div className="site-header__actions">
-          <a className="site-header__link site-header__link--favorite" href={withLanguage('/my-choice', currentLanguage)}>♡ {t.favoritesLink} ({favoriteCount})</a>
+          <a className="site-header__link site-header__link--favorite" href={withLanguage('/my-choice', currentLanguage)}><LucideIcon name="heart" size={17} /> {t.favoritesLink} ({favoriteCount})</a>
           <LanguageSwitcher currentLanguage={currentLanguage} onLanguageChange={updateLanguage} t={t} />
         </div>
       </header>
@@ -391,13 +381,13 @@ export default function Home() {
       <section className="tool-section" aria-labelledby="tool-section-title">
         <div className="tool-card-grid tool-card-grid--two">
           <article className="tool-card--large tool-card--sage">
-            <span className="tool-card__icon" aria-hidden="true">⌁</span>
+            <span className="tool-card__icon" aria-hidden="true"><LucideIcon name="sparkles" /></span>
             <h2 id="tool-section-title">{t.toolOneTitle}</h2>
             <p>{t.toolOneText}</p>
             <a className="button-link" href={withLanguage('/recommendation', currentLanguage)}>{t.toolOneCta}</a>
           </article>
           <article className="tool-card--large tool-card--sand">
-            <span className="tool-card__icon" aria-hidden="true">✓</span>
+            <span className="tool-card__icon" aria-hidden="true"><LucideIcon name="checkCircle" /></span>
             <h2>{t.toolTwoTitle}</h2>
             <p>{t.toolTwoText}</p>
             <a className="button-link button-link--quiet" href={withLanguage('/school-readiness', currentLanguage)}>{t.toolTwoCta}</a>

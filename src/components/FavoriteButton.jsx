@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { favoritesChangedEventName, getStoredFavoriteSchoolIds, saveFavoriteSchoolIds } from '../lib/favorites.js';
+import LucideIcon from './LucideIcons.jsx';
 
 export default function FavoriteButton({ schoolId, labels, className = '' }) {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -42,7 +43,7 @@ export default function FavoriteButton({ schoolId, labels, className = '' }) {
       title={text}
       onClick={toggleFavorite}
     >
-      <span aria-hidden="true">{isFavorite ? '♥' : '♡'}</span>
+      <LucideIcon name="heart" size={18} fill={isFavorite ? 'currentColor' : 'none'} />
       <span>{text}</span>
     </button>
   );
