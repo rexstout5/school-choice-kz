@@ -123,6 +123,25 @@ dd { margin:4px 0 0; color:var(--text-primary); font-weight:500; }
 .filter-control { display:grid; gap:8px; padding:16px; border:1px solid var(--border); border-radius:16px; background:var(--surface); }
 .filter-control span,.quiz-field span,.feedback-form span,.contribution-field { color:var(--text-secondary); font-size:.78rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; }
 select,input,textarea { width:100%; border:1px solid var(--border); border-radius:12px; padding:11px 12px; color:var(--text-primary); background:var(--surface); font-weight:500; }
+input:not([type="radio"]):not([type="checkbox"]):not([type="range"]):not([type="file"]),textarea {
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+input::placeholder,textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: .78;
+  transform: translateX(0);
+  transition: color .2s ease, opacity .2s ease, transform .2s ease;
+}
+input:not([type="radio"]):not([type="checkbox"]):not([type="range"]):not([type="file"]):focus,textarea:focus {
+  border-color: var(--brand-coral);
+  box-shadow: 0 0 0 3px rgba(233,112,85,.16);
+  outline: none;
+}
+input:focus::placeholder,textarea:focus::placeholder {
+  color: var(--brand-coral);
+  opacity: .68;
+  transform: translateX(4px);
+}
 .school-grid,.quick-filter-grid,.article-grid,.review-grid,.steps-grid,.tools-grid,.stats-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
 .school-card { display:flex; flex-direction:column; gap:16px; padding:20px; }
 .school-card__header { display:flex; justify-content:space-between; gap:16px; }
